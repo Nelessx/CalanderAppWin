@@ -1,0 +1,167 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\PesonalProjects\\CalanderAppWin\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\data\\bscalendardata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|solutionrelative:calanderappwin\\data\\bscalendardata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\models\\bsyeardata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|solutionrelative:calanderappwin\\models\\bsyeardata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|solutionrelative:calanderappwin\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|solutionrelative:calanderappwin\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\services\\bsdateconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|solutionrelative:calanderappwin\\services\\bsdateconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\models\\bsdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|solutionrelative:calanderappwin\\models\\bsdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\nepalicalendar.app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\NepaliCalendar.App.csproj|solutionrelative:calanderappwin\\nepalicalendar.app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|e:\\pesonalprojects\\calanderappwin\\calanderappwin\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{229DCD1B-67A7-2D97-D9F7-F5C03E520561}|CalanderAppWin\\CalanderAppWin.csproj|solutionrelative:calanderappwin\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BsCalendarData.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Data\\BsCalendarData.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\Data\\BsCalendarData.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Data\\BsCalendarData.cs",
+              "RelativeToolTip": "CalanderAppWin\\Data\\BsCalendarData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T15:30:09.154Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BsYearData.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Models\\BsYearData.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\Models\\BsYearData.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Models\\BsYearData.cs",
+              "RelativeToolTip": "CalanderAppWin\\Models\\BsYearData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T15:29:34.033Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "NepaliCalendar.App.csproj",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\NepaliCalendar.App.csproj",
+              "RelativeDocumentMoniker": "CalanderAppWin\\NepaliCalendar.App.csproj",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\NepaliCalendar.App.csproj",
+              "RelativeToolTip": "CalanderAppWin\\NepaliCalendar.App.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-10T13:22:38.747Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\MainWindow.xaml.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\MainWindow.xaml.cs",
+              "RelativeToolTip": "CalanderAppWin\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T10:58:24.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BsDateConverter.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Services\\BsDateConverter.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\Services\\BsDateConverter.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Services\\BsDateConverter.cs",
+              "RelativeToolTip": "CalanderAppWin\\Services\\BsDateConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T15:15:18.803Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\AssemblyInfo.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\AssemblyInfo.cs",
+              "RelativeToolTip": "CalanderAppWin\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T13:16:02.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "CalanderAppWin\\MainWindow.xaml",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\MainWindow.xaml",
+              "RelativeToolTip": "CalanderAppWin\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-10T10:58:25.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BsDate.cs",
+              "DocumentMoniker": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Models\\BsDate.cs",
+              "RelativeDocumentMoniker": "CalanderAppWin\\Models\\BsDate.cs",
+              "ToolTip": "E:\\PesonalProjects\\CalanderAppWin\\CalanderAppWin\\Models\\BsDate.cs",
+              "RelativeToolTip": "CalanderAppWin\\Models\\BsDate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T11:06:05.83Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
