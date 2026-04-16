@@ -134,13 +134,14 @@ namespace NepaliCalendar.App.Services
 
                 cells.Add(new CalendarCell
                 {
-                    Text = useNepaliNumbers
-                        ? _nepaliNumberService.ToNepaliNumber(day.Day)
-                        : day.Day.ToString(),
+                    Text = useNepaliNumbers ? _nepaliNumberService.ToNepaliNumber(day.Day) : day.Day.ToString(),
                     DayName = day.DayName,
                     IsToday = day.IsToday,
                     IsCurrentMonth = true,
-                    DayOfWeekIndex = (int)adDate.DayOfWeek
+                    DayOfWeekIndex = (int)adDate.DayOfWeek,
+                    Year = day.Year,
+                    Month = day.Month,
+                    Day = day.Day
                 });
             }
 
