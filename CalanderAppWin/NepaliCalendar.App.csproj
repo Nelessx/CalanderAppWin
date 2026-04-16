@@ -8,4 +8,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+	<ItemGroup>
+		<!-- Copy the raw editable BS calendar file into the output folder -->
+		<None Update="Data\bs-calendar-raw.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<!-- Copy the generated JSON calendar file into the output folder -->
+		<None Update="Data\bs-calendar-data.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>

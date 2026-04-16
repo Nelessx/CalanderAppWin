@@ -3,26 +3,167 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CalanderAppWin"
+        xmlns:local="clr-namespace:NepaliCalendar.App"
         mc:Ignorable="d"
         Title="Nepali Calendar"
-        Height="450"
-        Width="800">
-    <Grid>
-        <StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+        MinWidth="900"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen">
 
+    <Window.Resources>
+        <local:BooleanToBrushConverter x:Key="BoolToBrush"/>
+        <local:EmptyCellToBrushConverter x:Key="EmptyCellTextBrush"/>
+        <local:TodayBorderConverter x:Key="TodayBorderBrush"/>
+    </Window.Resources>
+
+    <!-- Viewbox makes UI scale proportionally -->
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1200" Height="750" Margin="20">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- TOP BAR -->
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <Button x:Name="PreviousButton"
+        Content="Previous"
+        Width="110"
+        Height="40"
+        Margin="0,0,10,0"
+        Click="PreviousMonth_Click"/>
+
+                    <Button Content="Today" Width="100" Height="40" Margin="0,0,16,0"
+                            Click="TodayButton_Click"/>
+
+                    <TextBlock Text="Language" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                    <ComboBox x:Name="LanguageComboBox"
+                              Width="150" Height="34" Margin="0,0,16,0"
+                              SelectionChanged="LanguageComboBox_SelectionChanged"/>
+
+                    <Button Content="Generate JSON"
+                            Width="140" Height="40"
+                            Click="GenerateJsonButton_Click"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <TextBlock Text="Month" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                    <ComboBox x:Name="MonthComboBox"
+                              Width="170" Height="34" Margin="0,0,14,0"
+                              SelectionChanged="MonthComboBox_SelectionChanged"/>
+
+                    <TextBlock Text="Year" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                    <ComboBox x:Name="YearComboBox"
+                              Width="110" Height="34" Margin="0,0,14,0"
+                              SelectionChanged="YearComboBox_SelectionChanged"/>
+
+                    <Button x:Name="NextButton"
+        Content="Next"
+        Width="110"
+        Height="40"
+        Click="NextMonth_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- TITLE -->
             <TextBlock x:Name="BsDateText"
-                   Text="Loading..."
-                   FontSize="28"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,10"/>
+                       Grid.Row="1"
+                       FontSize="34"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,6,0,10"/>
 
+            <!-- SUBTITLE -->
             <TextBlock x:Name="DayNameText"
-                   Text=""
-                   FontSize="20"
-                   HorizontalAlignment="Center"/>
+                       Grid.Row="2"
+                       FontSize="18"
+                       Margin="0,0,0,18"/>
 
-        </StackPanel>
-    </Grid>
+            <!-- WEEK HEADERS -->
+            <UniformGrid Grid.Row="3" Columns="7" Margin="0,0,0,10">
+                <TextBlock Text="Sun" HorizontalAlignment="Center"/>
+                <TextBlock Text="Mon" HorizontalAlignment="Center"/>
+                <TextBlock Text="Tue" HorizontalAlignment="Center"/>
+                <TextBlock Text="Wed" HorizontalAlignment="Center"/>
+                <TextBlock Text="Thu" HorizontalAlignment="Center"/>
+                <TextBlock Text="Fri" HorizontalAlignment="Center"/>
+                <TextBlock Text="Sat" HorizontalAlignment="Center"/>
+            </UniformGrid>
+
+            <!-- CALENDAR -->
+            <ItemsControl x:Name="CalendarGrid" Grid.Row="4">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="4"
+                                Padding="12"
+                                Background="{Binding IsToday, Converter={StaticResource BoolToBrush}}"
+                                BorderBrush="{Binding IsToday, Converter={StaticResource TodayBorderBrush}}"
+                                BorderThickness="2">
+
+                            <Grid>
+                                <TextBlock Text="{Binding Text}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center">
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="Black"/>
+
+                                            <Style.Triggers>
+
+                                                <!-- Empty cells -->
+                                                <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                                                    <Setter Property="Foreground" Value="LightGray"/>
+                                                </DataTrigger>
+
+                                                <!-- Saturday -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsCurrentMonth}" Value="True"/>
+                                                        <Condition Binding="{Binding DayOfWeekIndex}" Value="6"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </MultiDataTrigger>
+
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+
+                                </TextBlock>
+                            </Grid>
+
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </Grid>
+    </Viewbox>
 </Window>
