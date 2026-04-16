@@ -18,3 +18,7 @@ E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\refin
 E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\NepaliCalendar.App.pdb
 E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\NepaliCalendar.App.genruntimeconfig.cache
 E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\ref\NepaliCalendar.App.dll
+E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\NepaliCalendar.App.sourcelink.json
+E:\PesonalProjects\CalanderAppWin\CalanderAppWin\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+E:\PesonalProjects\CalanderAppWin\CalanderAppWin\bin\Debug\net10.0-windows\Data\bs-calendar-data.json
+E:\PesonalProjects\CalanderAppWin\CalanderAppWin\bin\Debug\net10.0-windows\Data\bs-calendar-raw.txt
