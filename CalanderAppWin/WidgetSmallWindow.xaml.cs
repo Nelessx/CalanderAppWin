@@ -1,18 +1,12 @@
-﻿using NepaliCalendar.App.Models;
-using NepaliCalendar.App.Services;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NepaliCalendar.App
 {
-    public partial class WidgetSmallWindow : Window
+    public partial class WidgetSmallWindow : WidgetBaseWindow
     {
-        private readonly BsDateConverter _converter = new();
-        private readonly LocalizationService _localizationService = new();
-        private readonly NepaliNumberService _nepaliNumberService = new();
-        private readonly SettingsService _settingsService = new();
         private readonly DispatcherTimer _midnightRefreshTimer;
 
         private Point _mouseDownPoint;
@@ -32,24 +26,23 @@ namespace NepaliCalendar.App
 
         private void LoadWidgetData()
         {
-            var settings = _settingsService.Load();
-            _localizationService.CurrentLanguage = settings.Language;
+            LoadLanguageFromSettings();
 
-            var todayBs = _converter.ConvertFromAd(DateTime.Today);
+            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
-            bool useNepaliNumbers = _localizationService.CurrentLanguage == AppLanguage.Nepali;
+            bool useNepaliNumbers = UseNepaliNumbers;
 
-            SmallWeekdayText.Text = _localizationService.CurrentLanguage == AppLanguage.Nepali
+            SmallWeekdayText.Text = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
                 ? GetNepaliDayNameShort(todayAd.DayOfWeek)
                 : todayAd.DayOfWeek.ToString()[..3].ToUpper();
 
             SmallDayText.Text = useNepaliNumbers
-                ? _nepaliNumberService.ToNepaliNumber(todayBs.Day)
+                ? NepaliNumberService.ToNepaliNumber(todayBs.Day)
                 : todayBs.Day.ToString("D2");
 
             SmallMonthText.Text = useNepaliNumbers
-                ? _nepaliNumberService.ToNepaliNumber(todayBs.Month)
+                ? NepaliNumberService.ToNepaliNumber(todayBs.Month)
                 : todayBs.Month.ToString("D2");
         }
 
@@ -80,7 +73,7 @@ namespace NepaliCalendar.App
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
 
-            _mouseDownPoint = e.GetPosition(this);  
+            _mouseDownPoint = e.GetPosition(this);
             _isDragging = false;
         }
 
@@ -109,54 +102,27 @@ namespace NepaliCalendar.App
             }
         }
 
-        private void OpenMainWindow()
+        private void OpenAppMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MainWindow mainWindow = null;
-
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is MainWindow existingMainWindow)
-                {
-                    mainWindow = existingMainWindow;
-                    break;
-                }
-            }
-
-            if (mainWindow == null)
-            {
-                mainWindow = new MainWindow();
-                mainWindow.Show();
-            }
-            else
-            {
-                if (!mainWindow.IsVisible)
-                    mainWindow.Show();
-
-                mainWindow.Activate();
-            }
+            App.OpenMainAppWindow();
         }
 
-        private void OpenAppMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SwitchToSmallMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            OpenMainWindow();
+            App.SwitchWidget(this, Models.WidgetSize.Small);
         }
 
-        private void SwitchToSmallMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SwitchToMediumMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.SwitchWidget(this, WidgetSize.Small);
+            App.SwitchWidget(this, Models.WidgetSize.Medium);
         }
 
-        private void SwitchToMediumMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SwitchToLargeMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.SwitchWidget(this, WidgetSize.Medium);
+            App.SwitchWidget(this, Models.WidgetSize.Large);
         }
 
-        private void SwitchToLargeMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            App.SwitchWidget(this, WidgetSize.Large);
-        }
-
-        private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CloseMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             Close();
         }
