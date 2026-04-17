@@ -22,6 +22,7 @@ namespace NepaliCalendar.App
         {
             InitializeComponent();
             LoadWidgetData();
+            UpdateWidgetSizeMenuState();
 
             _midnightRefreshTimer = App.CreateMidnightRefreshTimer(LoadWidgetData);
             _midnightRefreshTimer.Start();
@@ -50,6 +51,13 @@ namespace NepaliCalendar.App
             SmallMonthText.Text = useNepaliNumbers
                 ? _nepaliNumberService.ToNepaliNumber(todayBs.Month)
                 : todayBs.Month.ToString("D2");
+        }
+
+        private void UpdateWidgetSizeMenuState()
+        {
+            SmallSizeMenuItem.IsChecked = true;
+            MediumSizeMenuItem.IsChecked = false;
+            LargeSizeMenuItem.IsChecked = false;
         }
 
         private string GetNepaliDayNameShort(DayOfWeek dayOfWeek)

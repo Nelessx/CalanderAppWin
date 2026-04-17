@@ -21,6 +21,7 @@ namespace NepaliCalendar.App
         {
             InitializeComponent();
             LoadWidgetData();
+            UpdateWidgetSizeMenuState();
 
             _midnightRefreshTimer = App.CreateMidnightRefreshTimer(LoadWidgetData);
             _midnightRefreshTimer.Start();
@@ -68,6 +69,13 @@ namespace NepaliCalendar.App
             }
 
             MediumAdDateText.Text = adDateText;
+        }
+
+        private void UpdateWidgetSizeMenuState()
+        {
+            SmallSizeMenuItem.IsChecked = false;
+            MediumSizeMenuItem.IsChecked = true;
+            LargeSizeMenuItem.IsChecked = false;
         }
 
         private string GetNepaliDayName(DayOfWeek dayOfWeek)
