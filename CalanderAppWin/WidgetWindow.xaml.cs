@@ -32,6 +32,7 @@ namespace NepaliCalendar.App
             _displayMonth = todayBs.Month;
 
             LoadWidgetData();
+            UpdateWidgetSizeMenuState();
 
             _midnightRefreshTimer = App.CreateMidnightRefreshTimer(RefreshAtMidnight);
             _midnightRefreshTimer.Start();
@@ -72,6 +73,13 @@ namespace NepaliCalendar.App
             LargeAdDateText.Text = adDateText;
 
             LoadCalendarGrid();
+        }
+
+        private void UpdateWidgetSizeMenuState()
+        {
+            SmallSizeMenuItem.IsChecked = false;
+            MediumSizeMenuItem.IsChecked = false;
+            LargeSizeMenuItem.IsChecked = true;
         }
 
         private void LoadCalendarGrid()

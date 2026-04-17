@@ -28,9 +28,21 @@
                 <MenuItem Click="OpenAppMenuItem_Click" Header="Open App" />
                 <Separator Style="{StaticResource ModernSeparatorStyle}" />
                 <MenuItem Header="Widget Size">
-                    <MenuItem Click="SwitchToSmallMenuItem_Click" Header="Small" />
-                    <MenuItem Click="SwitchToMediumMenuItem_Click" Header="Medium" />
-                    <MenuItem Click="SwitchToLargeMenuItem_Click" Header="Large" />
+                    <MenuItem
+                        x:Name="SmallSizeMenuItem"
+                        Click="SwitchToSmallMenuItem_Click"
+                        Header="Small"
+                        IsCheckable="True" />
+                    <MenuItem
+                        x:Name="MediumSizeMenuItem"
+                        Click="SwitchToMediumMenuItem_Click"
+                        Header="Medium"
+                        IsCheckable="True" />
+                    <MenuItem
+                        x:Name="LargeSizeMenuItem"
+                        Click="SwitchToLargeMenuItem_Click"
+                        Header="Large"
+                        IsCheckable="True" />
                 </MenuItem>
                 <Separator Style="{StaticResource ModernSeparatorStyle}" />
                 <MenuItem Click="CloseMenuItem_Click" Header="Close Widget" />
