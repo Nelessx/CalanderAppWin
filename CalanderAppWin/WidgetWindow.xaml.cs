@@ -66,6 +66,12 @@ namespace NepaliCalendar.App
             LoadCalendarGrid();
         }
 
+        public void RefreshWidget()
+        {
+            LoadWidgetData();
+            UpdateWidgetSizeMenuState();
+        }
+
         private void LoadCalendarGrid()
         {
             bool useNepaliNumbers = UseNepaliNumbers;

@@ -64,6 +64,12 @@ namespace NepaliCalendar.App
             MediumAdDateText.Text = adDateText;
         }
 
+        public void RefreshWidget()
+        {
+            LoadWidgetData();
+            UpdateWidgetSizeMenuState();
+        }
+
         private void UpdateWidgetSizeMenuState()
         {
             SmallSizeMenuItem.IsChecked = false;

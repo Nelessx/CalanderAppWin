@@ -46,6 +46,12 @@ namespace NepaliCalendar.App
                 : todayBs.Month.ToString("D2");
         }
 
+        public void RefreshWidget()
+        {
+            LoadWidgetData();
+            UpdateWidgetSizeMenuState();
+        }
+
         private void UpdateWidgetSizeMenuState()
         {
             SmallSizeMenuItem.IsChecked = true;

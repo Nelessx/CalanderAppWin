@@ -409,6 +409,8 @@ namespace NepaliCalendar.App
             PopulateYearDropdown();
             ApplyLocalizedText();
             LoadCalendar();
+
+            App.RefreshOpenWidgets();
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
