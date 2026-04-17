@@ -39,29 +39,14 @@ namespace NepaliCalendar.App
             var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
-            bool useNepaliNumbers = UseNepaliNumbers;
-
-            string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
-            string bsYearText = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Year)
-                : todayBs.Year.ToString();
-
-            string bsDayText = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Day)
-                : todayBs.Day.ToString();
-
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
-                ? GetNepaliDayName(todayAd.DayOfWeek)
-                : todayAd.DayOfWeek.ToString();
+     ? GetNepaliDayName(todayAd.DayOfWeek)
+     : todayAd.DayOfWeek.ToString();
 
-            string adDateText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
-                ? $"{NepaliNumberService.ToNepaliNumber(todayAd.Day)} {todayAd:MMMM} {NepaliNumberService.ToNepaliNumber(todayAd.Year)}"
-                : $"{todayAd:MMMM d, yyyy}";
-
-            LargeBsMonthYearText.Text = $"{bsMonthName} {bsYearText}";
-            LargeDayText.Text = bsDayText;
+            LargeBsMonthYearText.Text = FormatBsMonthYear(todayBs.Month, todayBs.Year);
+            LargeDayText.Text = FormatBsNumber(todayBs.Day);
             LargeWeekdayText.Text = weekdayText;
-            LargeAdDateText.Text = adDateText;
+            LargeAdDateText.Text = FormatAdDate(todayAd);
 
             LoadCalendarGrid();
         }
@@ -76,10 +61,7 @@ namespace NepaliCalendar.App
         {
             bool useNepaliNumbers = UseNepaliNumbers;
 
-            CalendarMonthYearText.Text = $"{LocalizationService.GetMonthName(_displayMonth)} " +
-                                         (useNepaliNumbers
-                                             ? NepaliNumberService.ToNepaliNumber(_displayYear)
-                                             : _displayYear.ToString());
+            CalendarMonthYearText.Text = FormatBsMonthYear(_displayMonth, _displayYear);
 
             WeekHeaderItemsControl.ItemsSource = LocalizationService.GetWeekdayHeaders();
 
@@ -102,21 +84,6 @@ namespace NepaliCalendar.App
             SmallSizeMenuItem.IsChecked = false;
             MediumSizeMenuItem.IsChecked = false;
             LargeSizeMenuItem.IsChecked = true;
-        }
-
-        private string GetNepaliDayName(DayOfWeek dayOfWeek)
-        {
-            return dayOfWeek switch
-            {
-                DayOfWeek.Sunday => "आइतबार",
-                DayOfWeek.Monday => "सोमबार",
-                DayOfWeek.Tuesday => "मंगलबार",
-                DayOfWeek.Wednesday => "बुधबार",
-                DayOfWeek.Thursday => "बिहिबार",
-                DayOfWeek.Friday => "शुक्रबार",
-                DayOfWeek.Saturday => "शनिबार",
-                _ => ""
-            };
         }
 
         private void PreviousMonthButton_Click(object sender, RoutedEventArgs e)

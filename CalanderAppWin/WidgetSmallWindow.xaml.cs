@@ -31,19 +31,12 @@ namespace NepaliCalendar.App
             var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
-            bool useNepaliNumbers = UseNepaliNumbers;
-
             SmallWeekdayText.Text = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
-                ? GetNepaliDayNameShort(todayAd.DayOfWeek)
-                : todayAd.DayOfWeek.ToString()[..3].ToUpper();
+    ? GetNepaliDayNameShort(todayAd.DayOfWeek)
+    : todayAd.DayOfWeek.ToString()[..3].ToUpper();
 
-            SmallDayText.Text = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Day)
-                : todayBs.Day.ToString("D2");
-
-            SmallMonthText.Text = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Month)
-                : todayBs.Month.ToString("D2");
+            SmallDayText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Day);
+            SmallMonthText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Month);
         }
 
         public void RefreshWidget()
@@ -57,21 +50,6 @@ namespace NepaliCalendar.App
             SmallSizeMenuItem.IsChecked = true;
             MediumSizeMenuItem.IsChecked = false;
             LargeSizeMenuItem.IsChecked = false;
-        }
-
-        private string GetNepaliDayNameShort(DayOfWeek dayOfWeek)
-        {
-            return dayOfWeek switch
-            {
-                DayOfWeek.Sunday => "आइत",
-                DayOfWeek.Monday => "सोम",
-                DayOfWeek.Tuesday => "मंगल",
-                DayOfWeek.Wednesday => "बुध",
-                DayOfWeek.Thursday => "बिही",
-                DayOfWeek.Friday => "शुक्र",
-                DayOfWeek.Saturday => "शनि",
-                _ => ""
-            };
         }
 
         private void RootBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -30,25 +30,13 @@ namespace NepaliCalendar.App
             var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
-            bool useNepaliNumbers = UseNepaliNumbers;
-
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
-                ? GetNepaliDayName(todayAd.DayOfWeek)
-                : todayAd.DayOfWeek.ToString();
-
-            string bsYearText = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Year)
-                : todayBs.Year.ToString();
+    ? GetNepaliDayName(todayAd.DayOfWeek)
+    : todayAd.DayOfWeek.ToString();
 
             string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
-
-            string bsDayText = useNepaliNumbers
-                ? NepaliNumberService.ToNepaliNumber(todayBs.Day)
-                : todayBs.Day.ToString();
-
-            string adDateText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
-                ? $"{todayAd:MMMM} {NepaliNumberService.ToNepaliNumber(todayAd.Day)}, {NepaliNumberService.ToNepaliNumber(todayAd.Year)}"
-                : $"{todayAd:MMMM d, yyyy}";
+            string bsYearText = FormatBsNumber(todayBs.Year);
+            string bsDayText = FormatBsNumber(todayBs.Day);
 
             MediumWeekdayText.Text = weekdayText;
 
@@ -61,7 +49,7 @@ namespace NepaliCalendar.App
                 MediumBsDateText.Text = $"{bsMonthName} {bsDayText}, {bsYearText}";
             }
 
-            MediumAdDateText.Text = adDateText;
+            MediumAdDateText.Text = FormatAdDateMonthFirst(todayAd);
         }
 
         public void RefreshWidget()
@@ -75,21 +63,6 @@ namespace NepaliCalendar.App
             SmallSizeMenuItem.IsChecked = false;
             MediumSizeMenuItem.IsChecked = true;
             LargeSizeMenuItem.IsChecked = false;
-        }
-
-        private string GetNepaliDayName(DayOfWeek dayOfWeek)
-        {
-            return dayOfWeek switch
-            {
-                DayOfWeek.Sunday => "आइतबार",
-                DayOfWeek.Monday => "सोमबार",
-                DayOfWeek.Tuesday => "मंगलबार",
-                DayOfWeek.Wednesday => "बुधबार",
-                DayOfWeek.Thursday => "बिहिबार",
-                DayOfWeek.Friday => "शुक्रबार",
-                DayOfWeek.Saturday => "शनिबार",
-                _ => ""
-            };
         }
 
         private void OpenAppMenuItem_Click(object sender, RoutedEventArgs e)
