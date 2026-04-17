@@ -1,0 +1,100 @@
+﻿<Window
+    x:Class="NepaliCalendar.App.WidgetMediumWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Nepali Medium Widget"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="WidthAndHeight"
+    Topmost="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+
+    <Border
+        x:Name="RootBorder"
+        Padding="8,6,8,6"
+        Background="#F6F9FF"
+        BorderBrush="#E3EBF7"
+        BorderThickness="1"
+        CornerRadius="12"
+        MouseLeftButtonDown="RootBorder_MouseLeftButtonDown">
+
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Click="OpenAppMenuItem_Click" Header="Open App" />
+                <Separator Style="{StaticResource ModernSeparatorStyle}" />
+                <MenuItem Header="Widget Size">
+                    <MenuItem Click="SwitchToSmallMenuItem_Click" Header="Small" />
+                    <MenuItem Click="SwitchToMediumMenuItem_Click" Header="Medium" />
+                    <MenuItem Click="SwitchToLargeMenuItem_Click" Header="Large" />
+                </MenuItem>
+                <Separator Style="{StaticResource ModernSeparatorStyle}" />
+                <MenuItem Click="CloseMenuItem_Click" Header="Close Widget" />
+            </ContextMenu>
+        </Border.ContextMenu>
+
+        <Grid VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Top Row  -->
+            <Grid Grid.Row="0" Margin="0,0,0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    x:Name="MediumWeekdayText"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    FontWeight="SemiBold"
+                    Foreground="#6B7FAE" />
+            </Grid>
+
+            <Border
+                x:Name="OpenArea"
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                Background="Transparent">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        x:Name="MediumBsDateText"
+                        Grid.Row="0"
+                        Margin="0,0,0,2"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="#0B1B45"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+
+                    <Border
+                        Grid.Row="1"
+                        Height="1"
+                        Margin="0,1,0,3"
+                        Background="#E7EEF8" />
+
+                    <TextBlock
+                        x:Name="MediumAdDateText"
+                        Grid.Row="2"
+                        FontSize="11"
+                        FontWeight="Medium"
+                        Foreground="#2F406A"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

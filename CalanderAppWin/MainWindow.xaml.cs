@@ -25,6 +25,8 @@ namespace NepaliCalendar.App
         public MainWindow()
         {
             InitializeComponent();
+            Closed += MainWindow_Closed;
+
 
 #if !DEBUG
             GenerateJsonButton.Visibility = Visibility.Collapsed;
@@ -408,5 +410,12 @@ namespace NepaliCalendar.App
             ApplyLocalizedText();
             LoadCalendar();
         }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            App.CheckForShutdown();
+        }
     }
+
+
 }
