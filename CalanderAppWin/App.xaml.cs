@@ -118,6 +118,25 @@ namespace NepaliCalendar.App
             }
         }
 
+        public static void RefreshOpenWidgets()
+        {
+            foreach (Window window in Current.Windows)
+            {
+                if (window is WidgetSmallWindow smallWidget)
+                {
+                    smallWidget.RefreshWidget();
+                }
+                else if (window is WidgetMediumWindow mediumWidget)
+                {
+                    mediumWidget.RefreshWidget();
+                }
+                else if (window is WidgetWindow largeWidget)
+                {
+                    largeWidget.RefreshWidget();
+                }
+            }
+        }
+
         private static void EnsureWidgetIsOnScreen(Window widget)
         {
             double screenLeft = SystemParameters.WorkArea.Left;
