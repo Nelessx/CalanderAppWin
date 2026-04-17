@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace NepaliCalendar.App
 {
@@ -14,6 +15,7 @@ namespace NepaliCalendar.App
         private readonly LocalizationService _localizationService = new();
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly SettingsService _settingsService = new();
+        private readonly DispatcherTimer _midnightRefreshTimer;
 
         private int _displayYear;
         private int _displayMonth;
@@ -30,6 +32,10 @@ namespace NepaliCalendar.App
             _displayMonth = todayBs.Month;
 
             LoadWidgetData();
+
+            _midnightRefreshTimer = App.CreateMidnightRefreshTimer(RefreshAtMidnight);
+            _midnightRefreshTimer.Start();
+
             Closed += WidgetWindow_Closed;
         }
 
@@ -212,8 +218,18 @@ namespace NepaliCalendar.App
 
         private void WidgetWindow_Closed(object sender, EventArgs e)
         {
+            _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);
             App.CheckForShutdown();
+        }
+        private void RefreshAtMidnight()
+        {
+            var todayBs = _converter.ConvertFromAd(DateTime.Today);
+
+            _displayYear = todayBs.Year;
+            _displayMonth = todayBs.Month;
+
+            LoadWidgetData();
         }
     }
 }

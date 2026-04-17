@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using NepaliCalendar.App.Models;
 using NepaliCalendar.App.Services;
 
@@ -150,6 +151,38 @@ namespace NepaliCalendar.App
             left = 0;
             top = 0;
             return false;
+        }
+        public static DispatcherTimer CreateMidnightRefreshTimer(Action refreshAction)
+        {
+            var timer = new DispatcherTimer();
+
+            void ScheduleNextTick()
+            {
+                DateTime now = DateTime.Now;
+                DateTime nextMidnight = now.Date.AddDays(1);
+                TimeSpan interval = nextMidnight - now;
+
+                if (interval <= TimeSpan.Zero)
+                {
+                    interval = TimeSpan.FromMinutes(1);
+                }
+
+                timer.Interval = interval;
+            }
+
+            timer.Tick += (_, _) =>
+            {
+                timer.Stop();
+
+                refreshAction?.Invoke();
+
+                ScheduleNextTick();
+                timer.Start();
+            };
+
+            ScheduleNextTick();
+
+            return timer;
         }
         public static void SwitchWidget(Window currentWindow, WidgetSize newSize)
         {

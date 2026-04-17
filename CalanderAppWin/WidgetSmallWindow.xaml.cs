@@ -3,6 +3,7 @@ using NepaliCalendar.App.Services;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NepaliCalendar.App
 {
@@ -12,6 +13,7 @@ namespace NepaliCalendar.App
         private readonly LocalizationService _localizationService = new();
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly SettingsService _settingsService = new();
+        private readonly DispatcherTimer _midnightRefreshTimer;
 
         private Point _mouseDownPoint;
         private bool _isDragging;
@@ -20,6 +22,10 @@ namespace NepaliCalendar.App
         {
             InitializeComponent();
             LoadWidgetData();
+
+            _midnightRefreshTimer = App.CreateMidnightRefreshTimer(LoadWidgetData);
+            _midnightRefreshTimer.Start();
+
             Closed += WidgetSmallWindow_Closed;
         }
 
@@ -149,6 +155,7 @@ namespace NepaliCalendar.App
 
         private void WidgetSmallWindow_Closed(object sender, EventArgs e)
         {
+            _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);
             App.CheckForShutdown();
         }
