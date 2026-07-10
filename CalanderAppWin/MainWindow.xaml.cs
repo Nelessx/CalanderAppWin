@@ -819,11 +819,19 @@ namespace NepaliCalendar.App
 
         private void OpenConverter()
         {
-            MessageBox.Show(
-                "Date converter placeholder.",
-                "Converter",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new ConverterWindow { Owner = this };
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Converter",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void ExportCalendar()

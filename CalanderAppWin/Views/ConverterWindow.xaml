@@ -1,0 +1,205 @@
+<Window
+    x:Class="NepaliCalendar.App.Views.ConverterWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Date Converter"
+    Width="480"
+    Background="#F6F9FF"
+    FontFamily="Segoe UI"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#0B1B45" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#D9E2F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,16" />
+        </Style>
+
+        <Style x:Key="ResultCard" TargetType="Border">
+            <Setter Property="Background" Value="#F4F1FF" />
+            <Setter Property="BorderBrush" Value="#DCD6FF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,14,0,0" />
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bg"
+                            Padding="16,0"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#D9E2F0"
+                            BorderThickness="1"
+                            CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Border Padding="24">
+        <StackPanel>
+
+            <TextBlock
+                Margin="0,0,0,4"
+                FontSize="22"
+                FontWeight="Bold"
+                Foreground="#0B1B45"
+                Text="Date Converter" />
+
+            <TextBlock
+                Margin="0,0,0,20"
+                FontSize="13"
+                Foreground="#5B6680"
+                Text="Convert between Bikram Sambat and Gregorian (AD) dates." />
+
+            <!--  BS -> AD  -->
+            <Border Style="{StaticResource SectionCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="Bikram Sambat  →  Gregorian (AD)" />
+
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="BS date" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                            x:Name="BsYearComboBox"
+                            Grid.Column="0"
+                            SelectionChanged="BsSelector_Changed" />
+
+                        <ComboBox
+                            x:Name="BsMonthComboBox"
+                            Grid.Column="2"
+                            SelectionChanged="BsSelector_Changed" />
+
+                        <ComboBox
+                            x:Name="BsDayComboBox"
+                            Grid.Column="4"
+                            SelectionChanged="BsDay_Changed" />
+                    </Grid>
+
+                    <Border Style="{StaticResource ResultCard}">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#5B6680"
+                                Text="Gregorian date" />
+                            <TextBlock
+                                x:Name="BsToAdResultText"
+                                Margin="0,3,0,0"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Foreground="#6D4AFF"
+                                Text="—" />
+                            <TextBlock
+                                x:Name="BsToAdDayText"
+                                Margin="0,2,0,0"
+                                FontSize="13"
+                                Foreground="#4A5670" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  AD -> BS  -->
+            <Border Style="{StaticResource SectionCard}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="Gregorian (AD)  →  Bikram Sambat" />
+
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="AD date" />
+                    <DatePicker
+                        x:Name="AdDatePicker"
+                        SelectedDateChanged="AdDatePicker_SelectedDateChanged" />
+
+                    <Border Style="{StaticResource ResultCard}">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#5B6680"
+                                Text="Bikram Sambat date" />
+                            <TextBlock
+                                x:Name="AdToBsResultText"
+                                Margin="0,3,0,0"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Foreground="#6D4AFF"
+                                Text="—" />
+                            <TextBlock
+                                x:Name="AdToBsDayText"
+                                Margin="0,2,0,0"
+                                FontSize="13"
+                                Foreground="#4A5670" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  ACTIONS  -->
+            <Button
+                HorizontalAlignment="Right"
+                Click="Close_Click"
+                Content="Close"
+                IsCancel="True"
+                Style="{StaticResource SecondaryButton}" />
+
+        </StackPanel>
+    </Border>
+</Window>
