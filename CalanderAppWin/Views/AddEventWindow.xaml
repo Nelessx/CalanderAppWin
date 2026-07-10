@@ -5,6 +5,7 @@
     Title="Add Event"
     Width="460"
     Background="#F6F9FF"
+    FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
     FontFamily="Segoe UI"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
@@ -104,6 +105,7 @@
         <StackPanel>
 
             <TextBlock
+                x:Name="HeaderText"
                 Margin="0,0,0,4"
                 FontSize="22"
                 FontWeight="Bold"
@@ -111,6 +113,7 @@
                 Text="Add Event" />
 
             <TextBlock
+                x:Name="SubHeaderText"
                 Margin="0,0,0,20"
                 FontSize="13"
                 Foreground="#5B6680"
@@ -183,6 +186,7 @@
                     Style="{StaticResource SecondaryButton}" />
 
                 <Button
+                    x:Name="SaveButton"
                     Click="Save_Click"
                     Content="Save Event"
                     IsDefault="True"

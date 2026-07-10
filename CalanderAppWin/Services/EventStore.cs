@@ -18,9 +18,9 @@ namespace NepaliCalendar.App.Services
         private readonly string _storeFolder;
         private readonly string _storeFilePath;
 
-        public EventStore()
+        public EventStore(string? storageFolder = null)
         {
-            _storeFolder = Path.Combine(
+            _storeFolder = storageFolder ?? Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "NepaliCalendar");
 
@@ -94,19 +94,21 @@ namespace NepaliCalendar.App.Services
             return calendarEvent;
         }
 
-        public void Update(CalendarEvent calendarEvent)
+        /// <summary>Replaces the stored event with the same Id. Returns false if it no longer exists.</summary>
+        public bool Update(CalendarEvent calendarEvent)
         {
             var events = GetAll();
             int index = events.FindIndex(e => e.Id == calendarEvent.Id);
 
             if (index < 0)
-                return;
+                return false;
 
             calendarEvent.CreatedUtc = events[index].CreatedUtc;
             calendarEvent.ModifiedUtc = DateTime.UtcNow;
             events[index] = calendarEvent;
 
             SaveAll(events);
+            return true;
         }
 
         public void Delete(Guid id)

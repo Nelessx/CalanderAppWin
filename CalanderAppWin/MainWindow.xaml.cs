@@ -789,11 +789,23 @@ namespace NepaliCalendar.App
 
         private void OpenEventList()
         {
-            MessageBox.Show(
-                "Event list placeholder.",
-                "Events",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new EventListWindow { Owner = this };
+                window.ShowDialog();
+
+                // Events may have been added, edited, or deleted while the list was open.
+                LoadDashboardData();
+                LoadCalendar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Events",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void OpenHolidayList()
