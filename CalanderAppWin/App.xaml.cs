@@ -13,10 +13,38 @@ namespace NepaliCalendar.App
         private static readonly SettingsService _settingsService = new();
         private static readonly ThemeService _themeService = new();
         private static TrayIconService? _trayIcon;
+        private static SingleInstanceService? _singleInstance;
+        private static ReminderService? _reminderService;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Only one instance may run: autostart + a persistent tray icon means a second manual
+            // launch would duplicate everything and race on the shared JSON files. A later launch
+            // instead surfaces the already-running instance and exits.
+            _singleInstance = new SingleInstanceService();
+            if (!_singleInstance.TryAcquire())
+            {
+                SingleInstanceService.SignalExistingInstance();
+                _singleInstance.Dispose();
+                _singleInstance = null;
+                Shutdown();
+                return;
+            }
+
+            _singleInstance.ListenForActivation(() =>
+                Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        ShowWidgetFromTray();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Failed to surface app on second-instance activation.", ex);
+                    }
+                }));
 
             RegisterGlobalExceptionHandlers();
 
@@ -38,6 +66,18 @@ namespace NepaliCalendar.App
             catch
             {
                 _trayIcon = null;
+            }
+
+            try
+            {
+                _reminderService = new ReminderService(
+                    new EventStore(),
+                    (title, body) => Dispatcher.Invoke(() => ShowNotification(title, body)));
+                _reminderService.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not start the reminder service.", ex);
             }
 
             try
@@ -114,6 +154,8 @@ namespace NepaliCalendar.App
 
         private static void ShowFriendlyError(string message, Exception ex)
         {
+            Logger.Error(message, ex);
+
             try
             {
                 MessageBox.Show(
@@ -204,12 +246,15 @@ namespace NepaliCalendar.App
 
         private static void EnsureWidgetIsOnScreen(Window widget)
         {
-            double screenLeft = SystemParameters.WorkArea.Left;
-            double screenTop = SystemParameters.WorkArea.Top;
-            double screenRight = SystemParameters.WorkArea.Right;
-            double screenBottom = SystemParameters.WorkArea.Bottom;
-
             widget.UpdateLayout();
+
+            // Clamp against the monitor the widget is actually on, not just the primary — so a
+            // widget parked on a second screen isn't dragged back to the primary at launch.
+            Rect workArea = ScreenBoundsHelper.GetWorkingAreaForWindow(widget);
+            double screenLeft = workArea.Left;
+            double screenTop = workArea.Top;
+            double screenRight = workArea.Right;
+            double screenBottom = workArea.Bottom;
 
             double maxLeft = Math.Max(screenLeft, screenRight - widget.ActualWidth);
             double maxTop = Math.Max(screenTop, screenBottom - widget.ActualHeight);
@@ -376,10 +421,18 @@ namespace NepaliCalendar.App
 
         public static void ApplyTheme(AppTheme theme) => _themeService.Apply(theme);
 
+        /// <summary>Shows a system-tray notification (used for event reminders).</summary>
+        public static void ShowNotification(string title, string message) =>
+            _trayIcon?.ShowNotification(title, message);
+
         public static void QuitApplication()
         {
+            _reminderService?.Dispose();
+            _reminderService = null;
             _trayIcon?.Dispose();
             _trayIcon = null;
+            _singleInstance?.Dispose();
+            _singleInstance = null;
             Current.Shutdown();
         }
     }

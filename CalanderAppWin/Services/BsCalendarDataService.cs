@@ -79,10 +79,11 @@ namespace NepaliCalendar.App.Services
                 {
                     int days = year.MonthDays[i];
 
-                    if (days < 28 || days > 32)
+                    // Real Bikram Sambat months run 29–32 days; anything outside that is bad data.
+                    if (days < 29 || days > 32)
                     {
                         throw new Exception(
-                            $"Year {year.Year}, month {i + 1} has invalid day count: {days}. Expected 28 to 32.");
+                            $"Year {year.Year}, month {i + 1} has invalid day count: {days}. Expected 29 to 32.");
                     }
                 }
             }

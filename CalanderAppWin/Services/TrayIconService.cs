@@ -36,6 +36,12 @@ namespace NepaliCalendar.App.Services
             _notifyIcon.DoubleClick += (_, _) => App.OpenMainAppWindow();
         }
 
+        /// <summary>Shows a tray balloon notification (used for event reminders).</summary>
+        public void ShowNotification(string title, string message)
+        {
+            _notifyIcon?.ShowBalloonTip(6000, title, message, ToolTipIcon.Info);
+        }
+
         private static Icon CreateBrandedIcon()
         {
             using var bitmap = new Bitmap(32, 32);

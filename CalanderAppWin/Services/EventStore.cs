@@ -18,6 +18,13 @@ namespace NepaliCalendar.App.Services
         private readonly string _storeFolder;
         private readonly string _storeFilePath;
 
+        // Parsed-file cache, validated against the file's last-write time so it stays correct even
+        // when another EventStore instance (widget, dialog, reminder loop) writes the file.
+        private List<CalendarEvent>? _cache;
+        private DateTime _cacheStampUtc;
+
+        private CalendarEvent? _lastDeleted;
+
         public EventStore(string? storageFolder = null)
         {
             _storeFolder = storageFolder ?? Path.Combine(
@@ -31,17 +38,70 @@ namespace NepaliCalendar.App.Services
         {
             try
             {
-                if (!File.Exists(_storeFilePath))
-                    return new List<CalendarEvent>();
-
-                string json = File.ReadAllText(_storeFilePath);
-                var events = JsonSerializer.Deserialize<List<CalendarEvent>>(json);
-
-                return events ?? new List<CalendarEvent>();
+                if (_cache != null && File.Exists(_storeFilePath) &&
+                    File.GetLastWriteTimeUtc(_storeFilePath) == _cacheStampUtc)
+                {
+                    // Hand back a copy so callers (Add/Update) can mutate freely without
+                    // corrupting the cache.
+                    return new List<CalendarEvent>(_cache);
+                }
             }
             catch
             {
-                return new List<CalendarEvent>();
+                // Fall through to a fresh load.
+            }
+
+            // Try the live file first; if it is missing, unreadable, or corrupt, transparently
+            // fall back to the .bak copy left behind by the last atomic write.
+            if (TryLoadFrom(_storeFilePath, out var primary))
+            {
+                UpdateCache(primary);
+                return new List<CalendarEvent>(primary);
+            }
+
+            if (TryLoadFrom(_storeFilePath + ".bak", out var backup))
+            {
+                Logger.Warn("events.json was unreadable; recovered from backup copy.");
+                return new List<CalendarEvent>(backup);
+            }
+
+            return new List<CalendarEvent>();
+        }
+
+        private void UpdateCache(List<CalendarEvent> events)
+        {
+            _cache = new List<CalendarEvent>(events);
+            try { _cacheStampUtc = File.GetLastWriteTimeUtc(_storeFilePath); }
+            catch { _cacheStampUtc = default; }
+        }
+
+        private static bool TryLoadFrom(string path, out List<CalendarEvent> events)
+        {
+            events = new List<CalendarEvent>();
+
+            try
+            {
+                if (!File.Exists(path))
+                    return false;
+
+                string json = File.ReadAllText(path);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    // An empty file is a legitimate "no events" state, not a corruption.
+                    return true;
+                }
+
+                var parsed = JsonSerializer.Deserialize<List<CalendarEvent>>(json);
+                if (parsed == null)
+                    return false;
+
+                events = parsed;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Could not read event store at {path}.", ex);
+                return false;
             }
         }
 
@@ -115,21 +175,69 @@ namespace NepaliCalendar.App.Services
         {
             var events = GetAll();
 
+            var removed = events.FirstOrDefault(e => e.Id == id);
             if (events.RemoveAll(e => e.Id == id) > 0)
+            {
+                _lastDeleted = removed;
                 SaveAll(events);
+            }
+        }
+
+        /// <summary>True when the last delete on this store can still be undone.</summary>
+        public bool CanUndoDelete => _lastDeleted != null;
+
+        /// <summary>Re-adds the most recently deleted event. Returns it, or null if nothing to undo.</summary>
+        public CalendarEvent? RestoreLastDeleted()
+        {
+            if (_lastDeleted is null)
+                return null;
+
+            var restored = _lastDeleted;
+            _lastDeleted = null;
+
+            var events = GetAll();
+            if (!events.Any(e => e.Id == restored.Id))
+            {
+                events.Add(restored);
+                SaveAll(events);
+            }
+
+            return restored;
+        }
+
+        /// <summary>Bulk-adds imported events (each gets a fresh Id/timestamps). Returns the count added.</summary>
+        public int AddRange(IEnumerable<CalendarEvent> incoming)
+        {
+            var events = GetAll();
+            int added = 0;
+
+            foreach (var e in incoming)
+            {
+                e.Id = Guid.NewGuid();
+                e.CreatedUtc = DateTime.UtcNow;
+                e.ModifiedUtc = e.CreatedUtc;
+                events.Add(e);
+                added++;
+            }
+
+            if (added > 0)
+                SaveAll(events);
+
+            return added;
         }
 
         private void SaveAll(List<CalendarEvent> events)
         {
-            if (!Directory.Exists(_storeFolder))
-                Directory.CreateDirectory(_storeFolder);
-
             string json = JsonSerializer.Serialize(events, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
 
-            File.WriteAllText(_storeFilePath, json);
+            // Crash-safe: temp file + atomic swap, keeping the previous copy as events.json.bak.
+            AtomicFile.WriteAllText(_storeFilePath, json);
+
+            // Refresh the cache so the next read reflects this write without re-parsing.
+            UpdateCache(events);
         }
     }
 }

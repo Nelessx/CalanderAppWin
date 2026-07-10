@@ -17,7 +17,7 @@ namespace NepaliCalendar.App.Services
         public string ToCsv(IEnumerable<CalendarEvent> events)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge");
+            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge,Location,Notes,IsHoliday");
 
             foreach (var e in events.OrderBy(e => e.AdDate))
             {
@@ -35,7 +35,10 @@ namespace NepaliCalendar.App.Services
                     Csv(time),
                     Csv(e.IsAllDay ? "Yes" : "No"),
                     Csv(e.EventType),
-                    Csv(e.BadgeText)));
+                    Csv(e.BadgeText),
+                    Csv(e.Location),
+                    Csv(e.Notes),
+                    Csv(e.IsHoliday ? "Yes" : "No")));
             }
 
             return sb.ToString();
@@ -74,9 +77,25 @@ namespace NepaliCalendar.App.Services
 
                 sb.Append(Fold($"SUMMARY:{Escape(e.Title)}"));
 
+                if (!string.IsNullOrWhiteSpace(e.Location))
+                    sb.Append(Fold($"LOCATION:{Escape(e.Location!)}"));
+
+                if (e.IsHoliday)
+                    sb.Append(Fold("CATEGORIES:HOLIDAY"));
+
                 string description = BuildDescription(e);
                 if (!string.IsNullOrEmpty(description))
                     sb.Append(Fold($"DESCRIPTION:{Escape(description)}"));
+
+                // Emit a display alarm so reminders survive into Google/Outlook/Apple Calendar.
+                if (e.ReminderMinutesBefore is int minutes && minutes >= 0)
+                {
+                    sb.Append("BEGIN:VALARM\r\n");
+                    sb.Append(Fold($"TRIGGER:-PT{minutes}M"));
+                    sb.Append("ACTION:DISPLAY\r\n");
+                    sb.Append(Fold($"DESCRIPTION:{Escape(e.Title)}"));
+                    sb.Append("END:VALARM\r\n");
+                }
 
                 sb.Append("END:VEVENT\r\n");
             }
@@ -88,6 +107,7 @@ namespace NepaliCalendar.App.Services
         private static string BuildDescription(CalendarEvent e)
         {
             var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(e.Notes)) parts.Add(e.Notes!);
             if (!string.IsNullOrWhiteSpace(e.NepaliTitle)) parts.Add(e.NepaliTitle!);
             parts.Add($"BS {e.BsYear:D4}-{e.BsMonth:D2}-{e.BsDay:D2}");
             if (!e.IsAllDay && !string.IsNullOrWhiteSpace(e.TimeText)) parts.Add(e.TimeText!);

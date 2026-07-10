@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using NepaliCalendar.App.Models;
 using NepaliCalendar.App.Services;
 
 namespace NepaliCalendar.App.Views
@@ -17,6 +18,10 @@ namespace NepaliCalendar.App.Views
         private bool _isInitializing;
         private DateTime _minAd;
         private DateTime _maxAd;
+        private BsDate? _lastAdToBsResult;
+
+        /// <summary>Set when the user asks to jump the main calendar to a converted date.</summary>
+        public (int Year, int Month, int Day)? NavigateTarget { get; private set; }
 
         public ConverterWindow()
         {
@@ -192,6 +197,8 @@ namespace NepaliCalendar.App.Views
             if (AdToBsResultText == null)
                 return;
 
+            _lastAdToBsResult = null;
+
             if (AdYearComboBox.SelectedItem is not int year ||
                 AdMonthComboBox.SelectedValue is not int month ||
                 AdDayComboBox.SelectedItem is not int day)
@@ -213,6 +220,7 @@ namespace NepaliCalendar.App.Views
             try
             {
                 var bs = _converter.ConvertFromAd(adDate);
+                _lastAdToBsResult = bs;
                 AdToBsResultText.Text = $"{_converter.GetNepaliMonthName(bs.Month)} {bs.Day}, {bs.Year}";
                 AdToBsDayText.Text = bs.DayName;
             }
@@ -220,6 +228,28 @@ namespace NepaliCalendar.App.Views
             {
                 AdToBsResultText.Text = "—";
                 AdToBsDayText.Text = "Outside supported range";
+            }
+        }
+
+        private void OpenBsInCalendar_Click(object sender, RoutedEventArgs e)
+        {
+            if (BsYearComboBox.SelectedItem is int year &&
+                BsMonthComboBox.SelectedValue is int month &&
+                BsDayComboBox.SelectedItem is int day)
+            {
+                NavigateTarget = (year, month, day);
+                DialogResult = true;
+                Close();
+            }
+        }
+
+        private void OpenAdResultInCalendar_Click(object sender, RoutedEventArgs e)
+        {
+            if (_lastAdToBsResult is { } bs)
+            {
+                NavigateTarget = (bs.Year, bs.Month, bs.Day);
+                DialogResult = true;
+                Close();
             }
         }
 

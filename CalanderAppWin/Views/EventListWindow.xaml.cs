@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,12 +11,15 @@ namespace NepaliCalendar.App.Views
 {
     /// <summary>
     /// Interaction logic for EventListWindow.xaml.
-    /// Lists every saved event and lets the user add, edit, or delete them.
+    /// Lists every saved event and lets the user add, edit, delete, search, import, and undo.
     /// </summary>
     public partial class EventListWindow : Window
     {
         private readonly EventStore _eventStore = new();
         private readonly BsDateConverter _converter = new();
+        private readonly CalendarImportService _importService = new();
+
+        private List<EventListItem> _allItems = new();
 
         public EventListWindow()
         {
@@ -24,7 +29,7 @@ namespace NepaliCalendar.App.Views
 
         private void LoadEvents()
         {
-            var items = _eventStore.GetAll()
+            _allItems = _eventStore.GetAll()
                 .OrderBy(e => e.AdDate)
                 .Select(e => new EventListItem
                 {
@@ -39,10 +44,35 @@ namespace NepaliCalendar.App.Views
                 })
                 .ToList();
 
-            EventsItemsControl.ItemsSource = items;
-            EventCountText.Text = items.Count.ToString();
-            EmptyState.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            ApplyFilter();
+            UndoButton.IsEnabled = _eventStore.CanUndoDelete;
         }
+
+        private void ApplyFilter()
+        {
+            string query = SearchBox.Text.Trim();
+            SearchHint.Visibility = string.IsNullOrEmpty(query) ? Visibility.Visible : Visibility.Collapsed;
+
+            var visible = string.IsNullOrEmpty(query)
+                ? _allItems
+                : _allItems.Where(i => Matches(i, query)).ToList();
+
+            EventsItemsControl.ItemsSource = visible;
+            EventCountText.Text = visible.Count.ToString();
+            EmptyState.Visibility = visible.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            EmptyState.Text = _allItems.Count == 0
+                ? "No events yet. Click \"+ Add Event\" to create one."
+                : "No events match your search.";
+        }
+
+        private static bool Matches(EventListItem item, string query)
+        {
+            bool Has(string? s) => s?.Contains(query, StringComparison.OrdinalIgnoreCase) == true;
+            return Has(item.Title) || Has(item.BadgeText) || Has(item.DateText)
+                || Has(item.Source.EventType) || Has(item.Source.Location) || Has(item.Source.NepaliTitle);
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilter();
 
         private void AddEvent_Click(object sender, RoutedEventArgs e)
         {
@@ -69,7 +99,7 @@ namespace NepaliCalendar.App.Views
                 return;
 
             var result = MessageBox.Show(
-                $"Delete \"{item.Title}\"? This cannot be undone.",
+                $"Delete \"{item.Title}\"?",
                 "Delete event",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -81,10 +111,59 @@ namespace NepaliCalendar.App.Views
             LoadEvents();
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
+        private void Undo_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            _eventStore.RestoreLastDeleted();
+            LoadEvents();
         }
+
+        private void Import_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Import events",
+                Filter = "Calendar files (*.ics;*.csv)|*.ics;*.csv|iCalendar (*.ics)|*.ics|CSV (*.csv)|*.csv"
+            };
+
+            if (dialog.ShowDialog(this) != true)
+                return;
+
+            try
+            {
+                string content = File.ReadAllText(dialog.FileName);
+                bool isCsv = Path.GetExtension(dialog.FileName).Equals(".csv", StringComparison.OrdinalIgnoreCase);
+
+                var imported = _importService.Parse(content, isCsv);
+                if (imported.Count == 0)
+                {
+                    MessageBox.Show(
+                        "No importable events were found (they may fall outside the supported date range).",
+                        "Import",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                int added = _eventStore.AddRange(imported);
+                LoadEvents();
+
+                MessageBox.Show(
+                    $"Imported {added} event(s).",
+                    "Import complete",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Could not import that file: " + ex.Message,
+                    "Import failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         public sealed class EventListItem
         {

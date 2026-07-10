@@ -126,6 +126,42 @@ namespace NepaliCalendar.App.Services
         public string GetSelectedIsTodayText() => Nepali ? "चयन गरिएको मिति आज हो" : "Selected date is today";
         public string GetNoSelectedDateText() => Nepali ? "कुनै मिति चयन गरिएको छैन" : "No date selected";
 
+        // --- Holidays ---
+        public string GetAllDayText() => Nepali ? "दिनभरि" : "All Day";
+        public string GetPublicHolidayBadge() => Nepali ? "सार्वजनिक बिदा" : "Public Holiday";
+        public string GetHolidayBadge() => Nepali ? "बिदा" : "Holiday";
+        public string GetHolidayBadgeText(bool isPublic) => isPublic ? GetPublicHolidayBadge() : GetHolidayBadge();
+        public string GetHolidaysWindowTitle() => Nepali ? "बिदाहरू" : "Holidays";
+        public string GetCloseText() => Nepali ? "बन्द गर्नुहोस्" : "Close";
+        public string GetNoHolidaysInRangeText() => Nepali ? "यस दायरामा कुनै बिदा छैन।" : "No holidays in the available range.";
+
+        /// <summary>Holiday display name: Nepali title in Nepali mode (falling back to English).</summary>
+        public string GetHolidayDisplayTitle(string englishTitle, string? nepaliTitle) =>
+            Nepali && !string.IsNullOrWhiteSpace(nepaliTitle) ? nepaliTitle! : englishTitle;
+
+        /// <summary>The alternate-script title, shown as a subtitle under the primary one.</summary>
+        public string? GetHolidayAltTitle(string englishTitle, string? nepaliTitle) =>
+            Nepali ? englishTitle : nepaliTitle;
+
+        // --- Weekdays ---
+        public string GetWeekdayName(DayOfWeek dayOfWeek)
+        {
+            if (!Nepali)
+                return dayOfWeek.ToString();
+
+            return dayOfWeek switch
+            {
+                DayOfWeek.Sunday => "आइतबार",
+                DayOfWeek.Monday => "सोमबार",
+                DayOfWeek.Tuesday => "मंगलबार",
+                DayOfWeek.Wednesday => "बुधबार",
+                DayOfWeek.Thursday => "बिहिबार",
+                DayOfWeek.Friday => "शुक्रबार",
+                DayOfWeek.Saturday => "शनिबार",
+                _ => string.Empty
+            };
+        }
+
         // --- Quick action titles (keyed by ActionKey) ---
         public string GetQuickActionTitle(string actionKey)
         {

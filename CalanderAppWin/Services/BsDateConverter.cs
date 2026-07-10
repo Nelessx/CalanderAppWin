@@ -18,46 +18,89 @@ namespace NepaliCalendar.App.Services
 
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly BsCalendarDataService _dataService = new();
+        private bool _referenceVerified;
+
+        // Days from the reference AD date (Baisakh 1 of the reference year) to Baisakh 1 of each
+        // supported BS year, precomputed once. Turns conversion from an O(days) day-by-day walk
+        // — which ran per calendar cell — into an O(months) index lookup.
+        private Dictionary<int, int>? _yearStartOffset;
+
+        private void EnsureIndex()
+        {
+            if (_yearStartOffset != null)
+                return;
+
+            VerifyReferenceMatchesData();
+
+            var years = _dataService.GetYears(); // ascending, contiguous, starts at the reference year
+            var map = new Dictionary<int, int>(years.Count);
+
+            int cumulative = 0;
+            foreach (var year in years)
+            {
+                map[year.Year] = cumulative;
+                cumulative += year.MonthDays.Sum();
+            }
+
+            _yearStartOffset = map;
+        }
+
+        /// <summary>
+        /// Guards against the reference anchor and the data file silently drifting apart. The
+        /// day-count walk starts from <see cref="_referenceBsDate"/>; if the data no longer starts
+        /// at that same year, every conversion would be wrong. Fails loudly instead.
+        /// </summary>
+        private void VerifyReferenceMatchesData()
+        {
+            if (_referenceVerified)
+                return;
+
+            int firstDataYear = _dataService.GetYears()[0].Year;
+            if (firstDataYear != _referenceBsDate.Year)
+            {
+                throw new InvalidOperationException(
+                    $"Calendar data starts at BS {firstDataYear} but the converter reference year is BS " +
+                    $"{_referenceBsDate.Year}. They must match or all conversions will be off.");
+            }
+
+            _referenceVerified = true;
+        }
 
         public BsDate ConvertFromAd(DateTime adDate)
         {
+            EnsureIndex();
+
             if (adDate < _referenceAdDate)
                 throw new NotSupportedException("Dates before the reference date are not supported yet.");
 
-            int offsetDays = (adDate - _referenceAdDate).Days;
+            int offset = (adDate - _referenceAdDate).Days;
 
-            int year = _referenceBsDate.Year;
-            int month = _referenceBsDate.Month;
-            int day = _referenceBsDate.Day;
-
-            while (offsetDays > 0)
+            foreach (var yearData in _dataService.GetYears())
             {
-                var yearData = GetYearData(year);
+                int start = _yearStartOffset![yearData.Year];
+                int total = yearData.MonthDays.Sum();
 
-                day++;
+                if (offset < start || offset >= start + total)
+                    continue;
 
-                if (day > yearData.MonthDays[month - 1])
+                int remaining = offset - start;
+                int month = 1;
+                while (remaining >= yearData.MonthDays[month - 1])
                 {
-                    day = 1;
+                    remaining -= yearData.MonthDays[month - 1];
                     month++;
-
-                    if (month > 12)
-                    {
-                        month = 1;
-                        year++;
-                    }
                 }
 
-                offsetDays--;
+                return new BsDate
+                {
+                    Year = yearData.Year,
+                    Month = month,
+                    Day = remaining + 1,
+                    DayName = adDate.DayOfWeek.ToString()
+                };
             }
 
-            return new BsDate
-            {
-                Year = year,
-                Month = month,
-                Day = day,
-                DayName = adDate.DayOfWeek.ToString()
-            };
+            throw new Exception($"Missing BS data for the date {adDate:yyyy-MM-dd}.");
         }
 
         /// <summary>
@@ -83,16 +126,13 @@ namespace NepaliCalendar.App.Services
 
         public DateTime ConvertToAd(int bsYear, int bsMonth, int bsDay)
         {
+            EnsureIndex();
+
             if (bsYear < _referenceBsDate.Year)
                 throw new NotSupportedException("BS years before the reference year are not supported yet.");
 
-            int totalOffset = 0;
-
-            for (int year = _referenceBsDate.Year; year < bsYear; year++)
-            {
-                var yearData = GetYearData(year);
-                totalOffset += yearData.MonthDays.Sum();
-            }
+            if (!_yearStartOffset!.TryGetValue(bsYear, out int totalOffset))
+                throw new Exception($"Missing BS data for year {bsYear}.");
 
             var targetYearData = GetYearData(bsYear);
 

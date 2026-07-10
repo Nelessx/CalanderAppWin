@@ -18,11 +18,23 @@ namespace NepaliCalendar.App.Models
         public string EventType { get; set; } = string.Empty;
         public string? BadgeText { get; set; }
 
+        public string? Location { get; set; }
+        public string? Notes { get; set; }
+
         public bool IsAllDay { get; set; }
         public string? TimeText { get; set; }
 
+        /// <summary>Minutes before the event to notify (0 = at start, 1440 = a day before); null = no reminder.</summary>
+        public int? ReminderMinutesBefore { get; set; }
+
         public bool IsHoliday { get; set; }
         public bool IsPublicHoliday { get; set; }
+
+        /// <summary>Holiday classification (National/Religious/Cultural/Observance); null for user events.</summary>
+        public string? Category { get; set; }
+
+        /// <summary>Region a holiday is limited to (e.g. "Kathmandu Valley"); null = nationwide.</summary>
+        public string? Region { get; set; }
 
         public string? DayText { get; set; }
 

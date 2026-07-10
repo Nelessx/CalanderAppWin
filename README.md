@@ -1,5 +1,7 @@
 # Nepali Calendar
 
+![CI](https://github.com/Nelessx/CalanderAppWin/actions/workflows/ci.yml/badge.svg)
+
 A modern **Nepali (Bikram Sambat) calendar** for Windows, built with WPF on .NET 10. It pairs a full dashboard with lightweight, always-on-top desktop widgets so the current BS date is never more than a glance away.
 
 ![Nepali Calendar](Design/calander_light_app.png)
@@ -33,9 +35,25 @@ A widget appears first — right-click it (or use the tray icon) and choose **Op
 
 ## Building a release
 
+Framework-dependent (needs the .NET 10 Desktop Runtime on the target machine):
+
 ```powershell
 dotnet publish CalanderAppWin/NepaliCalendar.App.csproj -c Release -r win-x64 --self-contained false
 ```
+
+Self-contained, single file (no runtime install required):
+
+```powershell
+dotnet publish CalanderAppWin/NepaliCalendar.App.csproj -c Release -r win-x64 `
+  --self-contained true -p:PublishSingleFile=true
+```
+
+The build is pinned to the .NET SDK in [`global.json`](global.json), and every push/PR
+to `main` is built and tested by [GitHub Actions](.github/workflows/ci.yml).
+
+> **Not yet packaged:** a signed installer (MSIX/Inno), auto-update, and code
+> signing are planned but require external accounts (a code-signing certificate,
+> an update feed) and are not part of this repository yet.
 
 ## Project layout
 
@@ -65,4 +83,4 @@ The bundled calendar data covers **BS 2081–2087** (≈ AD 2024–2031). Outsid
 
 ## License
 
-To be determined by the project owner.
+Released under the [MIT License](LICENSE).

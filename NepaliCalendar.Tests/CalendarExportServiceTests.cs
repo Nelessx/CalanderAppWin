@@ -58,5 +58,49 @@ namespace NepaliCalendar.Tests
             string ics = _export.ToICalendar([evt]);
             Assert.Contains(@"SUMMARY:A\; B\, C", ics);
         }
+
+        [Fact]
+        public void Csv_HasIsHolidayColumn_MarkedPerRow()
+        {
+            var events = new[]
+            {
+                new CalendarEvent { Title = "Meeting", AdDate = new DateTime(2026, 5, 10), BsYear = 2083, BsMonth = 1, BsDay = 27, IsHoliday = false },
+                new CalendarEvent { Title = "Dashain", AdDate = new DateTime(2026, 5, 12), BsYear = 2083, BsMonth = 1, BsDay = 29, IsHoliday = true, IsAllDay = true },
+            };
+
+            string csv = _export.ToCsv(events);
+            var lines = csv.TrimEnd().Split('\n');
+
+            Assert.EndsWith("IsHoliday", lines[0].TrimEnd());
+            Assert.EndsWith("No", lines[1].TrimEnd());   // meeting
+            Assert.EndsWith("Yes", lines[2].TrimEnd());  // holiday
+        }
+
+        [Fact]
+        public void Ics_TagsHolidaysWithCategory()
+        {
+            var events = new[]
+            {
+                new CalendarEvent { Title = "Meeting", AdDate = new DateTime(2026, 5, 10), BsYear = 2083, BsMonth = 1, BsDay = 27 },
+                new CalendarEvent { Title = "Dashain", AdDate = new DateTime(2026, 5, 12), BsYear = 2083, BsMonth = 1, BsDay = 29, IsHoliday = true, IsAllDay = true },
+            };
+
+            string ics = _export.ToICalendar(events);
+            Assert.Single(Regex.Matches(ics, "CATEGORIES:HOLIDAY"));
+        }
+
+        [Fact]
+        public void Ics_EmitsValarmForReminders()
+        {
+            var events = new[]
+            {
+                new CalendarEvent { Title = "Standup", AdDate = new DateTime(2026, 5, 10), BsYear = 2083, BsMonth = 1, BsDay = 27, TimeText = "09:30 AM", ReminderMinutesBefore = 15 },
+                new CalendarEvent { Title = "No alarm", AdDate = new DateTime(2026, 5, 11), BsYear = 2083, BsMonth = 1, BsDay = 28, IsAllDay = true },
+            };
+
+            string ics = _export.ToICalendar(events);
+            Assert.Single(Regex.Matches(ics, "BEGIN:VALARM"));
+            Assert.Contains("TRIGGER:-PT15M", ics);
+        }
     }
 }

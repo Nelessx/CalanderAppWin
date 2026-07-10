@@ -34,15 +34,23 @@ namespace NepaliCalendar.App.Services
                     return _cache = new List<Holiday>();
 
                 string json = File.ReadAllText(_filePath);
-                var holidays = JsonSerializer.Deserialize<List<Holiday>>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
+                // Current shape is an object with a provenance header + holidays; fall back to the
+                // legacy bare array so older data files still load.
+                var trimmed = json.TrimStart();
+                if (trimmed.StartsWith("{"))
+                {
+                    var file = JsonSerializer.Deserialize<HolidayFile>(json, options);
+                    return _cache = file?.Holidays ?? new List<Holiday>();
+                }
+
+                var holidays = JsonSerializer.Deserialize<List<Holiday>>(json, options);
                 return _cache = holidays ?? new List<Holiday>();
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Warn("Failed to load holidays.json.", ex);
                 return _cache = new List<Holiday>();
             }
         }
@@ -77,8 +85,10 @@ namespace NepaliCalendar.App.Services
                     BsYear = year,
                     BsMonth = holiday.BsMonth,
                     BsDay = holiday.BsDay,
-                    EventType = "Holiday",
+                    EventType = holiday.Festival ?? "Holiday",
                     BadgeText = holiday.IsPublic ? "Public Holiday" : "Holiday",
+                    Category = holiday.Category,
+                    Region = holiday.Region,
                     IsHoliday = true,
                     IsPublicHoliday = holiday.IsPublic,
                     IsAllDay = true,
@@ -97,14 +107,35 @@ namespace NepaliCalendar.App.Services
                 .ToList();
         }
 
-        /// <summary>Upcoming holidays from a given AD date, spanning the current and next BS year.</summary>
+        /// <summary>
+        /// Upcoming holidays from a given AD date. Scans this BS year plus the next two so the
+        /// list still fills near a year boundary; years outside the loaded data simply yield
+        /// nothing rather than truncating the result.
+        /// </summary>
         public List<CalendarEvent> GetUpcoming(int bsYear, DateTime fromAdDate, int max)
         {
-            return GetHolidaysForBsYear(bsYear)
-                .Concat(GetHolidaysForBsYear(bsYear + 1))
+            var result = new List<CalendarEvent>();
+
+            for (int year = bsYear; year <= bsYear + 2; year++)
+                result.AddRange(GetHolidaysForBsYear(year));
+
+            return result
                 .Where(h => h.AdDate.Date >= fromAdDate.Date)
                 .OrderBy(h => h.AdDate)
                 .Take(max)
+                .ToList();
+        }
+
+        /// <summary>Every holiday across all BS years the calendar data supports, date-ordered.</summary>
+        public List<CalendarEvent> GetAllAcrossSupportedYears()
+        {
+            var result = new List<CalendarEvent>();
+
+            foreach (int year in _converter.GetAvailableYears())
+                result.AddRange(GetHolidaysForBsYear(year));
+
+            return result
+                .OrderBy(h => h.AdDate)
                 .ToList();
         }
     }

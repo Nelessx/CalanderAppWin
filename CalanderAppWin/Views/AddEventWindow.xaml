@@ -164,6 +164,10 @@
             <TextBlock Style="{StaticResource FieldLabel}" Text="Time (optional, e.g. 09:30 AM)" />
             <TextBox x:Name="TimeTextBox" MaxLength="40" />
 
+            <!--  REMINDER  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Reminder" />
+            <ComboBox x:Name="ReminderComboBox" Margin="0,0,0,14" />
+
             <!--  TYPE  -->
             <TextBlock Style="{StaticResource FieldLabel}" Text="Type (optional, e.g. Meeting)" />
             <TextBox x:Name="TypeTextBox" MaxLength="60" />
@@ -171,6 +175,22 @@
             <!--  BADGE  -->
             <TextBlock Style="{StaticResource FieldLabel}" Text="Badge (optional, e.g. Work)" />
             <TextBox x:Name="BadgeTextBox" MaxLength="40" />
+
+            <!--  LOCATION  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Location (optional)" />
+            <TextBox x:Name="LocationTextBox" MaxLength="120" />
+
+            <!--  NOTES  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Notes (optional)" />
+            <TextBox
+                x:Name="NotesTextBox"
+                Height="70"
+                Margin="0,0,0,14"
+                AcceptsReturn="True"
+                MaxLength="500"
+                TextWrapping="Wrap"
+                VerticalContentAlignment="Top"
+                VerticalScrollBarVisibility="Auto" />
 
             <!--  ACTIONS  -->
             <StackPanel
