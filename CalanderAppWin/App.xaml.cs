@@ -14,6 +14,7 @@ namespace NepaliCalendar.App
         private static readonly ThemeService _themeService = new();
         private static TrayIconService? _trayIcon;
         private static SingleInstanceService? _singleInstance;
+        private static ReminderService? _reminderService;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -65,6 +66,18 @@ namespace NepaliCalendar.App
             catch
             {
                 _trayIcon = null;
+            }
+
+            try
+            {
+                _reminderService = new ReminderService(
+                    new EventStore(),
+                    (title, body) => Dispatcher.Invoke(() => ShowNotification(title, body)));
+                _reminderService.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not start the reminder service.", ex);
             }
 
             try
@@ -408,8 +421,14 @@ namespace NepaliCalendar.App
 
         public static void ApplyTheme(AppTheme theme) => _themeService.Apply(theme);
 
+        /// <summary>Shows a system-tray notification (used for event reminders).</summary>
+        public static void ShowNotification(string title, string message) =>
+            _trayIcon?.ShowNotification(title, message);
+
         public static void QuitApplication()
         {
+            _reminderService?.Dispose();
+            _reminderService = null;
             _trayIcon?.Dispose();
             _trayIcon = null;
             _singleInstance?.Dispose();

@@ -50,6 +50,8 @@ namespace NepaliCalendar.App.Views
             TimeTextBox.Text = calendarEvent.IsAllDay
                 ? string.Empty
                 : (calendarEvent.TimeText ?? string.Empty);
+
+            SelectReminder(calendarEvent.ReminderMinutesBefore);
         }
 
         private void InitializeForm(int? bsYear, int? bsMonth, int? bsDay)
@@ -76,6 +78,38 @@ namespace NepaliCalendar.App.Views
             _isInitializing = false;
 
             PopulateDayDropdown(bsDay);
+            PopulateReminderDropdown();
+        }
+
+        private void PopulateReminderDropdown()
+        {
+            ReminderComboBox.ItemsSource = new List<ReminderOption>
+            {
+                new(null, "No reminder"),
+                new(0, "At time of event"),
+                new(5, "5 minutes before"),
+                new(15, "15 minutes before"),
+                new(30, "30 minutes before"),
+                new(60, "1 hour before"),
+                new(1440, "1 day before"),
+            };
+            ReminderComboBox.DisplayMemberPath = nameof(ReminderOption.Text);
+            ReminderComboBox.SelectedIndex = 0;
+        }
+
+        private void SelectReminder(int? minutes)
+        {
+            if (ReminderComboBox.ItemsSource is not IEnumerable<ReminderOption> options)
+                return;
+
+            int index = 0, i = 0;
+            foreach (var option in options)
+            {
+                if (option.Minutes == minutes) { index = i; break; }
+                i++;
+            }
+
+            ReminderComboBox.SelectedIndex = index;
         }
 
         private void PopulateDayDropdown(int? preferredDay = null)
@@ -183,6 +217,7 @@ namespace NepaliCalendar.App.Views
                 BadgeText = string.IsNullOrWhiteSpace(BadgeTextBox.Text) ? null : BadgeTextBox.Text.Trim(),
                 IsAllDay = allDay,
                 TimeText = timeText,
+                ReminderMinutesBefore = (ReminderComboBox.SelectedItem as ReminderOption)?.Minutes,
                 IsHoliday = false,
                 IsPublicHoliday = false,
                 DayText = adDate.DayOfWeek.ToString()
@@ -230,5 +265,7 @@ namespace NepaliCalendar.App.Views
         }
 
         private sealed record MonthOption(int Value, string Text);
+
+        private sealed record ReminderOption(int? Minutes, string Text);
     }
 }

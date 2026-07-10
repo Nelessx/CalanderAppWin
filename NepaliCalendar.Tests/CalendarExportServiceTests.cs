@@ -88,5 +88,19 @@ namespace NepaliCalendar.Tests
             string ics = _export.ToICalendar(events);
             Assert.Single(Regex.Matches(ics, "CATEGORIES:HOLIDAY"));
         }
+
+        [Fact]
+        public void Ics_EmitsValarmForReminders()
+        {
+            var events = new[]
+            {
+                new CalendarEvent { Title = "Standup", AdDate = new DateTime(2026, 5, 10), BsYear = 2083, BsMonth = 1, BsDay = 27, TimeText = "09:30 AM", ReminderMinutesBefore = 15 },
+                new CalendarEvent { Title = "No alarm", AdDate = new DateTime(2026, 5, 11), BsYear = 2083, BsMonth = 1, BsDay = 28, IsAllDay = true },
+            };
+
+            string ics = _export.ToICalendar(events);
+            Assert.Single(Regex.Matches(ics, "BEGIN:VALARM"));
+            Assert.Contains("TRIGGER:-PT15M", ics);
+        }
     }
 }

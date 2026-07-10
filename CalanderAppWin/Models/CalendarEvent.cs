@@ -21,6 +21,9 @@ namespace NepaliCalendar.App.Models
         public bool IsAllDay { get; set; }
         public string? TimeText { get; set; }
 
+        /// <summary>Minutes before the event to notify (0 = at start, 1440 = a day before); null = no reminder.</summary>
+        public int? ReminderMinutesBefore { get; set; }
+
         public bool IsHoliday { get; set; }
         public bool IsPublicHoliday { get; set; }
 

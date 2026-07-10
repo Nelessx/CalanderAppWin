@@ -82,6 +82,16 @@ namespace NepaliCalendar.App.Services
                 if (!string.IsNullOrEmpty(description))
                     sb.Append(Fold($"DESCRIPTION:{Escape(description)}"));
 
+                // Emit a display alarm so reminders survive into Google/Outlook/Apple Calendar.
+                if (e.ReminderMinutesBefore is int minutes && minutes >= 0)
+                {
+                    sb.Append("BEGIN:VALARM\r\n");
+                    sb.Append(Fold($"TRIGGER:-PT{minutes}M"));
+                    sb.Append("ACTION:DISPLAY\r\n");
+                    sb.Append(Fold($"DESCRIPTION:{Escape(e.Title)}"));
+                    sb.Append("END:VALARM\r\n");
+                }
+
                 sb.Append("END:VEVENT\r\n");
             }
 
