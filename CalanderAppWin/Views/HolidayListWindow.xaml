@@ -137,19 +137,33 @@
                                                 Foreground="{DynamicResource TextMutedBrush}"
                                                 Text="{Binding DateText}" />
 
-                                            <Border
+                                            <StackPanel
                                                 Margin="0,6,0,0"
-                                                Padding="7,3"
-                                                HorizontalAlignment="Left"
-                                                Background="{DynamicResource SuccessSoftBrush}"
-                                                BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="6">
-                                                <TextBlock
-                                                    FontSize="11"
-                                                    Foreground="{DynamicResource SuccessBrush}"
-                                                    Text="{Binding BadgeText}" />
-                                            </Border>
+                                                Orientation="Horizontal">
+                                                <Border
+                                                    Padding="7,3"
+                                                    Background="{DynamicResource SuccessSoftBrush}"
+                                                    BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6">
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Foreground="{DynamicResource SuccessBrush}"
+                                                        Text="{Binding BadgeText}" />
+                                                </Border>
+
+                                                <Border
+                                                    Margin="6,0,0,0"
+                                                    Padding="7,3"
+                                                    Background="{DynamicResource InfoSoftBrush}"
+                                                    CornerRadius="6"
+                                                    Visibility="{Binding ShowRegion, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Foreground="{DynamicResource InfoBrush}"
+                                                        Text="{Binding RegionText}" />
+                                                </Border>
+                                            </StackPanel>
                                         </StackPanel>
 
                                         <TextBlock

@@ -52,7 +52,9 @@ namespace NepaliCalendar.App.Views
                         ShowSubtitle = !string.IsNullOrWhiteSpace(subtitle),
                         DateText = $"{monthName} {day}, {year}  ·  {h.AdDate:MMM d, yyyy}",
                         WeekdayText = _localization.GetWeekdayName(h.AdDate.DayOfWeek),
-                        BadgeText = _localization.GetHolidayBadgeText(h.IsPublicHoliday)
+                        BadgeText = _localization.GetHolidayBadgeText(h.IsPublicHoliday),
+                        RegionText = h.Region,
+                        ShowRegion = !string.IsNullOrWhiteSpace(h.Region)
                     };
                 })
                 .ToList();
@@ -74,6 +76,8 @@ namespace NepaliCalendar.App.Views
             public string DateText { get; init; } = string.Empty;
             public string WeekdayText { get; init; } = string.Empty;
             public string BadgeText { get; init; } = string.Empty;
+            public string? RegionText { get; init; }
+            public bool ShowRegion { get; init; }
         }
     }
 }

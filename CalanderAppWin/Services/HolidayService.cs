@@ -34,15 +34,23 @@ namespace NepaliCalendar.App.Services
                     return _cache = new List<Holiday>();
 
                 string json = File.ReadAllText(_filePath);
-                var holidays = JsonSerializer.Deserialize<List<Holiday>>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
+                // Current shape is an object with a provenance header + holidays; fall back to the
+                // legacy bare array so older data files still load.
+                var trimmed = json.TrimStart();
+                if (trimmed.StartsWith("{"))
+                {
+                    var file = JsonSerializer.Deserialize<HolidayFile>(json, options);
+                    return _cache = file?.Holidays ?? new List<Holiday>();
+                }
+
+                var holidays = JsonSerializer.Deserialize<List<Holiday>>(json, options);
                 return _cache = holidays ?? new List<Holiday>();
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Warn("Failed to load holidays.json.", ex);
                 return _cache = new List<Holiday>();
             }
         }
@@ -77,8 +85,10 @@ namespace NepaliCalendar.App.Services
                     BsYear = year,
                     BsMonth = holiday.BsMonth,
                     BsDay = holiday.BsDay,
-                    EventType = "Holiday",
+                    EventType = holiday.Festival ?? "Holiday",
                     BadgeText = holiday.IsPublic ? "Public Holiday" : "Holiday",
+                    Category = holiday.Category,
+                    Region = holiday.Region,
                     IsHoliday = true,
                     IsPublicHoliday = holiday.IsPublic,
                     IsAllDay = true,

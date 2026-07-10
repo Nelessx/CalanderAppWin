@@ -24,6 +24,12 @@ namespace NepaliCalendar.App.Models
         public bool IsHoliday { get; set; }
         public bool IsPublicHoliday { get; set; }
 
+        /// <summary>Holiday classification (National/Religious/Cultural/Observance); null for user events.</summary>
+        public string? Category { get; set; }
+
+        /// <summary>Region a holiday is limited to (e.g. "Kathmandu Valley"); null = nationwide.</summary>
+        public string? Region { get; set; }
+
         public string? DayText { get; set; }
 
         public DateTime CreatedUtc { get; set; }
