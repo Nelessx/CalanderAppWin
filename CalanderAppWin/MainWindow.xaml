@@ -682,6 +682,13 @@
                                                     BorderThickness="1"
                                                     CornerRadius="10">
 
+                                                    <Border.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Click="EditEventCard_Click" Header="Edit" />
+                                                            <MenuItem Click="DeleteEventCard_Click" Header="Delete" />
+                                                        </ContextMenu>
+                                                    </Border.ContextMenu>
+
                                                     <StackPanel>
                                                         <TextBlock
                                                             FontSize="13"
@@ -825,6 +832,13 @@
                                             BorderBrush="{DynamicResource BorderBrush}"
                                             BorderThickness="1"
                                             CornerRadius="12">
+
+                                            <Border.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Click="EditEventCard_Click" Header="Edit" />
+                                                    <MenuItem Click="DeleteEventCard_Click" Header="Delete" />
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
 
                                             <Grid>
                                                 <Grid.ColumnDefinitions>

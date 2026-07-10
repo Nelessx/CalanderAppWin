@@ -218,6 +218,7 @@ namespace NepaliCalendar.App
         {
             return new DashboardSectionItem
             {
+                EventId = calendarEvent.Id,
                 Title = calendarEvent.Title,
                 Subtitle = calendarEvent.BadgeText,
                 SecondaryText = calendarEvent.AdDate.ToString("MMMM d, yyyy"),
@@ -589,6 +590,59 @@ namespace NepaliCalendar.App
 
             SelectDate(cell.Year, cell.Month, cell.Day);
             OpenAddEvent();
+        }
+
+        private DashboardSectionItem? ResolveCardItem(object sender)
+        {
+            if (sender is not MenuItem menuItem)
+                return null;
+
+            return menuItem.DataContext as DashboardSectionItem
+                ?? ((menuItem.Parent as ContextMenu)?.PlacementTarget as FrameworkElement)?.DataContext as DashboardSectionItem;
+        }
+
+        private void EditEventCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResolveCardItem(sender) is not { EventId: Guid id })
+                return;
+
+            var calendarEvent = _eventStore.GetAll().Find(x => x.Id == id);
+            if (calendarEvent is null)
+                return;
+
+            try
+            {
+                var dialog = new AddEventWindow(calendarEvent) { Owner = this };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    LoadDashboardData();
+                    LoadCalendar();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Edit Event", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteEventCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResolveCardItem(sender) is not { EventId: Guid id } item)
+                return;
+
+            var result = MessageBox.Show(
+                $"Delete \"{item.Title}\"? This cannot be undone.",
+                "Delete event",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            _eventStore.Delete(id);
+            LoadDashboardData();
+            LoadCalendar();
         }
 
         private void SelectDate(int year, int month, int day)
