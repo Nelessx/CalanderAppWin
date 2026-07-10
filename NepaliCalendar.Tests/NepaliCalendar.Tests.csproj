@@ -30,6 +30,9 @@
     <None Include="..\CalanderAppWin\Data\bs-calendar-data.json" Link="Data\bs-calendar-data.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\CalanderAppWin\Data\holidays.json" Link="Data\holidays.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

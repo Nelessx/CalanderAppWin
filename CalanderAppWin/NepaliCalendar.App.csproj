@@ -38,6 +38,11 @@
 		<None Update="Data\bs-calendar-data.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+
+		<!-- Copy the holiday data into the output folder -->
+		<None Update="Data\holidays.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

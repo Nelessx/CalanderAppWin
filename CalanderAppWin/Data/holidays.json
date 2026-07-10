@@ -1,0 +1,9 @@
+[
+  { "title": "Nepali New Year", "nepaliTitle": "नयाँ वर्ष", "bsMonth": 1, "bsDay": 1, "isPublic": true },
+  { "title": "Republic Day", "nepaliTitle": "गणतन्त्र दिवस", "bsMonth": 2, "bsDay": 15, "isPublic": true },
+  { "title": "Constitution Day", "nepaliTitle": "संविधान दिवस", "bsMonth": 6, "bsDay": 3, "isPublic": true },
+  { "title": "Prithvi Jayanti", "nepaliTitle": "पृथ्वी जयन्ती", "bsMonth": 9, "bsDay": 27, "isPublic": true },
+  { "title": "Maghe Sankranti", "nepaliTitle": "माघे संक्रान्ति", "bsMonth": 10, "bsDay": 1, "isPublic": true },
+  { "title": "Martyrs' Day", "nepaliTitle": "शहीद दिवस", "bsMonth": 10, "bsDay": 16, "isPublic": true },
+  { "title": "Democracy Day", "nepaliTitle": "प्रजातन्त्र दिवस", "bsMonth": 11, "bsDay": 7, "isPublic": true }
+]

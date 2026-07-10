@@ -19,6 +19,7 @@ namespace NepaliCalendar.App
         private readonly SettingsService _settingsService = new();
         private readonly DashboardMockDataService _dashboardMockDataService = new();
         private readonly EventStore _eventStore = new();
+        private readonly HolidayService _holidayService = new();
         private readonly CalendarExportService _exportService = new();
 
         private const int UpcomingEventsLimit = 5;
@@ -205,7 +206,13 @@ namespace NepaliCalendar.App
                 .GetUpcoming(DateTime.Today, UpcomingEventsLimit)
                 .ConvertAll(MapEventToCard);
 
-            HolidayCards = _dashboardMockDataService.GetHolidayCards();
+            int todayBsYear = _converter.TryConvertFromAd(DateTime.Today, out var todayBs) && todayBs != null
+                ? todayBs.Year
+                : _currentYear;
+            HolidayCards = _holidayService
+                .GetUpcoming(todayBsYear, DateTime.Today, UpcomingEventsLimit)
+                .ConvertAll(MapHolidayToCard);
+
             QuickActions = _dashboardMockDataService.GetQuickActions();
             foreach (var action in QuickActions)
                 action.Title = _localizationService.GetQuickActionTitle(action.ActionKey);
@@ -230,6 +237,21 @@ namespace NepaliCalendar.App
             };
         }
 
+        private static DashboardSectionItem MapHolidayToCard(CalendarEvent holiday)
+        {
+            return new DashboardSectionItem
+            {
+                Title = holiday.Title,
+                Subtitle = holiday.NepaliTitle,
+                SecondaryText = holiday.AdDate.ToString("MMMM d, yyyy"),
+                TertiaryText = holiday.DayText,
+                BadgeText = holiday.BadgeText,
+                ShowBadge = !string.IsNullOrWhiteSpace(holiday.BadgeText),
+                IsEvent = false,
+                IsHoliday = true
+            };
+        }
+
         private void LoadSelectedDateDashboardData()
         {
             if (!_hasSelectedDate)
@@ -240,27 +262,10 @@ namespace NepaliCalendar.App
             }
 
             var selectedEvents = _eventStore.GetForBsDate(_selectedYear, _selectedMonth, _selectedDay);
-
-            var selectedHolidays = _dashboardMockDataService.GetHolidays()
-                .FindAll(h =>
-                    h.BsYear == _selectedYear &&
-                    h.BsMonth == _selectedMonth &&
-                    h.BsDay == _selectedDay);
+            var selectedHolidays = _holidayService.GetForBsDate(_selectedYear, _selectedMonth, _selectedDay);
 
             SelectedDateEventCards = selectedEvents.ConvertAll(MapEventToCard);
-
-            SelectedDateHolidayCards = selectedHolidays
-                .ConvertAll(h => new DashboardSectionItem
-                {
-                    Title = h.Title,
-                    Subtitle = h.NepaliTitle,
-                    SecondaryText = h.AdDate.ToString("MMMM d, yyyy"),
-                    TertiaryText = h.DayText,
-                    BadgeText = h.BadgeText,
-                    ShowBadge = !string.IsNullOrWhiteSpace(h.BadgeText),
-                    IsEvent = false,
-                    IsHoliday = true
-                });
+            SelectedDateHolidayCards = selectedHolidays.ConvertAll(MapHolidayToCard);
         }
 
         private void RefreshDashboardBindings()
@@ -294,7 +299,7 @@ namespace NepaliCalendar.App
         private void ApplyCalendarIndicators(List<CalendarCell> grid)
         {
             var events = _eventStore.GetAll();
-            var holidays = _dashboardMockDataService.GetHolidays();
+            var holidays = _holidayService.GetHolidaysForBsYear(_currentYear);
 
             foreach (var cell in grid)
             {
