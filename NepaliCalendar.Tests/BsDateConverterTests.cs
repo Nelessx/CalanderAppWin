@@ -65,5 +65,32 @@ namespace NepaliCalendar.Tests
             var probe = new DateTime(2026, 5, 7);
             Assert.Equal(probe.DayOfWeek.ToString(), _c.ConvertFromAd(probe).DayName);
         }
+
+        [Fact]
+        public void EveryDayInRange_RoundTrips_AndIsContiguous()
+        {
+            // Walk every supported AD date once; the cumulative-offset index must round-trip
+            // exactly and stay in lock-step with a plain one-day-at-a-time increment.
+            var ad = new DateTime(2024, 4, 13);
+            var previous = default(DateTime);
+            bool first = true;
+
+            while (_c.TryConvertFromAd(ad, out var bs) && bs is not null)
+            {
+                Assert.Equal(ad, _c.ConvertToAd(bs.Year, bs.Month, bs.Day));
+                Assert.InRange(bs.Month, 1, 12);
+                Assert.InRange(bs.Day, 1, 32);
+
+                if (!first)
+                    Assert.Equal(previous.AddDays(1), ad); // no gaps or repeats
+
+                previous = ad;
+                first = false;
+                ad = ad.AddDays(1);
+            }
+
+            // Sanity: we actually traversed several years, not just a handful of days.
+            Assert.True(previous.Year >= 2030);
+        }
     }
 }

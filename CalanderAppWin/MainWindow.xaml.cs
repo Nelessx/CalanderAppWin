@@ -944,7 +944,9 @@ namespace NepaliCalendar.App
             try
             {
                 var window = new ConverterWindow { Owner = this };
-                window.ShowDialog();
+
+                if (window.ShowDialog() == true && window.NavigateTarget is { } target)
+                    SelectDate(target.Year, target.Month, target.Day);
             }
             catch (Exception ex)
             {
