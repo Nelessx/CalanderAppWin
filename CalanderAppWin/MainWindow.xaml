@@ -139,9 +139,11 @@
                             x:Name="SettingsButton"
                             Width="42"
                             Height="38"
+                            AutomationProperties.Name="Settings"
                             Click="SettingsButton_Click"
                             Content="⚙"
-                            FontSize="16" />
+                            FontSize="16"
+                            ToolTip="Settings" />
                     </StackPanel>
                 </Grid>
             </Border>

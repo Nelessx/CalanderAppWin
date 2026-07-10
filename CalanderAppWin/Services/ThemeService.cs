@@ -14,10 +14,33 @@ namespace NepaliCalendar.App.Services
         // A key that only the theme dictionaries define, used to locate the current one.
         private const string MarkerKey = "WindowBrush";
 
-        /// <summary>The theme currently applied (used when new windows load).</summary>
+        private static AppTheme _preference = AppTheme.Light;
+        private static bool _listeningForOsChanges;
+
+        /// <summary>The effective theme in effect (Light or Dark — never System).</summary>
         public static AppTheme Current { get; private set; } = AppTheme.Light;
 
-        public void Apply(AppTheme theme)
+        /// <summary>Resolves an <see cref="AppTheme"/> preference (System → the current OS theme).</summary>
+        private static AppTheme Resolve(AppTheme preference) =>
+            preference == AppTheme.System ? SystemThemeHelper.GetWindowsTheme() : preference;
+
+        /// <summary>
+        /// Applies a theme preference. "System" resolves to the current Windows theme and starts
+        /// tracking OS theme changes live; Light/Dark stop that tracking.
+        /// </summary>
+        public void Apply(AppTheme preference)
+        {
+            _preference = preference;
+
+            if (preference == AppTheme.System)
+                StartListeningForOsChanges();
+            else
+                StopListeningForOsChanges();
+
+            ApplyResolved(Resolve(preference));
+        }
+
+        private void ApplyResolved(AppTheme theme)
         {
             var app = Application.Current;
             if (app is null)
@@ -45,6 +68,37 @@ namespace NepaliCalendar.App.Services
             // Match the native title bar of every open window to the theme.
             foreach (Window window in app.Windows)
                 WindowChromeHelper.ApplyTitleBar(window, theme == AppTheme.Dark);
+        }
+
+        private void StartListeningForOsChanges()
+        {
+            if (_listeningForOsChanges)
+                return;
+
+            Microsoft.Win32.SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+            _listeningForOsChanges = true;
+        }
+
+        private void StopListeningForOsChanges()
+        {
+            if (!_listeningForOsChanges)
+                return;
+
+            Microsoft.Win32.SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
+            _listeningForOsChanges = false;
+        }
+
+        private void OnUserPreferenceChanged(object sender, Microsoft.Win32.UserPreferenceChangedEventArgs e)
+        {
+            if (_preference != AppTheme.System || e.Category != Microsoft.Win32.UserPreferenceCategory.General)
+                return;
+
+            var resolved = Resolve(AppTheme.System);
+            if (resolved == Current)
+                return;
+
+            // SystemEvents may fire off the UI thread; marshal the resource swap.
+            Application.Current?.Dispatcher.Invoke(() => ApplyResolved(resolved));
         }
     }
 }

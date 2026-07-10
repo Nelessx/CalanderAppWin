@@ -38,7 +38,8 @@ namespace NepaliCalendar.App.Views
             ThemeComboBox.ItemsSource = new List<Option>
             {
                 new(AppTheme.Light, "Light"),
-                new(AppTheme.Dark, "Dark")
+                new(AppTheme.Dark, "Dark"),
+                new(AppTheme.System, "System (follow Windows)")
             };
             ThemeComboBox.DisplayMemberPath = nameof(Option.Text);
             ThemeComboBox.SelectedValuePath = nameof(Option.Value);

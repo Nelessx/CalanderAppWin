@@ -50,4 +50,14 @@
     <SolidColorBrush x:Key="DangerSoftBrush" Color="#FDECEC" />
     <SolidColorBrush x:Key="DangerBorderBrush" Color="#F3C6C6" />
 
+    <!--  Context menus (right-click)  -->
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#F6F9FF" />
+    <SolidColorBrush x:Key="MenuBorderBrush" Color="#DCE7F8" />
+    <SolidColorBrush x:Key="MenuItemHoverBrush" Color="#EAF3FF" />
+    <SolidColorBrush x:Key="MenuItemPressedBrush" Color="#E2EEFC" />
+    <SolidColorBrush x:Key="MenuForegroundBrush" Color="#0B1B45" />
+    <SolidColorBrush x:Key="MenuSeparatorBrush" Color="#E3EBF7" />
+    <SolidColorBrush x:Key="MenuSubtleBrush" Color="#7A8FC0" />
+    <SolidColorBrush x:Key="MenuDisabledBrush" Color="#A0AFC8" />
+
 </ResourceDictionary>
