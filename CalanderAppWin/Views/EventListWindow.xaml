@@ -141,12 +141,13 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  HEADER  -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <Grid Grid.Row="0" Margin="0,0,0,12">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <TextBlock
                     FontSize="22"
@@ -169,16 +170,45 @@
                 </Border>
             </StackPanel>
 
-            <Button
-                HorizontalAlignment="Right"
-                Click="AddEvent_Click"
-                Content="+ Add Event"
-                Style="{StaticResource PrimaryButton}" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    Margin="0,0,8,0"
+                    Click="Import_Click"
+                    Content="Import"
+                    Style="{StaticResource SecondaryButton}" />
+                <Button
+                    Click="AddEvent_Click"
+                    Content="+ Add Event"
+                    Style="{StaticResource PrimaryButton}" />
+            </StackPanel>
+        </Grid>
+
+        <!--  SEARCH  -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <TextBox
+                x:Name="SearchBox"
+                Height="34"
+                Padding="8,0"
+                VerticalContentAlignment="Center"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                FontSize="13"
+                Foreground="{DynamicResource TextPrimaryBrush}"
+                TextChanged="SearchBox_TextChanged" />
+            <TextBlock
+                x:Name="SearchHint"
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Foreground="{DynamicResource TextDisabledBrush}"
+                IsHitTestVisible="False"
+                Text="Search events by title, type, or badge…" />
         </Grid>
 
         <!--  LIST  -->
         <Border
-            Grid.Row="1"
+            Grid.Row="2"
             Padding="6"
             Background="{DynamicResource CardBrush}"
             BorderBrush="{DynamicResource BorderBrush}"
@@ -279,13 +309,21 @@
         </Border>
 
         <!--  FOOTER  -->
-        <Button
-            Grid.Row="2"
-            Margin="0,16,0,0"
-            HorizontalAlignment="Right"
-            Click="Close_Click"
-            Content="Close"
-            IsCancel="True"
-            Style="{StaticResource SecondaryButton}" />
+        <Grid Grid.Row="3" Margin="0,16,0,0">
+            <Button
+                x:Name="UndoButton"
+                HorizontalAlignment="Left"
+                Click="Undo_Click"
+                Content="↶ Undo delete"
+                IsEnabled="False"
+                Style="{StaticResource SecondaryButton}" />
+
+            <Button
+                HorizontalAlignment="Right"
+                Click="Close_Click"
+                Content="Close"
+                IsCancel="True"
+                Style="{StaticResource SecondaryButton}" />
+        </Grid>
     </Grid>
 </Window>

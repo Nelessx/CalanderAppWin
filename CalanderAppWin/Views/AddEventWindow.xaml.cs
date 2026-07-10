@@ -45,6 +45,8 @@ namespace NepaliCalendar.App.Views
             NepaliTitleTextBox.Text = calendarEvent.NepaliTitle ?? string.Empty;
             TypeTextBox.Text = calendarEvent.EventType;
             BadgeTextBox.Text = calendarEvent.BadgeText ?? string.Empty;
+            LocationTextBox.Text = calendarEvent.Location ?? string.Empty;
+            NotesTextBox.Text = calendarEvent.Notes ?? string.Empty;
 
             AllDayCheckBox.IsChecked = calendarEvent.IsAllDay;
             TimeTextBox.Text = calendarEvent.IsAllDay
@@ -215,6 +217,8 @@ namespace NepaliCalendar.App.Views
                 BsDay = day,
                 EventType = string.IsNullOrWhiteSpace(TypeTextBox.Text) ? "Event" : TypeTextBox.Text.Trim(),
                 BadgeText = string.IsNullOrWhiteSpace(BadgeTextBox.Text) ? null : BadgeTextBox.Text.Trim(),
+                Location = string.IsNullOrWhiteSpace(LocationTextBox.Text) ? null : LocationTextBox.Text.Trim(),
+                Notes = string.IsNullOrWhiteSpace(NotesTextBox.Text) ? null : NotesTextBox.Text.Trim(),
                 IsAllDay = allDay,
                 TimeText = timeText,
                 ReminderMinutesBefore = (ReminderComboBox.SelectedItem as ReminderOption)?.Minutes,

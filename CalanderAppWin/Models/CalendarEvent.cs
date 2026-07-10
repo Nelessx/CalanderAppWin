@@ -18,6 +18,9 @@ namespace NepaliCalendar.App.Models
         public string EventType { get; set; } = string.Empty;
         public string? BadgeText { get; set; }
 
+        public string? Location { get; set; }
+        public string? Notes { get; set; }
+
         public bool IsAllDay { get; set; }
         public string? TimeText { get; set; }
 

@@ -17,7 +17,7 @@ namespace NepaliCalendar.App.Services
         public string ToCsv(IEnumerable<CalendarEvent> events)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge,IsHoliday");
+            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge,Location,Notes,IsHoliday");
 
             foreach (var e in events.OrderBy(e => e.AdDate))
             {
@@ -36,6 +36,8 @@ namespace NepaliCalendar.App.Services
                     Csv(e.IsAllDay ? "Yes" : "No"),
                     Csv(e.EventType),
                     Csv(e.BadgeText),
+                    Csv(e.Location),
+                    Csv(e.Notes),
                     Csv(e.IsHoliday ? "Yes" : "No")));
             }
 
@@ -75,6 +77,9 @@ namespace NepaliCalendar.App.Services
 
                 sb.Append(Fold($"SUMMARY:{Escape(e.Title)}"));
 
+                if (!string.IsNullOrWhiteSpace(e.Location))
+                    sb.Append(Fold($"LOCATION:{Escape(e.Location!)}"));
+
                 if (e.IsHoliday)
                     sb.Append(Fold("CATEGORIES:HOLIDAY"));
 
@@ -102,6 +107,7 @@ namespace NepaliCalendar.App.Services
         private static string BuildDescription(CalendarEvent e)
         {
             var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(e.Notes)) parts.Add(e.Notes!);
             if (!string.IsNullOrWhiteSpace(e.NepaliTitle)) parts.Add(e.NepaliTitle!);
             parts.Add($"BS {e.BsYear:D4}-{e.BsMonth:D2}-{e.BsDay:D2}");
             if (!e.IsAllDay && !string.IsNullOrWhiteSpace(e.TimeText)) parts.Add(e.TimeText!);
