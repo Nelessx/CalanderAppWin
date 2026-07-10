@@ -17,7 +17,6 @@
         <local:TodayBorderConverter x:Key="TodayBorderBrush" />
     </Window.Resources>
 
-    <!--  Viewbox makes UI scale proportionally  -->
     <Viewbox Stretch="Uniform">
         <Grid
             Width="1200"
@@ -26,332 +25,1090 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  TOP BAR  -->
-            <Grid Grid.Row="0" Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <StackPanel
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-
-                    <Button
-                        x:Name="PreviousButton"
-                        Width="110"
-                        Height="40"
-                        Margin="0,0,10,0"
-                        Click="PreviousMonth_Click"
-                        Content="Previous" />
-
-                    <Button
-                        x:Name="TodayButton"
-                        Width="100"
-                        Height="40"
-                        Margin="0,0,16,0"
-                        Click="TodayButton_Click"
-                        Content="Today" />
-
-                    <TextBlock
-                        x:Name="LanguageLabelTextBlock"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Text="Language" />
-
-                    <ComboBox
-                        x:Name="LanguageComboBox"
-                        Width="150"
-                        Height="34"
-                        Margin="0,0,16,0"
-                        SelectionChanged="LanguageComboBox_SelectionChanged" />
-
-                    <Button
-                        x:Name="GenerateJsonButton"
-                        Width="140"
-                        Height="40"
-                        Click="GenerateJsonButton_Click"
-                        Content="Generate JSON" />
-                </StackPanel>
-
-                <StackPanel
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-
-                    <TextBlock
-                        x:Name="MonthLabelTextBlock"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Text="Month" />
-
-                    <ComboBox
-                        x:Name="MonthComboBox"
-                        Width="170"
-                        Height="34"
-                        Margin="0,0,14,0"
-                        SelectionChanged="MonthComboBox_SelectionChanged" />
-
-                    <TextBlock
-                        x:Name="YearLabelTextBlock"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Text="Year" />
-
-                    <ComboBox
-                        x:Name="YearComboBox"
-                        Width="110"
-                        Height="34"
-                        Margin="0,0,14,0"
-                        SelectionChanged="YearComboBox_SelectionChanged" />
-
-                    <Button
-                        x:Name="NextButton"
-                        Width="110"
-                        Height="40"
-                        Click="NextMonth_Click"
-                        Content="Next" />
-                </StackPanel>
-            </Grid>
-
-            <!--  TITLE  -->
-            <TextBlock
-                x:Name="BsDateText"
-                Grid.Row="1"
-                Margin="0,6,0,10"
-                HorizontalAlignment="Center"
-                FontSize="34"
-                FontWeight="Bold" />
-
-            <!--  SUBTITLE  -->
             <Border
-                Grid.Row="2"
-                Margin="0,0,0,18"
-                Padding="18"
+                Grid.Row="0"
+                Margin="0,0,0,14"
+                Padding="10"
                 Background="#FAFBFD"
                 BorderBrush="#D9E2F0"
                 BorderThickness="1"
-                CornerRadius="12">
+                CornerRadius="14">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="1" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="1" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0">
+                    <!--  LEFT CONTROLS  -->
+                    <StackPanel
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <Button
+                            x:Name="PreviousButton"
+                            Width="110"
+                            Height="38"
+                            Margin="0,0,10,0"
+                            Click="PreviousMonth_Click"
+                            Content="Previous" />
+
+                        <Button
+                            x:Name="TodayButton"
+                            Width="100"
+                            Height="38"
+                            Margin="0,0,18,0"
+                            Click="TodayButton_Click"
+                            Content="Today" />
+
                         <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="14"
+                            x:Name="LanguageLabelTextBlock"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontSize="13"
                             Foreground="#4A5670"
-                            Text="Selected Date (BS)" />
-                        <TextBlock
-                            x:Name="SelectedBsDateText"
-                            Margin="0,0,0,2"
-                            FontSize="18"
-                            FontWeight="SemiBold" />
-                        <TextBlock
-                            x:Name="SelectedBsDayText"
-                            FontSize="14"
-                            Foreground="#4A5670" />
+                            Text="Language" />
+
+                        <ComboBox
+                            x:Name="LanguageComboBox"
+                            Width="150"
+                            Height="34"
+                            Margin="0,0,16,0"
+                            SelectionChanged="LanguageComboBox_SelectionChanged" />
+
+                        <Button
+                            x:Name="GenerateJsonButton"
+                            Width="140"
+                            Height="38"
+                            Click="GenerateJsonButton_Click"
+                            Content="Generate JSON" />
                     </StackPanel>
 
-                    <Border
+                    <!--  RIGHT CONTROLS  -->
+                    <StackPanel
                         Grid.Column="1"
-                        Width="1"
-                        Margin="20,0"
-                        Background="#D9E2F0" />
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
 
-                    <StackPanel Grid.Column="2">
                         <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="14"
+                            x:Name="MonthLabelTextBlock"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontSize="13"
                             Foreground="#4A5670"
-                            Text="Corresponding Date (AD)" />
-                        <TextBlock
-                            x:Name="SelectedAdDateText"
-                            Margin="0,0,0,2"
-                            FontSize="18"
-                            FontWeight="SemiBold" />
-                        <TextBlock
-                            x:Name="SelectedAdDayText"
-                            FontSize="14"
-                            Foreground="#4A5670" />
-                    </StackPanel>
+                            Text="Month" />
 
-                    <Border
-                        Grid.Column="3"
-                        Width="1"
-                        Margin="20,0"
-                        Background="#D9E2F0" />
+                        <ComboBox
+                            x:Name="MonthComboBox"
+                            Width="170"
+                            Height="34"
+                            Margin="0,0,14,0"
+                            SelectionChanged="MonthComboBox_SelectionChanged" />
 
-                    <StackPanel Grid.Column="4" MinWidth="120">
                         <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="14"
+                            x:Name="YearLabelTextBlock"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            FontSize="13"
                             Foreground="#4A5670"
-                            Text="Total Days" />
-                        <TextBlock
-                            x:Name="TotalDaysInfoText"
-                            FontSize="18"
-                            FontWeight="SemiBold" />
+                            Text="Year" />
+
+                        <ComboBox
+                            x:Name="YearComboBox"
+                            Width="110"
+                            Height="34"
+                            Margin="0,0,14,0"
+                            SelectionChanged="YearComboBox_SelectionChanged" />
+
+                        <Button
+                            x:Name="NextButton"
+                            Width="110"
+                            Height="38"
+                            Margin="0,0,10,0"
+                            Click="NextMonth_Click"
+                            Content="Next" />
+
+                        <Button
+                            x:Name="SettingsButton"
+                            Width="42"
+                            Height="38"
+                            Click="SettingsButton_Click"
+                            Content="⚙"
+                            FontSize="16" />
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!--  WEEK HEADERS  -->
-            <UniformGrid
-                Grid.Row="3"
-                Margin="0,0,0,10"
-                Columns="7">
-                <TextBlock
-                    x:Name="SunHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Sun" />
+            <!--  MAIN DASHBOARD AREA  -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.2*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
 
-                <TextBlock
-                    x:Name="MonHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Mon" />
+                <!--  LEFT: CALENDAR AREA  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="18"
+                    Background="White"
+                    BorderBrush="#D9E2F0"
+                    BorderThickness="1"
+                    CornerRadius="18">
 
-                <TextBlock
-                    x:Name="TueHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Tue" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                <TextBlock
-                    x:Name="WedHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Wed" />
+                        <!--  TITLE  -->
+                        <TextBlock
+                            x:Name="BsDateText"
+                            Grid.Row="0"
+                            Margin="0,0,0,14"
+                            HorizontalAlignment="Center"
+                            FontSize="34"
+                            FontWeight="Bold" />
 
-                <TextBlock
-                    x:Name="ThuHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Thu" />
-
-                <TextBlock
-                    x:Name="FriHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Text="Fri" />
-
-                <TextBlock
-                    x:Name="SatHeader"
-                    HorizontalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    Foreground="Red"
-                    Text="Sat" />
-            </UniformGrid>
-
-            <!--  CALENDAR  -->
-            <ItemsControl x:Name="CalendarGrid" Grid.Row="4">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="7" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-
-
+                        <!--  SELECTED DATE SUMMARY  -->
                         <Border
-                            Margin="0.5"
-                            Padding="8"
-                            Cursor="Hand"
-                            MouseLeftButtonUp="CalendarDayBorder_Click">
-
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="White" />
-                                    <Setter Property="BorderBrush" Value="#D0D0D0" />
-                                    <Setter Property="BorderThickness" Value="1" />
-
-                                    <Style.Triggers>
-                                        <!--  Today only  -->
-                                        <DataTrigger Binding="{Binding IsToday}" Value="True">
-                                            <Setter Property="BorderBrush" Value="#1E90FF" />
-                                            <Setter Property="BorderThickness" Value="1.5" />
-                                        </DataTrigger>
-
-                                        <!--  Selected only  -->
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="#EAF3FF" />
-                                        </DataTrigger>
-
-                                        <!--  Today + Selected  -->
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsToday}" Value="True" />
-                                                <Condition Binding="{Binding IsSelected}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Background" Value="#DCEEFF" />
-                                            <Setter Property="BorderBrush" Value="#1E90FF" />
-                                            <Setter Property="BorderThickness" Value="2" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>   
-                                </Style>
-                            </Border.Style>
+                            Grid.Row="1"
+                            Margin="0,0,0,16"
+                            Padding="18"
+                            Background="#FAFBFD"
+                            BorderBrush="#D9E2F0"
+                            BorderThickness="1"
+                            CornerRadius="12">
 
                             <Grid>
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="26"
-                                    FontWeight="Bold"
-                                    Text="{Binding Text}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="1" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="1" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="Black" />
+                                <!--  BS DATE  -->
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-                                                    <Setter Property="Foreground" Value="LightGray" />
-                                                </DataTrigger>
+                                    <Border
+                                        Width="44"
+                                        Height="44"
+                                        Margin="0,0,14,0"
+                                        Background="#EFEAFF"
+                                        CornerRadius="22">
 
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding IsCurrentMonth}" Value="True" />
-                                                        <Condition Binding="{Binding DayOfWeekIndex}" Value="6" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Foreground" Value="Red" />
-                                                </MultiDataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="22"
+                                            Foreground="#6D4AFF"
+                                            Text="▣" />
+                                    </Border>
 
-                                </TextBlock>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock
+                                            Margin="0,0,0,4"
+                                            FontSize="13"
+                                            Foreground="#5B6680"
+                                            Text="Selected Date (BS)" />
+
+                                        <TextBlock
+                                            x:Name="SelectedBsDateText"
+                                            Margin="0,0,0,2"
+                                            FontSize="18"
+                                            FontWeight="SemiBold"
+                                            Foreground="#6D4AFF" />
+
+                                        <TextBlock
+                                            x:Name="SelectedBsDayText"
+                                            FontSize="13"
+                                            Foreground="#4A5670" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Border
+                                    Grid.Column="1"
+                                    Width="1"
+                                    Margin="20,0"
+                                    Background="#D9E2F0" />
+
+                                <!--  AD DATE  -->
+                                <Grid Grid.Column="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border
+                                        Width="44"
+                                        Height="44"
+                                        Margin="0,0,14,0"
+                                        Background="#EAFBF0"
+                                        CornerRadius="22">
+
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="22"
+                                            Foreground="#16A34A"
+                                            Text="□" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock
+                                            Margin="0,0,0,4"
+                                            FontSize="13"
+                                            Foreground="#5B6680"
+                                            Text="Corresponding Date (AD)" />
+
+                                        <TextBlock
+                                            x:Name="SelectedAdDateText"
+                                            Margin="0,0,0,2"
+                                            FontSize="18"
+                                            FontWeight="SemiBold"
+                                            Foreground="#16A34A" />
+
+                                        <TextBlock
+                                            x:Name="SelectedAdDayText"
+                                            FontSize="13"
+                                            Foreground="#4A5670" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Border
+                                    Grid.Column="3"
+                                    Width="1"
+                                    Margin="20,0"
+                                    Background="#D9E2F0" />
+
+                                <!--  TOTAL DAYS  -->
+                                <Grid Grid.Column="4" MinWidth="120">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border
+                                        Width="44"
+                                        Height="44"
+                                        Margin="0,0,14,0"
+                                        Background="#F1EEFF"
+                                        CornerRadius="22">
+
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="22"
+                                            Foreground="#6D4AFF"
+                                            Text="◷" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock
+                                            Margin="0,0,0,4"
+                                            FontSize="13"
+                                            Foreground="#5B6680"
+                                            Text="Total Days" />
+
+                                        <TextBlock
+                                            x:Name="TotalDaysInfoText"
+                                            FontSize="20"
+                                            FontWeight="SemiBold"
+                                            Foreground="#6D4AFF" />
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
-
                         </Border>
 
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                        <!--  WEEK HEADERS  -->
+                        <UniformGrid
+                            Grid.Row="2"
+                            Margin="0,0,0,10"
+                            Columns="7">
 
+                            <TextBlock
+                                x:Name="SunHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Sun" />
+
+                            <TextBlock
+                                x:Name="MonHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Mon" />
+
+                            <TextBlock
+                                x:Name="TueHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Tue" />
+
+                            <TextBlock
+                                x:Name="WedHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Wed" />
+
+                            <TextBlock
+                                x:Name="ThuHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Thu" />
+
+                            <TextBlock
+                                x:Name="FriHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Fri" />
+
+                            <TextBlock
+                                x:Name="SatHeader"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="Red"
+                                Text="Sat" />
+                        </UniformGrid>
+
+                        <!--  CALENDAR  -->
+                        <ItemsControl x:Name="CalendarGrid" Grid.Row="3">
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="7" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="1"
+                                        Padding="8"
+                                        Cursor="Hand"
+                                        ContextMenuOpening="CalendarDayBorder_ContextMenuOpening"
+                                        MouseLeftButtonUp="CalendarDayBorder_Click">
+
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Click="AddEventForCell_Click" Header="Add Event" />
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
+
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="BorderBrush" Value="#E1E7F0" />
+                                                <Setter Property="BorderThickness" Value="1" />
+                                                <Setter Property="CornerRadius" Value="4" />
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                                                        <Setter Property="Background" Value="#FAFBFD" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding IsToday}" Value="True">
+                                                        <Setter Property="BorderBrush" Value="#1E90FF" />
+                                                        <Setter Property="BorderThickness" Value="1.5" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="Background" Value="#EAF3FF" />
+                                                        <Setter Property="BorderBrush" Value="#7C5CFA" />
+                                                        <Setter Property="BorderThickness" Value="2" />
+                                                    </DataTrigger>
+
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsToday}" Value="True" />
+                                                            <Condition Binding="{Binding IsSelected}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Background" Value="#DCEEFF" />
+                                                        <Setter Property="BorderBrush" Value="#1E90FF" />
+                                                        <Setter Property="BorderThickness" Value="2" />
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
+                                        <Grid>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="26"
+                                                FontWeight="Bold"
+                                                Text="{Binding Text}">
+
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#0B1B45" />
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                                                                <Setter Property="Foreground" Value="#CBD5E1" />
+                                                            </DataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding IsCurrentMonth}" Value="True" />
+                                                                    <Condition Binding="{Binding DayOfWeekIndex}" Value="6" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Foreground" Value="#E11D48" />
+                                                            </MultiDataTrigger>
+
+                                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                <Setter Property="Foreground" Value="#6D4AFF" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                            <!--  Event / Holiday indicator dots  -->
+                                            <StackPanel
+                                                Margin="0,0,0,6"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Bottom"
+                                                Orientation="Horizontal">
+
+                                                <!--  Event dot  -->
+                                                <Ellipse
+                                                    Width="6"
+                                                    Height="6"
+                                                    Margin="0,0,4,0"
+                                                    Fill="#7C5CFA">
+
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasEvent}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+
+                                                <!--  Holiday dot  -->
+                                                <Ellipse
+                                                    Width="6"
+                                                    Height="6"
+                                                    Fill="#22C55E">
+
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasHoliday}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!--  CALENDAR LEGEND  -->
+                        <Border
+                            Grid.Row="4"
+                            Margin="0,12,0,0"
+                            Padding="12,8"
+                            HorizontalAlignment="Center"
+                            Background="#FAFBFD"
+                            BorderBrush="#D9E2F0"
+                            BorderThickness="1"
+                            CornerRadius="12">
+
+                            <StackPanel Orientation="Horizontal">
+
+                                <StackPanel Margin="0,0,18,0" Orientation="Horizontal">
+                                    <Ellipse
+                                        Width="8"
+                                        Height="8"
+                                        Margin="0,0,6,0"
+                                        VerticalAlignment="Center"
+                                        Fill="#1E90FF" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="#4A5670"
+                                        Text="Today" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,0,18,0" Orientation="Horizontal">
+                                    <Ellipse
+                                        Width="8"
+                                        Height="8"
+                                        Margin="0,0,6,0"
+                                        VerticalAlignment="Center"
+                                        Fill="#7C5CFA" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="#4A5670"
+                                        Text="Event" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse
+                                        Width="8"
+                                        Height="8"
+                                        Margin="0,0,6,0"
+                                        VerticalAlignment="Center"
+                                        Fill="#22C55E" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="#4A5670"
+                                        Text="Holiday" />
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!--  RIGHT: SIDEBAR  -->
+
+                <Border
+                    Grid.Column="1"
+                    Margin="18,0,0,0"
+                    Padding="18"
+                    Background="#FAFBFD"
+                    BorderBrush="#D9E2F0"
+                    BorderThickness="1"
+                    CornerRadius="18">
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+
+                            <!--  SELECTED DATE DETAILS  -->
+                            <StackPanel Margin="0,0,0,12">
+                                <TextBlock
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="#0B1B45"
+                                    Text="Selected Date" />
+
+                                <TextBlock
+                                    Margin="0,3,0,0"
+                                    FontSize="13"
+                                    Foreground="#5B6680"
+                                    Text="{Binding SelectedSidebarDateText}" />
+
+                                <!--  TODAY INDICATOR  -->
+                                <Border
+                                    Margin="0,6,0,0"
+                                    Padding="6,2"
+                                    HorizontalAlignment="Left"
+                                    Background="#DBEAFE"
+                                    CornerRadius="6">
+
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelectedDateToday}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+
+                                    <TextBlock
+                                        FontSize="11"
+                                        FontWeight="SemiBold"
+                                        Foreground="#1D4ED8"
+                                        Text="Today" />
+                                </Border>
+                            </StackPanel>
+
+                            <Border
+                                Margin="0,0,0,14"
+                                Padding="12"
+                                Background="White"
+                                BorderBrush="#D9E2F0"
+                                BorderThickness="1"
+                                CornerRadius="12">
+
+                                <StackPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="#4A5670"
+                                        Text="Events on selected date" />
+
+                                    <ItemsControl ItemsSource="{Binding SelectedDateEventCards}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Margin="0,0,0,8"
+                                                    Padding="10"
+                                                    Background="#F8F7FF"
+                                                    BorderBrush="#DCD6FF"
+                                                    BorderThickness="1"
+                                                    CornerRadius="10">
+
+                                                    <StackPanel>
+                                                        <TextBlock
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="#0B1B45"
+                                                            Text="{Binding Title}" />
+
+                                                        <TextBlock
+                                                            Margin="0,3,0,0"
+                                                            FontSize="12"
+                                                            Foreground="#5B6680"
+                                                            Text="{Binding TertiaryText}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        FontSize="12"
+                                        Foreground="#94A3B8"
+                                        Text="No events for this date.">
+
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasNoSelectedDateEvents}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <TextBlock
+                                        Margin="0,8,0,8"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="#4A5670"
+                                        Text="Holidays on selected date" />
+
+                                    <ItemsControl ItemsSource="{Binding SelectedDateHolidayCards}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Margin="0,0,0,8"
+                                                    Padding="10"
+                                                    Background="#F6FFF9"
+                                                    BorderBrush="#BFE8CE"
+                                                    BorderThickness="1"
+                                                    CornerRadius="10">
+
+                                                    <StackPanel>
+                                                        <TextBlock
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="#0B1B45"
+                                                            Text="{Binding Title}" />
+
+                                                        <TextBlock
+                                                            Margin="0,3,0,0"
+                                                            FontSize="12"
+                                                            Foreground="#5B6680"
+                                                            Text="{Binding Subtitle}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        FontSize="12"
+                                        Foreground="#94A3B8"
+                                        Text="No holidays for this date.">
+
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasNoSelectedDateHolidays}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!--  UPCOMING EVENTS  -->
+                            <Grid Margin="0,0,0,12">
+                                <StackPanel
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        FontWeight="Bold"
+                                        Foreground="#0B1B45"
+                                        Text="Upcoming Events" />
+
+                                    <Border
+                                        Margin="8,0,0,0"
+                                        Padding="6,2"
+                                        VerticalAlignment="Center"
+                                        Background="#EAF3FF"
+                                        CornerRadius="6">
+
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#1E40AF"
+                                            Text="{Binding UpcomingEventsCount}" />
+                                    </Border>
+                                </StackPanel>
+
+                                <Button
+                                    Padding="10,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Click="ViewAllEventsButton_Click"
+                                    Content="View All"
+                                    FontSize="12" />
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding UpcomingEventCards}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="0,0,0,10"
+                                            Padding="12"
+                                            Background="White"
+                                            BorderBrush="#D9E2F0"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Ellipse
+                                                    Width="9"
+                                                    Height="9"
+                                                    Margin="0,5,10,0"
+                                                    VerticalAlignment="Top"
+                                                    Fill="#7C5CFA" />
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock
+                                                        FontSize="14"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="#0B1B45"
+                                                        Text="{Binding Title}" />
+
+                                                    <TextBlock
+                                                        Margin="0,3,0,0"
+                                                        FontSize="12"
+                                                        Foreground="#5B6680"
+                                                        Text="{Binding TertiaryText}" />
+                                                </StackPanel>
+
+                                                <TextBlock
+                                                    Grid.Column="2"
+                                                    FontSize="12"
+                                                    Foreground="#5B6680"
+                                                    Text="{Binding SecondaryText}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!--  HOLIDAYS  -->
+                            <Grid Margin="0,18,0,12">
+                                <StackPanel
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        FontWeight="Bold"
+                                        Foreground="#0B1B45"
+                                        Text="Holidays" />
+
+                                    <Border
+                                        Margin="8,0,0,0"
+                                        Padding="6,2"
+                                        VerticalAlignment="Center"
+                                        Background="#DCFCE7"
+                                        CornerRadius="6">
+
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="#166534"
+                                            Text="{Binding HolidayCount}" />
+                                    </Border>
+                                </StackPanel>
+
+                                <Button
+                                    Padding="10,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Click="ViewAllHolidaysButton_Click"
+                                    Content="View All"
+                                    FontSize="12" />
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding HolidayCards}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="0,0,0,10"
+                                            Padding="12"
+                                            Background="#F6FFF9"
+                                            BorderBrush="#BFE8CE"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Ellipse
+                                                    Width="9"
+                                                    Height="9"
+                                                    Margin="0,5,10,0"
+                                                    VerticalAlignment="Top"
+                                                    Fill="#22C55E" />
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock
+                                                        FontSize="14"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="#0B1B45"
+                                                        Text="{Binding Title}" />
+
+                                                    <TextBlock
+                                                        Margin="0,3,0,0"
+                                                        FontSize="12"
+                                                        Foreground="#5B6680"
+                                                        Text="{Binding Subtitle}" />
+
+                                                    <Border
+                                                        Margin="0,7,0,0"
+                                                        Padding="7,3"
+                                                        HorizontalAlignment="Left"
+                                                        Background="#DCFCE7"
+                                                        CornerRadius="6">
+
+                                                        <TextBlock
+                                                            FontSize="11"
+                                                            Foreground="#15803D"
+                                                            Text="{Binding BadgeText}" />
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock
+                                                        FontSize="12"
+                                                        Foreground="#5B6680"
+                                                        Text="{Binding SecondaryText}" />
+
+                                                    <TextBlock
+                                                        Margin="0,4,0,0"
+                                                        HorizontalAlignment="Right"
+                                                        FontSize="12"
+                                                        Foreground="#5B6680"
+                                                        Text="{Binding TertiaryText}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!--  QUICK ACTIONS  -->
+                            <TextBlock
+                                Margin="0,18,0,12"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="#0B1B45"
+                                Text="Quick Actions" />
+
+                            <ItemsControl ItemsSource="{Binding QuickActions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button
+                                            Height="58"
+                                            Margin="0,0,8,8"
+                                            Padding="10"
+                                            BorderThickness="1"
+                                            Click="QuickActionButton_Click"
+                                            Cursor="Hand">
+
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Background" Value="White" />
+                                                    <Setter Property="BorderBrush" Value="#D9E2F0" />
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+
+                                                    <Setter Property="RenderTransform">
+                                                        <Setter.Value>
+                                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                                        </Setter.Value>
+                                                    </Setter>
+
+                                                    <Style.Triggers>
+
+                                                        <!--  HOVER  -->
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#F8F7FF" />
+                                                            <Setter Property="BorderBrush" Value="#7C5CFA" />
+                                                        </Trigger>
+
+                                                        <!--  PRESSED  -->
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="Background" Value="#EDE9FE" />
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <ScaleTransform ScaleX="0.97" ScaleY="0.97" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+
+                                                        <!--  DISABLED  -->
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" Value="0.6" />
+                                                        </Trigger>
+
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                            <StackPanel
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+
+                                                <TextBlock
+                                                    Margin="0,0,8,0"
+                                                    FontSize="18"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#6D4AFF"
+                                                    Text="{Binding IconGlyph}" />
+
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="13"
+                                                    Foreground="#0B1B45"
+                                                    Text="{Binding Title}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <!--  FOOTER / STATUS BAR  -->
+            <Border
+                Grid.Row="2"
+                Margin="0,14,0,0"
+                Padding="12,7"
+                Background="#FAFBFD"
+                BorderBrush="#D9E2F0"
+                BorderThickness="1"
+                CornerRadius="10">
+
+                <Grid>
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#4A5670"
+                        Text="NepaliCalendar.App" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#5B6680"
+                        Text="{Binding FooterStatusText}" />
+
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="#4A5670"
+                            Text="{Binding FooterSelectedDateText}" />
+
+                        <TextBlock
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="#4A5670"
+                            Text="{Binding FooterLanguageText}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
         </Grid>
     </Viewbox>
-</Window>
+</Window>   

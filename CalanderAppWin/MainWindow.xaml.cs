@@ -1,18 +1,26 @@
 ﻿using NepaliCalendar.App.Models;
 using NepaliCalendar.App.Services;
+using NepaliCalendar.App.Views;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace NepaliCalendar.App
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly BsDateConverter _converter = new();
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly LocalizationService _localizationService = new();
         private readonly SettingsService _settingsService = new();
+        private readonly DashboardMockDataService _dashboardMockDataService = new();
+        private readonly EventStore _eventStore = new();
+
+        private const int UpcomingEventsLimit = 5;
 
         private int _currentYear;
         private int _currentMonth;
@@ -22,11 +30,88 @@ namespace NepaliCalendar.App
         private bool _hasSelectedDate;
         private bool _isUpdatingSelectors;
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public List<DashboardSectionItem> UpcomingEventCards { get; private set; } = new();
+        public List<DashboardSectionItem> HolidayCards { get; private set; } = new();
+        public List<QuickActionItem> QuickActions { get; private set; } = new();
+
+        public List<DashboardSectionItem> SelectedDateEventCards { get; private set; } = new();
+        public List<DashboardSectionItem> SelectedDateHolidayCards { get; private set; } = new();
+
+        public bool HasSelectedDateEvents => SelectedDateEventCards.Count > 0;
+        public bool HasSelectedDateHolidays => SelectedDateHolidayCards.Count > 0;
+        public bool HasNoSelectedDateEvents => SelectedDateEventCards.Count == 0;
+        public bool HasNoSelectedDateHolidays => SelectedDateHolidayCards.Count == 0;
+
+        public int UpcomingEventsCount => UpcomingEventCards.Count;
+        public int HolidayCount => HolidayCards.Count;
+        public int SelectedDateEventsCount => SelectedDateEventCards.Count;
+        public int SelectedDateHolidaysCount => SelectedDateHolidayCards.Count;
+
+        public bool IsSelectedDateToday
+        {
+            get
+            {
+                if (!_hasSelectedDate)
+                    return false;
+
+                var todayBs = _converter.ConvertFromAd(DateTime.Today);
+
+                return _selectedYear == todayBs.Year
+                    && _selectedMonth == todayBs.Month
+                    && _selectedDay == todayBs.Day;
+            }
+        }
+
+        public string SelectedSidebarDateText
+        {
+            get
+            {
+                if (!_hasSelectedDate)
+                    return "No date selected";
+
+                bool useNepaliNumbers = _localizationService.CurrentLanguage == AppLanguage.Nepali;
+
+                string monthName = _localizationService.GetMonthName(_selectedMonth);
+                string dayText = useNepaliNumbers
+                    ? _nepaliNumberService.ToNepaliNumber(_selectedDay)
+                    : _selectedDay.ToString();
+
+                string yearText = useNepaliNumbers
+                    ? _nepaliNumberService.ToNepaliNumber(_selectedYear)
+                    : _selectedYear.ToString();
+
+                return $"{monthName} {dayText}, {yearText}";
+            }
+        }
+
+        public string FooterSelectedDateText
+        {
+            get
+            {
+                if (!_hasSelectedDate)
+                    return "No selected date";
+
+                return SelectedSidebarDateText;
+            }
+        }
+
+        public string FooterLanguageText =>
+            _localizationService.CurrentLanguage == AppLanguage.Nepali
+                ? "Language: नेपाली"
+                : "Language: English";
+
+        public string FooterStatusText =>
+            IsSelectedDateToday
+                ? "Selected date is today"
+                : "Dashboard ready";
+
         public MainWindow()
         {
             InitializeComponent();
             Closed += MainWindow_Closed;
-
+            DataContext = this;
 
 #if !DEBUG
             GenerateJsonButton.Visibility = Visibility.Collapsed;
@@ -49,8 +134,8 @@ namespace NepaliCalendar.App
                 PopulateYearDropdown();
                 PopulateMonthDropdown();
                 ApplyLocalizedText();
+                LoadDashboardData();
                 LoadCalendar();
-
             }
             catch (Exception ex)
             {
@@ -88,6 +173,119 @@ namespace NepaliCalendar.App
             ThuHeader.Text = headers[4];
             FriHeader.Text = headers[5];
             SatHeader.Text = headers[6];
+        }
+
+        private void LoadDashboardData()
+        {
+            UpcomingEventCards = _eventStore
+                .GetUpcoming(DateTime.Today, UpcomingEventsLimit)
+                .ConvertAll(MapEventToCard);
+
+            HolidayCards = _dashboardMockDataService.GetHolidayCards();
+            QuickActions = _dashboardMockDataService.GetQuickActions();
+
+            LoadSelectedDateDashboardData();
+            RefreshDashboardBindings();
+        }
+
+        private static DashboardSectionItem MapEventToCard(CalendarEvent calendarEvent)
+        {
+            return new DashboardSectionItem
+            {
+                Title = calendarEvent.Title,
+                Subtitle = calendarEvent.BadgeText,
+                SecondaryText = calendarEvent.AdDate.ToString("MMMM d, yyyy"),
+                TertiaryText = calendarEvent.IsAllDay ? "All Day" : calendarEvent.TimeText,
+                BadgeText = calendarEvent.BadgeText,
+                ShowBadge = !string.IsNullOrWhiteSpace(calendarEvent.BadgeText),
+                IsEvent = true,
+                IsHoliday = false
+            };
+        }
+
+        private void LoadSelectedDateDashboardData()
+        {
+            if (!_hasSelectedDate)
+            {
+                SelectedDateEventCards = new List<DashboardSectionItem>();
+                SelectedDateHolidayCards = new List<DashboardSectionItem>();
+                return;
+            }
+
+            var selectedEvents = _eventStore.GetForBsDate(_selectedYear, _selectedMonth, _selectedDay);
+
+            var selectedHolidays = _dashboardMockDataService.GetHolidays()
+                .FindAll(h =>
+                    h.BsYear == _selectedYear &&
+                    h.BsMonth == _selectedMonth &&
+                    h.BsDay == _selectedDay);
+
+            SelectedDateEventCards = selectedEvents.ConvertAll(MapEventToCard);
+
+            SelectedDateHolidayCards = selectedHolidays
+                .ConvertAll(h => new DashboardSectionItem
+                {
+                    Title = h.Title,
+                    Subtitle = h.NepaliTitle,
+                    SecondaryText = h.AdDate.ToString("MMMM d, yyyy"),
+                    TertiaryText = h.DayText,
+                    BadgeText = h.BadgeText,
+                    ShowBadge = !string.IsNullOrWhiteSpace(h.BadgeText),
+                    IsEvent = false,
+                    IsHoliday = true
+                });
+        }
+
+        private void RefreshDashboardBindings()
+        {
+            OnPropertyChanged(nameof(UpcomingEventCards));
+            OnPropertyChanged(nameof(HolidayCards));
+            OnPropertyChanged(nameof(QuickActions));
+
+            OnPropertyChanged(nameof(SelectedDateEventCards));
+            OnPropertyChanged(nameof(SelectedDateHolidayCards));
+
+            OnPropertyChanged(nameof(HasSelectedDateEvents));
+            OnPropertyChanged(nameof(HasSelectedDateHolidays));
+            OnPropertyChanged(nameof(HasNoSelectedDateEvents));
+            OnPropertyChanged(nameof(HasNoSelectedDateHolidays));
+
+            OnPropertyChanged(nameof(UpcomingEventsCount));
+            OnPropertyChanged(nameof(HolidayCount));
+            OnPropertyChanged(nameof(SelectedDateEventsCount));
+            OnPropertyChanged(nameof(SelectedDateHolidaysCount));
+
+            OnPropertyChanged(nameof(IsSelectedDateToday));
+            OnPropertyChanged(nameof(SelectedSidebarDateText));
+            OnPropertyChanged(nameof(FooterSelectedDateText));
+            OnPropertyChanged(nameof(FooterLanguageText));
+            OnPropertyChanged(nameof(FooterStatusText));
+        }
+
+        private void ApplyCalendarIndicators(List<CalendarCell> grid)
+        {
+            var events = _eventStore.GetAll();
+            var holidays = _dashboardMockDataService.GetHolidays();
+
+            foreach (var cell in grid)
+            {
+                if (!cell.IsCurrentMonth || cell.Day <= 0)
+                {
+                    cell.HasEvent = false;
+                    cell.HasHoliday = false;
+                    continue;
+                }
+
+                cell.HasEvent = events.Exists(e =>
+                    e.BsYear == cell.Year &&
+                    e.BsMonth == cell.Month &&
+                    e.BsDay == cell.Day);
+
+                cell.HasHoliday = holidays.Exists(h =>
+                    h.BsYear == cell.Year &&
+                    h.BsMonth == cell.Month &&
+                    h.BsDay == cell.Day);
+            }
         }
 
         private void UpdateSelectedDateInfo(int totalDaysInMonth)
@@ -160,14 +358,12 @@ namespace NepaliCalendar.App
                     && cell.Day == _selectedDay;
             }
 
+            ApplyCalendarIndicators(grid);
+
             string monthName = _localizationService.GetMonthName(_currentMonth);
             string yearText = useNepaliNumbers
                 ? _nepaliNumberService.ToNepaliNumber(_currentYear)
                 : _currentYear.ToString();
-
-            string totalDaysText = useNepaliNumbers
-                ? _nepaliNumberService.ToNepaliNumber(monthDays.Count)
-                : monthDays.Count.ToString();
 
             BsDateText.Text = $"{monthName} {yearText}";
             UpdateSelectedDateInfo(monthDays.Count);
@@ -175,6 +371,7 @@ namespace NepaliCalendar.App
 
             SetSelectedDropdownValues();
             UpdateNavigationButtonStates();
+            RefreshDashboardBindings();
         }
 
         private void UpdateNavigationButtonStates()
@@ -308,7 +505,13 @@ namespace NepaliCalendar.App
 
         private void TodayButton_Click(object sender, RoutedEventArgs e)
         {
+            SelectToday();
+        }
+
+        private void SelectToday()
+        {
             var todayBs = _converter.ConvertFromAd(DateTime.Today);
+
             _currentYear = todayBs.Year;
             _currentMonth = todayBs.Month;
             _selectedYear = todayBs.Year;
@@ -316,10 +519,11 @@ namespace NepaliCalendar.App
             _selectedDay = todayBs.Day;
             _hasSelectedDate = true;
 
+            LoadDashboardData();
             LoadCalendar();
         }
 
-        private void CalendarDayBorder_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void CalendarDayBorder_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is not Border border || border.DataContext is not CalendarCell cell)
                 return;
@@ -327,12 +531,109 @@ namespace NepaliCalendar.App
             if (!cell.IsCurrentMonth || cell.Day <= 0)
                 return;
 
-            _selectedYear = cell.Year;
-            _selectedMonth = cell.Month;
-            _selectedDay = cell.Day;
+            SelectDate(cell.Year, cell.Month, cell.Day);
+        }
+
+        private void CalendarDayBorder_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // Only show the right-click menu on real day cells, not the leading/trailing blanks.
+            if (sender is Border border &&
+                border.DataContext is CalendarCell cell &&
+                cell.IsCurrentMonth &&
+                cell.Day > 0)
+            {
+                return;
+            }
+
+            e.Handled = true;
+        }
+
+        private void AddEventForCell_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem menuItem)
+                return;
+
+            var cell = menuItem.DataContext as CalendarCell
+                ?? ((menuItem.Parent as ContextMenu)?.PlacementTarget as FrameworkElement)?.DataContext as CalendarCell;
+
+            if (cell is null || !cell.IsCurrentMonth || cell.Day <= 0)
+                return;
+
+            SelectDate(cell.Year, cell.Month, cell.Day);
+            OpenAddEvent();
+        }
+
+        private void SelectDate(int year, int month, int day)
+        {
+            _selectedYear = year;
+            _selectedMonth = month;
+            _selectedDay = day;
             _hasSelectedDate = true;
 
+            _currentYear = year;
+            _currentMonth = month;
+
+            LoadDashboardData();
             LoadCalendar();
+        }
+
+        private void MoveSelectedDateByDays(int dayDelta)
+        {
+            if (!_hasSelectedDate)
+                return;
+
+            try
+            {
+                DateTime selectedAdDate = _converter.ConvertToAd(_selectedYear, _selectedMonth, _selectedDay);
+                DateTime newAdDate = selectedAdDate.AddDays(dayDelta);
+                var newBsDate = _converter.ConvertFromAd(newAdDate);
+
+                if (!_converter.GetAvailableYears().Contains(newBsDate.Year))
+                    return;
+
+                SelectDate(newBsDate.Year, newBsDate.Month, newBsDate.Day);
+            }
+            catch
+            {
+                // Ignore navigation outside supported date range.
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.OriginalSource is ComboBox)
+                return;
+
+            switch (e.Key)
+            {
+                case Key.Left:
+                    MoveSelectedDateByDays(-1);
+                    e.Handled = true;
+                    break;
+
+                case Key.Right:
+                    MoveSelectedDateByDays(1);
+                    e.Handled = true;
+                    break;
+
+                case Key.Up:
+                    MoveSelectedDateByDays(-7);
+                    e.Handled = true;
+                    break;
+
+                case Key.Down:
+                    MoveSelectedDateByDays(7);
+                    e.Handled = true;
+                    break;
+
+                case Key.Enter:
+                    LoadDashboardData();
+                    RefreshDashboardBindings();
+                    e.Handled = true;
+                    break;
+            }
         }
 
         private void GenerateJsonButton_Click(object sender, RoutedEventArgs e)
@@ -408,16 +709,140 @@ namespace NepaliCalendar.App
             PopulateMonthDropdown();
             PopulateYearDropdown();
             ApplyLocalizedText();
+            LoadDashboardData();
             LoadCalendar();
 
             App.RefreshOpenWidgets();
         }
 
-        private void MainWindow_Closed(object sender, EventArgs e)
+        private void ViewAllEventsButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenEventList();
+        }
+
+        private void ViewAllHolidaysButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenHolidayList();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void QuickActionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button || button.DataContext is not QuickActionItem action)
+                return;
+
+            switch (action.ActionKey)
+            {
+                case "add_event":
+                    OpenAddEvent();
+                    break;
+
+                case "view_events":
+                    OpenEventList();
+                    break;
+
+                case "converter":
+                    OpenConverter();
+                    break;
+
+                case "export_calendar":
+                    ExportCalendar();
+                    break;
+
+                default:
+                    MessageBox.Show("Unknown action.", "Quick Action");
+                    break;
+            }
+        }
+
+        private void OpenAddEvent()
+        {
+            try
+            {
+                var dialog = new AddEventWindow(
+                    _hasSelectedDate ? _selectedYear : null,
+                    _hasSelectedDate ? _selectedMonth : null,
+                    _hasSelectedDate ? _selectedDay : null)
+                {
+                    Owner = this
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    LoadDashboardData();
+                    LoadCalendar();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Add Event",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenEventList()
+        {
+            MessageBox.Show(
+                "Event list placeholder.",
+                "Events",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void OpenHolidayList()
+        {
+            MessageBox.Show(
+                "Holiday list placeholder.",
+                "Holidays",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void OpenConverter()
+        {
+            MessageBox.Show(
+                "Date converter placeholder.",
+                "Converter",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void ExportCalendar()
+        {
+            MessageBox.Show(
+                "Export calendar placeholder.",
+                "Export Calendar",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void OpenSettings()
+        {
+            MessageBox.Show(
+                "Settings placeholder.",
+                "Settings",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
         {
             App.CheckForShutdown();
         }
+
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
-
-
 }
