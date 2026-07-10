@@ -20,6 +20,16 @@ namespace NepaliCalendar.App
 
             RegisterGlobalExceptionHandlers();
 
+            // Match each window's native title bar to the current theme as it loads.
+            EventManager.RegisterClassHandler(
+                typeof(Window),
+                FrameworkElement.LoadedEvent,
+                new RoutedEventHandler((sender, _) =>
+                {
+                    if (sender is Window window)
+                        WindowChromeHelper.ApplyTitleBar(window, ThemeService.Current == Models.AppTheme.Dark);
+                }));
+
             try
             {
                 _trayIcon = new TrayIconService();
