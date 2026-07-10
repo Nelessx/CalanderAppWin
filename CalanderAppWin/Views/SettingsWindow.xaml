@@ -1,0 +1,162 @@
+<Window
+    x:Class="NepaliCalendar.App.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Settings"
+    Width="440"
+    Background="#F6F9FF"
+    FontFamily="Segoe UI"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,16" />
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#6D4AFF" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bg"
+                            Padding="16,0"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#5B3EE6" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#4E34C9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bg"
+                            Padding="16,0"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#D9E2F0"
+                            BorderThickness="1"
+                            CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Border Padding="24">
+        <StackPanel>
+
+            <TextBlock
+                Margin="0,0,0,4"
+                FontSize="22"
+                FontWeight="Bold"
+                Foreground="#0B1B45"
+                Text="Settings" />
+
+            <TextBlock
+                Margin="0,0,0,20"
+                FontSize="13"
+                Foreground="#5B6680"
+                Text="Personalize how the calendar looks and behaves." />
+
+            <!--  LANGUAGE  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Language" />
+            <ComboBox x:Name="LanguageComboBox" />
+
+            <!--  DEFAULT WIDGET SIZE  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Default widget size (used on next launch)" />
+            <ComboBox x:Name="WidgetSizeComboBox" />
+
+            <!--  RUN AT STARTUP  -->
+            <Border
+                Margin="0,4,0,4"
+                Padding="14,12"
+                Background="White"
+                BorderBrush="#D9E2F0"
+                BorderThickness="1"
+                CornerRadius="10">
+                <CheckBox
+                    x:Name="RunAtStartupCheckBox"
+                    FontSize="13"
+                    Foreground="#0B1B45">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Text="Start with Windows" />
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            FontSize="11"
+                            Foreground="#7A8FC0"
+                            Text="Launch the calendar automatically when you sign in." />
+                    </StackPanel>
+                </CheckBox>
+            </Border>
+
+            <!--  ACTIONS  -->
+            <StackPanel
+                Margin="0,18,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+
+                <Button
+                    Margin="0,0,10,0"
+                    Click="Cancel_Click"
+                    Content="Cancel"
+                    IsCancel="True"
+                    Style="{StaticResource SecondaryButton}" />
+
+                <Button
+                    Click="Save_Click"
+                    Content="Save"
+                    IsDefault="True"
+                    Style="{StaticResource PrimaryButton}" />
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+</Window>

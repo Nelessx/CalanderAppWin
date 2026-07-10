@@ -846,11 +846,40 @@ namespace NepaliCalendar.App
 
         private void OpenSettings()
         {
-            MessageBox.Show(
-                "Settings placeholder.",
-                "Settings",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new SettingsWindow { Owner = this };
+
+                if (window.ShowDialog() == true)
+                    ReloadLanguageFromSettings();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Settings",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void ReloadLanguageFromSettings()
+        {
+            var settings = _settingsService.Load();
+
+            if (_localizationService.CurrentLanguage == settings.Language)
+                return;
+
+            _localizationService.CurrentLanguage = settings.Language;
+
+            PopulateLanguageDropdown();
+            PopulateMonthDropdown();
+            PopulateYearDropdown();
+            ApplyLocalizedText();
+            LoadDashboardData();
+            LoadCalendar();
+
+            App.RefreshOpenWidgets();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
