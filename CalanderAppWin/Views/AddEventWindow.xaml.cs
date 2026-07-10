@@ -16,12 +16,40 @@ namespace NepaliCalendar.App.Views
     {
         private readonly BsDateConverter _converter = new();
         private readonly EventStore _eventStore = new();
+        private readonly CalendarEvent? _editingEvent;
         private bool _isInitializing;
 
         public AddEventWindow(int? bsYear = null, int? bsMonth = null, int? bsDay = null)
         {
             InitializeComponent();
             InitializeForm(bsYear, bsMonth, bsDay);
+        }
+
+        public AddEventWindow(CalendarEvent eventToEdit)
+        {
+            InitializeComponent();
+
+            _editingEvent = eventToEdit;
+            InitializeForm(eventToEdit.BsYear, eventToEdit.BsMonth, eventToEdit.BsDay);
+            PopulateFieldsForEdit(eventToEdit);
+
+            Title = "Edit Event";
+            HeaderText.Text = "Edit Event";
+            SubHeaderText.Text = "Update the details of your event.";
+            SaveButton.Content = "Update Event";
+        }
+
+        private void PopulateFieldsForEdit(CalendarEvent calendarEvent)
+        {
+            TitleTextBox.Text = calendarEvent.Title;
+            NepaliTitleTextBox.Text = calendarEvent.NepaliTitle ?? string.Empty;
+            TypeTextBox.Text = calendarEvent.EventType;
+            BadgeTextBox.Text = calendarEvent.BadgeText ?? string.Empty;
+
+            AllDayCheckBox.IsChecked = calendarEvent.IsAllDay;
+            TimeTextBox.Text = calendarEvent.IsAllDay
+                ? string.Empty
+                : (calendarEvent.TimeText ?? string.Empty);
         }
 
         private void InitializeForm(int? bsYear, int? bsMonth, int? bsDay)
@@ -162,7 +190,24 @@ namespace NepaliCalendar.App.Views
 
             try
             {
-                _eventStore.Add(calendarEvent);
+                if (_editingEvent is null)
+                {
+                    _eventStore.Add(calendarEvent);
+                }
+                else
+                {
+                    calendarEvent.Id = _editingEvent.Id;
+
+                    if (!_eventStore.Update(calendarEvent))
+                    {
+                        MessageBox.Show(
+                            "This event no longer exists, so it could not be updated.",
+                            "Update failed",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        return;
+                    }
+                }
             }
             catch (Exception ex)
             {
