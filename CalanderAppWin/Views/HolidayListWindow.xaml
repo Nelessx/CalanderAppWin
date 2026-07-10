@@ -1,0 +1,190 @@
+<Window
+    x:Class="NepaliCalendar.App.Views.HolidayListWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Holidays"
+    Width="600"
+    Height="640"
+    MinWidth="480"
+    MinHeight="420"
+    Background="{DynamicResource WindowBrush}"
+    FontFamily="Segoe UI"
+    WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bg"
+                            Padding="16,0"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="9">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverSubtleBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  HEADER  -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock
+                    x:Name="HeaderText"
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
+                    Text="Holidays" />
+
+                <Border
+                    Margin="10,0,0,0"
+                    Padding="8,2"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource SuccessSoftBrush}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="HolidayCountText"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource SuccessBrush}"
+                        Text="0" />
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!--  LIST  -->
+        <Border
+            Grid.Row="1"
+            Padding="6"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="14">
+
+            <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="HolidaysItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="6"
+                                    Padding="12"
+                                    Background="{DynamicResource SuccessSoftBrush}"
+                                    BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Ellipse
+                                            Width="9"
+                                            Height="9"
+                                            Margin="0,6,10,0"
+                                            VerticalAlignment="Top"
+                                            Fill="{DynamicResource SuccessDotBrush}" />
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock
+                                                FontSize="14"
+                                                FontWeight="SemiBold"
+                                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                                Text="{Binding Title}"
+                                                TextWrapping="Wrap" />
+
+                                            <TextBlock
+                                                Margin="0,3,0,0"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextMutedBrush}"
+                                                Text="{Binding Subtitle}"
+                                                Visibility="{Binding ShowSubtitle, Converter={StaticResource BoolToVis}}" />
+
+                                            <TextBlock
+                                                Margin="0,3,0,0"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextMutedBrush}"
+                                                Text="{Binding DateText}" />
+
+                                            <Border
+                                                Margin="0,6,0,0"
+                                                Padding="7,3"
+                                                HorizontalAlignment="Left"
+                                                Background="{DynamicResource SuccessSoftBrush}"
+                                                BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    Foreground="{DynamicResource SuccessBrush}"
+                                                    Text="{Binding BadgeText}" />
+                                            </Border>
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            VerticalAlignment="Top"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextMutedBrush}"
+                                            Text="{Binding WeekdayText}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBlock
+                    x:Name="EmptyState"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextDisabledBrush}"
+                    Text="No holidays in the available range."
+                    Visibility="Collapsed" />
+            </Grid>
+        </Border>
+
+        <!--  FOOTER  -->
+        <Button
+            x:Name="CloseButton"
+            Grid.Row="2"
+            Margin="0,16,0,0"
+            HorizontalAlignment="Right"
+            Click="Close_Click"
+            Content="Close"
+            IsCancel="True"
+            Style="{StaticResource SecondaryButton}" />
+    </Grid>
+</Window>

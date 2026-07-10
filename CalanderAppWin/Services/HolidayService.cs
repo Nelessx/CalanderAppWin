@@ -97,14 +97,35 @@ namespace NepaliCalendar.App.Services
                 .ToList();
         }
 
-        /// <summary>Upcoming holidays from a given AD date, spanning the current and next BS year.</summary>
+        /// <summary>
+        /// Upcoming holidays from a given AD date. Scans this BS year plus the next two so the
+        /// list still fills near a year boundary; years outside the loaded data simply yield
+        /// nothing rather than truncating the result.
+        /// </summary>
         public List<CalendarEvent> GetUpcoming(int bsYear, DateTime fromAdDate, int max)
         {
-            return GetHolidaysForBsYear(bsYear)
-                .Concat(GetHolidaysForBsYear(bsYear + 1))
+            var result = new List<CalendarEvent>();
+
+            for (int year = bsYear; year <= bsYear + 2; year++)
+                result.AddRange(GetHolidaysForBsYear(year));
+
+            return result
                 .Where(h => h.AdDate.Date >= fromAdDate.Date)
                 .OrderBy(h => h.AdDate)
                 .Take(max)
+                .ToList();
+        }
+
+        /// <summary>Every holiday across all BS years the calendar data supports, date-ordered.</summary>
+        public List<CalendarEvent> GetAllAcrossSupportedYears()
+        {
+            var result = new List<CalendarEvent>();
+
+            foreach (int year in _converter.GetAvailableYears())
+                result.AddRange(GetHolidaysForBsYear(year));
+
+            return result
+                .OrderBy(h => h.AdDate)
                 .ToList();
         }
     }

@@ -17,7 +17,7 @@ namespace NepaliCalendar.App
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly LocalizationService _localizationService = new();
         private readonly SettingsService _settingsService = new();
-        private readonly DashboardMockDataService _dashboardMockDataService = new();
+        private readonly QuickActionsService _quickActionsService = new();
         private readonly EventStore _eventStore = new();
         private readonly HolidayService _holidayService = new();
         private readonly CalendarExportService _exportService = new();
@@ -213,7 +213,7 @@ namespace NepaliCalendar.App
                 .GetUpcoming(todayBsYear, DateTime.Today, UpcomingEventsLimit)
                 .ConvertAll(MapHolidayToCard);
 
-            QuickActions = _dashboardMockDataService.GetQuickActions();
+            QuickActions = _quickActionsService.GetQuickActions();
             foreach (var action in QuickActions)
                 action.Title = _localizationService.GetQuickActionTitle(action.ActionKey);
 
@@ -221,7 +221,7 @@ namespace NepaliCalendar.App
             RefreshDashboardBindings();
         }
 
-        private static DashboardSectionItem MapEventToCard(CalendarEvent calendarEvent)
+        private DashboardSectionItem MapEventToCard(CalendarEvent calendarEvent)
         {
             return new DashboardSectionItem
             {
@@ -229,7 +229,7 @@ namespace NepaliCalendar.App
                 Title = calendarEvent.Title,
                 Subtitle = calendarEvent.BadgeText,
                 SecondaryText = calendarEvent.AdDate.ToString("MMMM d, yyyy"),
-                TertiaryText = calendarEvent.IsAllDay ? "All Day" : calendarEvent.TimeText,
+                TertiaryText = calendarEvent.IsAllDay ? _localizationService.GetAllDayText() : calendarEvent.TimeText,
                 BadgeText = calendarEvent.BadgeText,
                 ShowBadge = !string.IsNullOrWhiteSpace(calendarEvent.BadgeText),
                 IsEvent = true,
@@ -237,19 +237,31 @@ namespace NepaliCalendar.App
             };
         }
 
-        private static DashboardSectionItem MapHolidayToCard(CalendarEvent holiday)
+        private DashboardSectionItem MapHolidayToCard(CalendarEvent holiday)
         {
             return new DashboardSectionItem
             {
-                Title = holiday.Title,
-                Subtitle = holiday.NepaliTitle,
+                Title = _localizationService.GetHolidayDisplayTitle(holiday.Title, holiday.NepaliTitle),
+                Subtitle = _localizationService.GetHolidayAltTitle(holiday.Title, holiday.NepaliTitle),
                 SecondaryText = holiday.AdDate.ToString("MMMM d, yyyy"),
-                TertiaryText = holiday.DayText,
-                BadgeText = holiday.BadgeText,
-                ShowBadge = !string.IsNullOrWhiteSpace(holiday.BadgeText),
+                TertiaryText = _localizationService.GetWeekdayName(holiday.AdDate.DayOfWeek),
+                BadgeText = _localizationService.GetHolidayBadgeText(holiday.IsPublicHoliday),
+                ShowBadge = true,
                 IsEvent = false,
                 IsHoliday = true
             };
+        }
+
+        /// <summary>
+        /// Reload the dashboard and calendar after an event is added, edited, or deleted — and
+        /// push the change to any open desktop widgets so their dots/lists don't go stale until
+        /// the next midnight tick or restart.
+        /// </summary>
+        private void ReloadAfterDataChange()
+        {
+            LoadDashboardData();
+            LoadCalendar();
+            App.RefreshOpenWidgets();
         }
 
         private void LoadSelectedDateDashboardData()
@@ -643,10 +655,7 @@ namespace NepaliCalendar.App
                 var dialog = new AddEventWindow(calendarEvent) { Owner = this };
 
                 if (dialog.ShowDialog() == true)
-                {
-                    LoadDashboardData();
-                    LoadCalendar();
-                }
+                    ReloadAfterDataChange();
             }
             catch (Exception ex)
             {
@@ -669,8 +678,7 @@ namespace NepaliCalendar.App
                 return;
 
             _eventStore.Delete(id);
-            LoadDashboardData();
-            LoadCalendar();
+            ReloadAfterDataChange();
         }
 
         private void SelectDate(int year, int month, int day)
@@ -882,10 +890,7 @@ namespace NepaliCalendar.App
                 };
 
                 if (dialog.ShowDialog() == true)
-                {
-                    LoadDashboardData();
-                    LoadCalendar();
-                }
+                    ReloadAfterDataChange();
             }
             catch (Exception ex)
             {
@@ -905,8 +910,7 @@ namespace NepaliCalendar.App
                 window.ShowDialog();
 
                 // Events may have been added, edited, or deleted while the list was open.
-                LoadDashboardData();
-                LoadCalendar();
+                ReloadAfterDataChange();
             }
             catch (Exception ex)
             {
@@ -920,11 +924,19 @@ namespace NepaliCalendar.App
 
         private void OpenHolidayList()
         {
-            MessageBox.Show(
-                "Holiday list placeholder.",
-                "Holidays",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new HolidayListWindow(_localizationService.CurrentLanguage) { Owner = this };
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Holidays",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void OpenConverter()
@@ -948,12 +960,18 @@ namespace NepaliCalendar.App
         {
             try
             {
+                // Export both user events and the Nepali holidays across every supported year, so
+                // the .ics/.csv is a complete calendar rather than just the handful of user events.
                 var events = _eventStore.GetAll();
+                var holidays = _holidayService.GetAllAcrossSupportedYears();
 
-                if (events.Count == 0)
+                var all = new List<CalendarEvent>(events);
+                all.AddRange(holidays);
+
+                if (all.Count == 0)
                 {
                     MessageBox.Show(
-                        "There are no events to export yet.",
+                        "There is nothing to export yet.",
                         "Export",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -962,8 +980,8 @@ namespace NepaliCalendar.App
 
                 var dialog = new Microsoft.Win32.SaveFileDialog
                 {
-                    Title = "Export events",
-                    FileName = "nepali-calendar-events",
+                    Title = "Export calendar",
+                    FileName = "nepali-calendar",
                     DefaultExt = ".ics",
                     Filter = "iCalendar (*.ics)|*.ics|CSV spreadsheet (*.csv)|*.csv"
                 };
@@ -975,13 +993,13 @@ namespace NepaliCalendar.App
                     .Equals(".csv", StringComparison.OrdinalIgnoreCase);
 
                 string content = isCsv
-                    ? _exportService.ToCsv(events)
-                    : _exportService.ToICalendar(events);
+                    ? _exportService.ToCsv(all)
+                    : _exportService.ToICalendar(all);
 
                 System.IO.File.WriteAllText(dialog.FileName, content, System.Text.Encoding.UTF8);
 
                 MessageBox.Show(
-                    $"Exported {events.Count} event(s) to:\n{dialog.FileName}",
+                    $"Exported {events.Count} event(s) and {holidays.Count} holiday(s) to:\n{dialog.FileName}",
                     "Export complete",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);

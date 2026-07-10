@@ -17,7 +17,7 @@ namespace NepaliCalendar.App.Services
         public string ToCsv(IEnumerable<CalendarEvent> events)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge");
+            sb.AppendLine("Title,NepaliTitle,BsDate,AdDate,Weekday,Time,AllDay,Type,Badge,IsHoliday");
 
             foreach (var e in events.OrderBy(e => e.AdDate))
             {
@@ -35,7 +35,8 @@ namespace NepaliCalendar.App.Services
                     Csv(time),
                     Csv(e.IsAllDay ? "Yes" : "No"),
                     Csv(e.EventType),
-                    Csv(e.BadgeText)));
+                    Csv(e.BadgeText),
+                    Csv(e.IsHoliday ? "Yes" : "No")));
             }
 
             return sb.ToString();
@@ -73,6 +74,9 @@ namespace NepaliCalendar.App.Services
                 }
 
                 sb.Append(Fold($"SUMMARY:{Escape(e.Title)}"));
+
+                if (e.IsHoliday)
+                    sb.Append(Fold("CATEGORIES:HOLIDAY"));
 
                 string description = BuildDescription(e);
                 if (!string.IsNullOrEmpty(description))
