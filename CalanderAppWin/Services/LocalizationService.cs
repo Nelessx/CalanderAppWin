@@ -97,5 +97,46 @@ namespace NepaliCalendar.App.Services
                 _ => "English"
             };
         }
+
+        private bool Nepali => CurrentLanguage == AppLanguage.Nepali;
+
+        // --- Dashboard chrome ---
+        public string GetAppTitle() => Nepali ? "नेपाली पात्रो" : "Nepali Calendar";
+        public string GetSelectedDateBsLabel() => Nepali ? "चयन गरिएको मिति (वि.सं.)" : "Selected Date (BS)";
+        public string GetCorrespondingAdLabel() => Nepali ? "सम्बन्धित मिति (ई.सं.)" : "Corresponding Date (AD)";
+        public string GetSelectedDateHeader() => Nepali ? "चयन गरिएको मिति" : "Selected Date";
+        public string GetEventsOnSelectedDateLabel() => Nepali ? "यस मितिका कार्यक्रमहरू" : "Events on selected date";
+        public string GetHolidaysOnSelectedDateLabel() => Nepali ? "यस मितिका बिदाहरू" : "Holidays on selected date";
+        public string GetNoEventsText() => Nepali ? "यस मितिमा कुनै कार्यक्रम छैन।" : "No events for this date.";
+        public string GetNoHolidaysText() => Nepali ? "यस मितिमा कुनै बिदा छैन।" : "No holidays for this date.";
+        public string GetUpcomingEventsHeader() => Nepali ? "आगामी कार्यक्रमहरू" : "Upcoming Events";
+        public string GetHolidaysHeader() => Nepali ? "बिदाहरू" : "Holidays";
+        public string GetViewAllText() => Nepali ? "सबै हेर्नुहोस्" : "View All";
+        public string GetQuickActionsHeader() => Nepali ? "द्रुत कार्यहरू" : "Quick Actions";
+        public string GetTodayBadgeText() => Nepali ? "आज" : "Today";
+
+        // --- Legend ---
+        public string GetLegendTodayText() => Nepali ? "आज" : "Today";
+        public string GetLegendEventText() => Nepali ? "कार्यक्रम" : "Event";
+        public string GetLegendHolidayText() => Nepali ? "बिदा" : "Holiday";
+
+        // --- Footer ---
+        public string GetFooterLanguageText() => Nepali ? "भाषा: नेपाली" : "Language: English";
+        public string GetDashboardReadyText() => Nepali ? "ड्यासबोर्ड तयार छ" : "Dashboard ready";
+        public string GetSelectedIsTodayText() => Nepali ? "चयन गरिएको मिति आज हो" : "Selected date is today";
+        public string GetNoSelectedDateText() => Nepali ? "कुनै मिति चयन गरिएको छैन" : "No date selected";
+
+        // --- Quick action titles (keyed by ActionKey) ---
+        public string GetQuickActionTitle(string actionKey)
+        {
+            return actionKey switch
+            {
+                "add_event" => Nepali ? "कार्यक्रम थप्नुहोस्" : "Add Event",
+                "view_events" => Nepali ? "कार्यक्रम हेर्नुहोस्" : "View Events",
+                "converter" => Nepali ? "रूपान्तरक" : "Converter",
+                "export_calendar" => Nepali ? "निर्यात गर्नुहोस्" : "Export Calendar",
+                _ => actionKey
+            };
+        }
     }
 }

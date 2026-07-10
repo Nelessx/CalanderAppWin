@@ -47,6 +47,8 @@ namespace NepaliCalendar.App
 
         public int UpcomingEventsCount => UpcomingEventCards.Count;
         public int HolidayCount => HolidayCards.Count;
+        public string UpcomingEventsCountText => FormatCount(UpcomingEventCards.Count);
+        public string HolidayCountText => FormatCount(HolidayCards.Count);
         public int SelectedDateEventsCount => SelectedDateEventCards.Count;
         public int SelectedDateHolidaysCount => SelectedDateHolidayCards.Count;
 
@@ -71,7 +73,7 @@ namespace NepaliCalendar.App
             get
             {
                 if (!_hasSelectedDate)
-                    return "No date selected";
+                    return _localizationService.GetNoSelectedDateText();
 
                 bool useNepaliNumbers = _localizationService.CurrentLanguage == AppLanguage.Nepali;
 
@@ -93,21 +95,18 @@ namespace NepaliCalendar.App
             get
             {
                 if (!_hasSelectedDate)
-                    return "No selected date";
+                    return _localizationService.GetNoSelectedDateText();
 
                 return SelectedSidebarDateText;
             }
         }
 
-        public string FooterLanguageText =>
-            _localizationService.CurrentLanguage == AppLanguage.Nepali
-                ? "Language: नेपाली"
-                : "Language: English";
+        public string FooterLanguageText => _localizationService.GetFooterLanguageText();
 
         public string FooterStatusText =>
             IsSelectedDateToday
-                ? "Selected date is today"
-                : "Dashboard ready";
+                ? _localizationService.GetSelectedIsTodayText()
+                : _localizationService.GetDashboardReadyText();
 
         public MainWindow()
         {
@@ -175,7 +174,30 @@ namespace NepaliCalendar.App
             ThuHeader.Text = headers[4];
             FriHeader.Text = headers[5];
             SatHeader.Text = headers[6];
+
+            SelectedDateBsLabel.Text = _localizationService.GetSelectedDateBsLabel();
+            CorrespondingAdLabel.Text = _localizationService.GetCorrespondingAdLabel();
+            TotalDaysLabel.Text = _localizationService.GetTotalDaysText();
+            SelectedDateHeader.Text = _localizationService.GetSelectedDateHeader();
+            TodayIndicatorText.Text = _localizationService.GetTodayBadgeText();
+            EventsOnSelectedLabel.Text = _localizationService.GetEventsOnSelectedDateLabel();
+            HolidaysOnSelectedLabel.Text = _localizationService.GetHolidaysOnSelectedDateLabel();
+            NoEventsText.Text = _localizationService.GetNoEventsText();
+            NoHolidaysText.Text = _localizationService.GetNoHolidaysText();
+            UpcomingEventsHeader.Text = _localizationService.GetUpcomingEventsHeader();
+            HolidaysHeader.Text = _localizationService.GetHolidaysHeader();
+            QuickActionsHeader.Text = _localizationService.GetQuickActionsHeader();
+            ViewAllEventsButton.Content = _localizationService.GetViewAllText();
+            ViewAllHolidaysButton.Content = _localizationService.GetViewAllText();
+            LegendTodayText.Text = _localizationService.GetLegendTodayText();
+            LegendEventText.Text = _localizationService.GetLegendEventText();
+            LegendHolidayText.Text = _localizationService.GetLegendHolidayText();
         }
+
+        private string FormatCount(int value) =>
+            _localizationService.CurrentLanguage == AppLanguage.Nepali
+                ? _nepaliNumberService.ToNepaliNumber(value)
+                : value.ToString();
 
         private void LoadDashboardData()
         {
@@ -185,6 +207,8 @@ namespace NepaliCalendar.App
 
             HolidayCards = _dashboardMockDataService.GetHolidayCards();
             QuickActions = _dashboardMockDataService.GetQuickActions();
+            foreach (var action in QuickActions)
+                action.Title = _localizationService.GetQuickActionTitle(action.ActionKey);
 
             LoadSelectedDateDashboardData();
             RefreshDashboardBindings();
@@ -254,6 +278,8 @@ namespace NepaliCalendar.App
 
             OnPropertyChanged(nameof(UpcomingEventsCount));
             OnPropertyChanged(nameof(HolidayCount));
+            OnPropertyChanged(nameof(UpcomingEventsCountText));
+            OnPropertyChanged(nameof(HolidayCountText));
             OnPropertyChanged(nameof(SelectedDateEventsCount));
             OnPropertyChanged(nameof(SelectedDateHolidaysCount));
 

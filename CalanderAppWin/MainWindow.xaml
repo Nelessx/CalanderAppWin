@@ -225,7 +225,7 @@
                                             Margin="0,0,0,4"
                                             FontSize="13"
                                             Foreground="#5B6680"
-                                            Text="Selected Date (BS)" />
+                                            x:Name="SelectedDateBsLabel" Text="Selected Date (BS)" />
 
                                         <TextBlock
                                             x:Name="SelectedBsDateText"
@@ -274,7 +274,7 @@
                                             Margin="0,0,0,4"
                                             FontSize="13"
                                             Foreground="#5B6680"
-                                            Text="Corresponding Date (AD)" />
+                                            x:Name="CorrespondingAdLabel" Text="Corresponding Date (AD)" />
 
                                         <TextBlock
                                             x:Name="SelectedAdDateText"
@@ -323,7 +323,7 @@
                                             Margin="0,0,0,4"
                                             FontSize="13"
                                             Foreground="#5B6680"
-                                            Text="Total Days" />
+                                            x:Name="TotalDaysLabel" Text="Total Days" />
 
                                         <TextBlock
                                             x:Name="TotalDaysInfoText"
@@ -560,6 +560,7 @@
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="13"
+                                        x:Name="LegendTodayText"
                                         Foreground="#4A5670"
                                         Text="Today" />
                                 </StackPanel>
@@ -575,7 +576,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         Foreground="#4A5670"
-                                        Text="Event" />
+                                        x:Name="LegendEventText" Text="Event" />
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal">
@@ -589,7 +590,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         Foreground="#4A5670"
-                                        Text="Holiday" />
+                                        x:Name="LegendHolidayText" Text="Holiday" />
                                 </StackPanel>
 
                             </StackPanel>
@@ -617,7 +618,7 @@
                                     FontSize="20"
                                     FontWeight="Bold"
                                     Foreground="#0B1B45"
-                                    Text="Selected Date" />
+                                    x:Name="SelectedDateHeader" Text="Selected Date" />
 
                                 <TextBlock
                                     Margin="0,3,0,0"
@@ -648,6 +649,7 @@
                                     <TextBlock
                                         FontSize="11"
                                         FontWeight="SemiBold"
+                                        x:Name="TodayIndicatorText"
                                         Foreground="#1D4ED8"
                                         Text="Today" />
                                 </Border>
@@ -667,7 +669,7 @@
                                         FontSize="13"
                                         FontWeight="SemiBold"
                                         Foreground="#4A5670"
-                                        Text="Events on selected date" />
+                                        x:Name="EventsOnSelectedLabel" Text="Events on selected date" />
 
                                     <ItemsControl ItemsSource="{Binding SelectedDateEventCards}">
                                         <ItemsControl.ItemTemplate>
@@ -702,7 +704,7 @@
                                         Margin="0,0,0,8"
                                         FontSize="12"
                                         Foreground="#94A3B8"
-                                        Text="No events for this date.">
+                                        x:Name="NoEventsText" Text="No events for this date.">
 
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -722,7 +724,7 @@
                                         FontSize="13"
                                         FontWeight="SemiBold"
                                         Foreground="#4A5670"
-                                        Text="Holidays on selected date" />
+                                        x:Name="HolidaysOnSelectedLabel" Text="Holidays on selected date" />
 
                                     <ItemsControl ItemsSource="{Binding SelectedDateHolidayCards}">
                                         <ItemsControl.ItemTemplate>
@@ -757,7 +759,7 @@
                                         Margin="0,0,0,8"
                                         FontSize="12"
                                         Foreground="#94A3B8"
-                                        Text="No holidays for this date.">
+                                        x:Name="NoHolidaysText" Text="No holidays for this date.">
 
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -786,7 +788,7 @@
                                         FontSize="20"
                                         FontWeight="Bold"
                                         Foreground="#0B1B45"
-                                        Text="Upcoming Events" />
+                                        x:Name="UpcomingEventsHeader" Text="Upcoming Events" />
 
                                     <Border
                                         Margin="8,0,0,0"
@@ -799,7 +801,7 @@
                                             FontSize="12"
                                             FontWeight="SemiBold"
                                             Foreground="#1E40AF"
-                                            Text="{Binding UpcomingEventsCount}" />
+                                            Text="{Binding UpcomingEventsCountText}" />
                                     </Border>
                                 </StackPanel>
 
@@ -807,6 +809,7 @@
                                     Padding="10,4"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
+                                    x:Name="ViewAllEventsButton"
                                     Click="ViewAllEventsButton_Click"
                                     Content="View All"
                                     FontSize="12" />
@@ -874,7 +877,7 @@
                                         FontSize="20"
                                         FontWeight="Bold"
                                         Foreground="#0B1B45"
-                                        Text="Holidays" />
+                                        x:Name="HolidaysHeader" Text="Holidays" />
 
                                     <Border
                                         Margin="8,0,0,0"
@@ -887,7 +890,7 @@
                                             FontSize="12"
                                             FontWeight="SemiBold"
                                             Foreground="#166534"
-                                            Text="{Binding HolidayCount}" />
+                                            Text="{Binding HolidayCountText}" />
                                     </Border>
                                 </StackPanel>
 
@@ -895,6 +898,7 @@
                                     Padding="10,4"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
+                                    x:Name="ViewAllHolidaysButton"
                                     Click="ViewAllHolidaysButton_Click"
                                     Content="View All"
                                     FontSize="12" />
@@ -977,7 +981,7 @@
                                 FontSize="20"
                                 FontWeight="Bold"
                                 Foreground="#0B1B45"
-                                Text="Quick Actions" />
+                                x:Name="QuickActionsHeader" Text="Quick Actions" />
 
                             <ItemsControl ItemsSource="{Binding QuickActions}">
                                 <ItemsControl.ItemsPanel>
