@@ -15,6 +15,8 @@ namespace NepaliCalendar.App.Views
     {
         private readonly BsDateConverter _converter = new();
         private bool _isInitializing;
+        private DateTime _minAd;
+        private DateTime _maxAd;
 
         public ConverterWindow()
         {
@@ -57,20 +59,33 @@ namespace NepaliCalendar.App.Views
 
             PopulateBsDayDropdown(todayBs.Day);
 
-            // --- AD -> BS input, range-limited to the supported window ---
-            DateTime minAd = _converter.ConvertToAd(years.First(), 1, 1);
+            // --- AD -> BS inputs, range-limited to the supported window ---
+            _minAd = _converter.ConvertToAd(years.First(), 1, 1);
             int lastYear = years.Last();
             int lastMonthDays = _converter.GetMonthDays(lastYear, 12).Count;
-            DateTime maxAd = _converter.ConvertToAd(lastYear, 12, lastMonthDays);
+            _maxAd = _converter.ConvertToAd(lastYear, 12, lastMonthDays);
 
-            AdDatePicker.DisplayDateStart = minAd;
-            AdDatePicker.DisplayDateEnd = maxAd;
+            _isInitializing = true;
+
+            AdYearComboBox.ItemsSource = Enumerable.Range(_minAd.Year, _maxAd.Year - _minAd.Year + 1).ToList();
+
+            AdMonthComboBox.ItemsSource = Enumerable.Range(1, 12)
+                .Select(m => new MonthOption(m, $"{m} - {new DateTime(2000, m, 1):MMMM}"))
+                .ToList();
+            AdMonthComboBox.DisplayMemberPath = nameof(MonthOption.Text);
+            AdMonthComboBox.SelectedValuePath = nameof(MonthOption.Value);
 
             DateTime today = DateTime.Today;
-            // Setting SelectedDate raises SelectedDateChanged, which runs ConvertAdToBs().
-            AdDatePicker.SelectedDate = today >= minAd && today <= maxAd ? today : minAd;
+            DateTime seed = today >= _minAd && today <= _maxAd ? today : _minAd;
+            AdYearComboBox.SelectedItem = seed.Year;
+            AdMonthComboBox.SelectedValue = seed.Month;
+
+            _isInitializing = false;
+
+            PopulateAdDayDropdown(seed.Day);
 
             ConvertBsToAd();
+            ConvertAdToBs();
         }
 
         private void PopulateBsDayDropdown(int preferredDay)
@@ -139,8 +154,35 @@ namespace NepaliCalendar.App.Views
             }
         }
 
-        private void AdDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private void PopulateAdDayDropdown(int preferredDay)
         {
+            if (AdYearComboBox.SelectedItem is not int year || AdMonthComboBox.SelectedValue is not int month)
+                return;
+
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+            var days = Enumerable.Range(1, daysInMonth).ToList();
+
+            _isInitializing = true;
+            AdDayComboBox.ItemsSource = days;
+            AdDayComboBox.SelectedItem = days.Contains(preferredDay) ? preferredDay : days[^1];
+            _isInitializing = false;
+        }
+
+        private void AdSelector_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isInitializing)
+                return;
+
+            int preferred = AdDayComboBox.SelectedItem is int existing ? existing : 1;
+            PopulateAdDayDropdown(preferred);
+            ConvertAdToBs();
+        }
+
+        private void AdDay_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isInitializing)
+                return;
+
             ConvertAdToBs();
         }
 
@@ -150,10 +192,21 @@ namespace NepaliCalendar.App.Views
             if (AdToBsResultText == null)
                 return;
 
-            if (AdDatePicker.SelectedDate is not DateTime adDate)
+            if (AdYearComboBox.SelectedItem is not int year ||
+                AdMonthComboBox.SelectedValue is not int month ||
+                AdDayComboBox.SelectedItem is not int day)
             {
                 AdToBsResultText.Text = "—";
                 AdToBsDayText.Text = string.Empty;
+                return;
+            }
+
+            var adDate = new DateTime(year, month, day);
+
+            if (adDate < _minAd || adDate > _maxAd)
+            {
+                AdToBsResultText.Text = "—";
+                AdToBsDayText.Text = "Outside supported range";
                 return;
             }
 
@@ -163,10 +216,10 @@ namespace NepaliCalendar.App.Views
                 AdToBsResultText.Text = $"{_converter.GetNepaliMonthName(bs.Month)} {bs.Day}, {bs.Year}";
                 AdToBsDayText.Text = bs.DayName;
             }
-            catch (Exception ex)
+            catch
             {
                 AdToBsResultText.Text = "—";
-                AdToBsDayText.Text = ex.Message;
+                AdToBsDayText.Text = "Outside supported range";
             }
         }
 

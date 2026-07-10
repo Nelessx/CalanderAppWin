@@ -177,7 +177,8 @@
                             Margin="0,0,0,14"
                             HorizontalAlignment="Center"
                             FontSize="34"
-                            FontWeight="Bold" />
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextPrimaryBrush}" />
 
                         <!--  SELECTED DATE SUMMARY  -->
                         <Border
@@ -346,6 +347,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Sun" />
 
                             <TextBlock
@@ -353,6 +355,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Mon" />
 
                             <TextBlock
@@ -360,6 +363,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Tue" />
 
                             <TextBlock
@@ -367,6 +371,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Wed" />
 
                             <TextBlock
@@ -374,6 +379,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Thu" />
 
                             <TextBlock
@@ -381,6 +387,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="Fri" />
 
                             <TextBlock

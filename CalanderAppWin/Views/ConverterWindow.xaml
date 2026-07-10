@@ -33,11 +33,6 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
-        <Style TargetType="DatePicker">
-            <Setter Property="Height" Value="36" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-        </Style>
 
         <Style x:Key="SectionCard" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBrush}" />
@@ -165,9 +160,30 @@
                     <TextBlock Style="{StaticResource SectionTitle}" Text="Gregorian (AD)  →  Bikram Sambat" />
 
                     <TextBlock Style="{StaticResource FieldLabel}" Text="AD date" />
-                    <DatePicker
-                        x:Name="AdDatePicker"
-                        SelectedDateChanged="AdDatePicker_SelectedDateChanged" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                            x:Name="AdYearComboBox"
+                            Grid.Column="0"
+                            SelectionChanged="AdSelector_Changed" />
+
+                        <ComboBox
+                            x:Name="AdMonthComboBox"
+                            Grid.Column="2"
+                            SelectionChanged="AdSelector_Changed" />
+
+                        <ComboBox
+                            x:Name="AdDayComboBox"
+                            Grid.Column="4"
+                            SelectionChanged="AdDay_Changed" />
+                    </Grid>
 
                     <Border Style="{StaticResource ResultCard}">
                         <StackPanel>
