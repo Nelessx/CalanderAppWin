@@ -60,6 +60,27 @@ namespace NepaliCalendar.App.Services
             };
         }
 
+        /// <summary>
+        /// Attempts to convert an AD date to BS without throwing when the date falls
+        /// outside the loaded data range. Returns false (and null) instead of throwing.
+        /// </summary>
+        public bool TryConvertFromAd(DateTime adDate, out BsDate? bsDate)
+        {
+            try
+            {
+                bsDate = ConvertFromAd(adDate);
+                return true;
+            }
+            catch
+            {
+                bsDate = null;
+                return false;
+            }
+        }
+
+        /// <summary>True if the given AD date can be represented in the loaded BS data range.</summary>
+        public bool IsAdDateSupported(DateTime adDate) => TryConvertFromAd(adDate, out _);
+
         public DateTime ConvertToAd(int bsYear, int bsMonth, int bsDay)
         {
             if (bsYear < _referenceBsDate.Year)
@@ -89,7 +110,10 @@ namespace NepaliCalendar.App.Services
         {
             var yearData = GetYearData(year);
             int totalDays = yearData.MonthDays[month - 1];
-            var todayBs = ConvertFromAd(DateTime.Today);
+
+            // Today may fall outside the loaded range (e.g. far-future clock); if so,
+            // simply mark nothing as "today" rather than throwing while rendering a month.
+            TryConvertFromAd(DateTime.Today, out var todayBs);
 
             var days = new List<CalendarDay>();
 
@@ -103,7 +127,7 @@ namespace NepaliCalendar.App.Services
                     Month = month,
                     Day = day,
                     DayName = adDate.DayOfWeek.ToString(),
-                    IsToday = todayBs.Year == year && todayBs.Month == month && todayBs.Day == day
+                    IsToday = todayBs != null && todayBs.Year == year && todayBs.Month == month && todayBs.Day == day
                 });
             }
 

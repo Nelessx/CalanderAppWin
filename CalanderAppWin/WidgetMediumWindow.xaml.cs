@@ -27,29 +27,30 @@ namespace NepaliCalendar.App
         {
             LoadLanguageFromSettings();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
     ? GetNepaliDayName(todayAd.DayOfWeek)
     : todayAd.DayOfWeek.ToString();
 
-            string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
-            string bsYearText = FormatBsNumber(todayBs.Year);
-            string bsDayText = FormatBsNumber(todayBs.Day);
-
             MediumWeekdayText.Text = weekdayText;
+            MediumAdDateText.Text = FormatAdDateMonthFirst(todayAd);
 
-            if (LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali)
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
             {
-                MediumBsDateText.Text = $"{bsYearText} {bsMonthName} {bsDayText}";
+                string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
+                string bsYearText = FormatBsNumber(todayBs.Year);
+                string bsDayText = FormatBsNumber(todayBs.Day);
+
+                MediumBsDateText.Text = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
+                    ? $"{bsYearText} {bsMonthName} {bsDayText}"
+                    : $"{bsMonthName} {bsDayText}, {bsYearText}";
             }
             else
             {
-                MediumBsDateText.Text = $"{bsMonthName} {bsDayText}, {bsYearText}";
+                MediumBsDateText.Text = "—";
             }
-
-            MediumAdDateText.Text = FormatAdDateMonthFirst(todayAd);
         }
 
         public void RefreshWidget()

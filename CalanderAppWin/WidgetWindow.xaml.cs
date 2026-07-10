@@ -19,9 +19,18 @@ namespace NepaliCalendar.App
         {
             InitializeComponent();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
-            _displayYear = todayBs.Year;
-            _displayMonth = todayBs.Month;
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                _displayYear = todayBs.Year;
+                _displayMonth = todayBs.Month;
+            }
+            else
+            {
+                var years = Converter.GetAvailableYears();
+                _displayYear = years.Count > 0 ? years[^1] : 2081;
+                _displayMonth = 1;
+            }
 
             LoadWidgetData();
             UpdateWidgetSizeMenuState();
@@ -36,17 +45,26 @@ namespace NepaliCalendar.App
         {
             LoadLanguageFromSettings();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
      ? GetNepaliDayName(todayAd.DayOfWeek)
      : todayAd.DayOfWeek.ToString();
 
-            LargeBsMonthYearText.Text = FormatBsMonthYear(todayBs.Month, todayBs.Year);
-            LargeDayText.Text = FormatBsNumber(todayBs.Day);
             LargeWeekdayText.Text = weekdayText;
             LargeAdDateText.Text = FormatAdDate(todayAd);
+
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                LargeBsMonthYearText.Text = FormatBsMonthYear(todayBs.Month, todayBs.Year);
+                LargeDayText.Text = FormatBsNumber(todayBs.Day);
+            }
+            else
+            {
+                LargeBsMonthYearText.Text = FormatBsMonthYear(_displayMonth, _displayYear);
+                LargeDayText.Text = "—";
+            }
 
             LoadCalendarGrid();
         }
@@ -71,10 +89,12 @@ namespace NepaliCalendar.App
 
         private void RefreshAtMidnight()
         {
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
-
-            _displayYear = todayBs.Year;
-            _displayMonth = todayBs.Month;
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                _displayYear = todayBs.Year;
+                _displayMonth = todayBs.Month;
+            }
 
             LoadWidgetData();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using NepaliCalendar.App.Models;
@@ -15,51 +16,92 @@ namespace NepaliCalendar.App
         {
             base.OnStartup(e);
 
-            var settings = _settingsService.Load();
+            RegisterGlobalExceptionHandlers();
 
+            try
+            {
+                var settings = _settingsService.Load();
+                OpenStartupWidget(settings);
+            }
+            catch (Exception ex)
+            {
+                ShowFriendlyError("The calendar could not open its widget. Opening the main window instead.", ex);
+
+                try
+                {
+                    OpenMainAppWindow();
+                }
+                catch (Exception innerEx)
+                {
+                    ShowFriendlyError("The calendar could not start.", innerEx);
+                    Shutdown();
+                }
+            }
+        }
+
+        private static void OpenStartupWidget(AppSettings settings)
+        {
             switch (settings.SelectedWidgetSize)
             {
                 case WidgetSize.Small:
                     if (settings.HasSavedSmallWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Small,
-                            settings.SmallWidgetLeft,
-                            settings.SmallWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Small, settings.SmallWidgetLeft, settings.SmallWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Small);
-                    }
                     break;
 
                 case WidgetSize.Medium:
                     if (settings.HasSavedMediumWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Medium,
-                            settings.MediumWidgetLeft,
-                            settings.MediumWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Medium, settings.MediumWidgetLeft, settings.MediumWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Medium);
-                    }
                     break;
 
                 default:
                     if (settings.HasSavedLargeWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Large,
-                            settings.LargeWidgetLeft,
-                            settings.LargeWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Large, settings.LargeWidgetLeft, settings.LargeWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Large);
-                    }
                     break;
+            }
+        }
+
+        private void RegisterGlobalExceptionHandlers()
+        {
+            // UI-thread exceptions: report and keep the app alive where possible.
+            DispatcherUnhandledException += (_, args) =>
+            {
+                ShowFriendlyError("An unexpected error occurred.", args.Exception);
+                args.Handled = true;
+                CheckForShutdown();
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            {
+                if (args.ExceptionObject is Exception ex)
+                    ShowFriendlyError("An unexpected error occurred.", ex);
+            };
+
+            TaskScheduler.UnobservedTaskException += (_, args) =>
+            {
+                args.SetObserved();
+                ShowFriendlyError("An unexpected background error occurred.", args.Exception);
+            };
+        }
+
+        private static void ShowFriendlyError(string message, Exception ex)
+        {
+            try
+            {
+                MessageBox.Show(
+                    message + "\n\n" + ex.Message,
+                    "Nepali Calendar",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            catch
+            {
+                // Never let error reporting itself bring down the app.
             }
         }
 

@@ -18,6 +18,12 @@ namespace NepaliCalendar.App
             LocalizationService.CurrentLanguage = settings.Language;
         }
 
+        /// <summary>Today's BS date, or null if today falls outside the loaded data range.</summary>
+        protected BsDate? TryGetTodayBs()
+        {
+            return Converter.TryConvertFromAd(DateTime.Today, out var bs) ? bs : null;
+        }
+
         protected bool UseNepaliNumbers =>
             LocalizationService.CurrentLanguage == AppLanguage.Nepali;
 

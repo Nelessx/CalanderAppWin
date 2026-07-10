@@ -56,7 +56,8 @@ namespace NepaliCalendar.App
                 if (!_hasSelectedDate)
                     return false;
 
-                var todayBs = _converter.ConvertFromAd(DateTime.Today);
+                if (!_converter.TryConvertFromAd(DateTime.Today, out var todayBs) || todayBs is null)
+                    return false;
 
                 return _selectedYear == todayBs.Year
                     && _selectedMonth == todayBs.Month
