@@ -19,6 +19,7 @@ namespace NepaliCalendar.App
         private readonly SettingsService _settingsService = new();
         private readonly DashboardMockDataService _dashboardMockDataService = new();
         private readonly EventStore _eventStore = new();
+        private readonly CalendarExportService _exportService = new();
 
         private const int UpcomingEventsLimit = 5;
 
@@ -837,11 +838,54 @@ namespace NepaliCalendar.App
 
         private void ExportCalendar()
         {
-            MessageBox.Show(
-                "Export calendar placeholder.",
-                "Export Calendar",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var events = _eventStore.GetAll();
+
+                if (events.Count == 0)
+                {
+                    MessageBox.Show(
+                        "There are no events to export yet.",
+                        "Export",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                var dialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "Export events",
+                    FileName = "nepali-calendar-events",
+                    DefaultExt = ".ics",
+                    Filter = "iCalendar (*.ics)|*.ics|CSV spreadsheet (*.csv)|*.csv"
+                };
+
+                if (dialog.ShowDialog(this) != true)
+                    return;
+
+                bool isCsv = System.IO.Path.GetExtension(dialog.FileName)
+                    .Equals(".csv", StringComparison.OrdinalIgnoreCase);
+
+                string content = isCsv
+                    ? _exportService.ToCsv(events)
+                    : _exportService.ToICalendar(events);
+
+                System.IO.File.WriteAllText(dialog.FileName, content, System.Text.Encoding.UTF8);
+
+                MessageBox.Show(
+                    $"Exported {events.Count} event(s) to:\n{dialog.FileName}",
+                    "Export complete",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Export failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void OpenSettings()
