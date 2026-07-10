@@ -35,6 +35,15 @@ namespace NepaliCalendar.App.Views
             LanguageComboBox.SelectedValuePath = nameof(Option.Value);
             LanguageComboBox.SelectedValue = settings.Language;
 
+            ThemeComboBox.ItemsSource = new List<Option>
+            {
+                new(AppTheme.Light, "Light"),
+                new(AppTheme.Dark, "Dark")
+            };
+            ThemeComboBox.DisplayMemberPath = nameof(Option.Text);
+            ThemeComboBox.SelectedValuePath = nameof(Option.Value);
+            ThemeComboBox.SelectedValue = settings.Theme;
+
             WidgetSizeComboBox.ItemsSource = new List<Option>
             {
                 new(WidgetSize.Small, "Small"),
@@ -58,7 +67,12 @@ namespace NepaliCalendar.App.Views
             if (WidgetSizeComboBox.SelectedValue is WidgetSize widgetSize)
                 settings.SelectedWidgetSize = widgetSize;
 
+            if (ThemeComboBox.SelectedValue is AppTheme theme)
+                settings.Theme = theme;
+
             _settingsService.Save(settings);
+
+            App.ApplyTheme(settings.Theme);
 
             try
             {

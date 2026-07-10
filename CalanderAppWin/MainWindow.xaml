@@ -34,8 +34,8 @@
                 Grid.Row="0"
                 Margin="0,0,0,14"
                 Padding="10"
-                Background="#FAFBFD"
-                BorderBrush="#D9E2F0"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="14">
 
@@ -72,7 +72,7 @@
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
                             FontSize="13"
-                            Foreground="#4A5670"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
                             Text="Language" />
 
                         <ComboBox
@@ -101,7 +101,7 @@
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
                             FontSize="13"
-                            Foreground="#4A5670"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
                             Text="Month" />
 
                         <ComboBox
@@ -116,7 +116,7 @@
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
                             FontSize="13"
-                            Foreground="#4A5670"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
                             Text="Year" />
 
                         <ComboBox
@@ -156,8 +156,8 @@
                 <Border
                     Grid.Column="0"
                     Padding="18"
-                    Background="White"
-                    BorderBrush="#D9E2F0"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="18">
 
@@ -184,8 +184,8 @@
                             Grid.Row="1"
                             Margin="0,0,0,16"
                             Padding="18"
-                            Background="#FAFBFD"
-                            BorderBrush="#D9E2F0"
+                            Background="{DynamicResource SurfaceBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="12">
 
@@ -209,14 +209,14 @@
                                         Width="44"
                                         Height="44"
                                         Margin="0,0,14,0"
-                                        Background="#EFEAFF"
+                                        Background="{DynamicResource AccentSoftBrush}"
                                         CornerRadius="22">
 
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="22"
-                                            Foreground="#6D4AFF"
+                                            Foreground="{DynamicResource AccentTextBrush}"
                                             Text="▣" />
                                     </Border>
 
@@ -224,7 +224,7 @@
                                         <TextBlock
                                             Margin="0,0,0,4"
                                             FontSize="13"
-                                            Foreground="#5B6680"
+                                            Foreground="{DynamicResource TextMutedBrush}"
                                             x:Name="SelectedDateBsLabel" Text="Selected Date (BS)" />
 
                                         <TextBlock
@@ -232,12 +232,12 @@
                                             Margin="0,0,0,2"
                                             FontSize="18"
                                             FontWeight="SemiBold"
-                                            Foreground="#6D4AFF" />
+                                            Foreground="{DynamicResource AccentTextBrush}" />
 
                                         <TextBlock
                                             x:Name="SelectedBsDayText"
                                             FontSize="13"
-                                            Foreground="#4A5670" />
+                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                                     </StackPanel>
                                 </Grid>
 
@@ -245,7 +245,7 @@
                                     Grid.Column="1"
                                     Width="1"
                                     Margin="20,0"
-                                    Background="#D9E2F0" />
+                                    Background="{DynamicResource BorderBrush}" />
 
                                 <!--  AD DATE  -->
                                 <Grid Grid.Column="2">
@@ -258,14 +258,14 @@
                                         Width="44"
                                         Height="44"
                                         Margin="0,0,14,0"
-                                        Background="#EAFBF0"
+                                        Background="{DynamicResource SuccessSoftBrush}"
                                         CornerRadius="22">
 
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="22"
-                                            Foreground="#16A34A"
+                                            Foreground="{DynamicResource SuccessBrush}"
                                             Text="□" />
                                     </Border>
 
@@ -273,7 +273,7 @@
                                         <TextBlock
                                             Margin="0,0,0,4"
                                             FontSize="13"
-                                            Foreground="#5B6680"
+                                            Foreground="{DynamicResource TextMutedBrush}"
                                             x:Name="CorrespondingAdLabel" Text="Corresponding Date (AD)" />
 
                                         <TextBlock
@@ -281,12 +281,12 @@
                                             Margin="0,0,0,2"
                                             FontSize="18"
                                             FontWeight="SemiBold"
-                                            Foreground="#16A34A" />
+                                            Foreground="{DynamicResource SuccessBrush}" />
 
                                         <TextBlock
                                             x:Name="SelectedAdDayText"
                                             FontSize="13"
-                                            Foreground="#4A5670" />
+                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                                     </StackPanel>
                                 </Grid>
 
@@ -294,7 +294,7 @@
                                     Grid.Column="3"
                                     Width="1"
                                     Margin="20,0"
-                                    Background="#D9E2F0" />
+                                    Background="{DynamicResource BorderBrush}" />
 
                                 <!--  TOTAL DAYS  -->
                                 <Grid Grid.Column="4" MinWidth="120">
@@ -307,14 +307,14 @@
                                         Width="44"
                                         Height="44"
                                         Margin="0,0,14,0"
-                                        Background="#F1EEFF"
+                                        Background="{DynamicResource AccentSoftBrush}"
                                         CornerRadius="22">
 
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="22"
-                                            Foreground="#6D4AFF"
+                                            Foreground="{DynamicResource AccentTextBrush}"
                                             Text="◷" />
                                     </Border>
 
@@ -322,14 +322,14 @@
                                         <TextBlock
                                             Margin="0,0,0,4"
                                             FontSize="13"
-                                            Foreground="#5B6680"
+                                            Foreground="{DynamicResource TextMutedBrush}"
                                             x:Name="TotalDaysLabel" Text="Total Days" />
 
                                         <TextBlock
                                             x:Name="TotalDaysInfoText"
                                             FontSize="20"
                                             FontWeight="SemiBold"
-                                            Foreground="#6D4AFF" />
+                                            Foreground="{DynamicResource AccentTextBrush}" />
                                     </StackPanel>
                                 </Grid>
                             </Grid>
@@ -388,7 +388,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
-                                Foreground="Red"
+                                Foreground="{DynamicResource SaturdayBrush}"
                                 Text="Sat" />
                         </UniformGrid>
 
@@ -418,24 +418,24 @@
 
                                         <Border.Style>
                                             <Style TargetType="Border">
-                                                <Setter Property="Background" Value="White" />
-                                                <Setter Property="BorderBrush" Value="#E1E7F0" />
+                                                <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtleBrush}" />
                                                 <Setter Property="BorderThickness" Value="1" />
                                                 <Setter Property="CornerRadius" Value="4" />
 
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-                                                        <Setter Property="Background" Value="#FAFBFD" />
+                                                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
                                                     </DataTrigger>
 
                                                     <DataTrigger Binding="{Binding IsToday}" Value="True">
-                                                        <Setter Property="BorderBrush" Value="#1E90FF" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource TodayBrush}" />
                                                         <Setter Property="BorderThickness" Value="1.5" />
                                                     </DataTrigger>
 
                                                     <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="Background" Value="#EAF3FF" />
-                                                        <Setter Property="BorderBrush" Value="#7C5CFA" />
+                                                        <Setter Property="Background" Value="{DynamicResource InfoSoftBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource EventDotBrush}" />
                                                         <Setter Property="BorderThickness" Value="2" />
                                                     </DataTrigger>
 
@@ -444,8 +444,8 @@
                                                             <Condition Binding="{Binding IsToday}" Value="True" />
                                                             <Condition Binding="{Binding IsSelected}" Value="True" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Background" Value="#DCEEFF" />
-                                                        <Setter Property="BorderBrush" Value="#1E90FF" />
+                                                        <Setter Property="Background" Value="{DynamicResource TodaySoftBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource TodayBrush}" />
                                                         <Setter Property="BorderThickness" Value="2" />
                                                     </MultiDataTrigger>
                                                 </Style.Triggers>
@@ -462,11 +462,11 @@
 
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="#0B1B45" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
 
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-                                                                <Setter Property="Foreground" Value="#CBD5E1" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource TextDisabledBrush}" />
                                                             </DataTrigger>
 
                                                             <MultiDataTrigger>
@@ -474,11 +474,11 @@
                                                                     <Condition Binding="{Binding IsCurrentMonth}" Value="True" />
                                                                     <Condition Binding="{Binding DayOfWeekIndex}" Value="6" />
                                                                 </MultiDataTrigger.Conditions>
-                                                                <Setter Property="Foreground" Value="#E11D48" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource SaturdayBrush}" />
                                                             </MultiDataTrigger>
 
                                                             <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                                <Setter Property="Foreground" Value="#6D4AFF" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -497,7 +497,7 @@
                                                     Width="6"
                                                     Height="6"
                                                     Margin="0,0,4,0"
-                                                    Fill="#7C5CFA">
+                                                    Fill="{DynamicResource EventDotBrush}">
 
                                                     <Ellipse.Style>
                                                         <Style TargetType="Ellipse">
@@ -516,7 +516,7 @@
                                                 <Ellipse
                                                     Width="6"
                                                     Height="6"
-                                                    Fill="#22C55E">
+                                                    Fill="{DynamicResource SuccessDotBrush}">
 
                                                     <Ellipse.Style>
                                                         <Style TargetType="Ellipse">
@@ -543,8 +543,8 @@
                             Margin="0,12,0,0"
                             Padding="12,8"
                             HorizontalAlignment="Center"
-                            Background="#FAFBFD"
-                            BorderBrush="#D9E2F0"
+                            Background="{DynamicResource SurfaceBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="12">
 
@@ -556,12 +556,12 @@
                                         Height="8"
                                         Margin="0,0,6,0"
                                         VerticalAlignment="Center"
-                                        Fill="#1E90FF" />
+                                        Fill="{DynamicResource TodayBrush}" />
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         x:Name="LegendTodayText"
-                                        Foreground="#4A5670"
+                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                         Text="Today" />
                                 </StackPanel>
 
@@ -571,11 +571,11 @@
                                         Height="8"
                                         Margin="0,0,6,0"
                                         VerticalAlignment="Center"
-                                        Fill="#7C5CFA" />
+                                        Fill="{DynamicResource EventDotBrush}" />
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="13"
-                                        Foreground="#4A5670"
+                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                         x:Name="LegendEventText" Text="Event" />
                                 </StackPanel>
 
@@ -585,11 +585,11 @@
                                         Height="8"
                                         Margin="0,0,6,0"
                                         VerticalAlignment="Center"
-                                        Fill="#22C55E" />
+                                        Fill="{DynamicResource SuccessDotBrush}" />
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontSize="13"
-                                        Foreground="#4A5670"
+                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                         x:Name="LegendHolidayText" Text="Holiday" />
                                 </StackPanel>
 
@@ -604,8 +604,8 @@
                     Grid.Column="1"
                     Margin="18,0,0,0"
                     Padding="18"
-                    Background="#FAFBFD"
-                    BorderBrush="#D9E2F0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="18">
 
@@ -617,13 +617,13 @@
                                 <TextBlock
                                     FontSize="20"
                                     FontWeight="Bold"
-                                    Foreground="#0B1B45"
+                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                     x:Name="SelectedDateHeader" Text="Selected Date" />
 
                                 <TextBlock
                                     Margin="0,3,0,0"
                                     FontSize="13"
-                                    Foreground="#5B6680"
+                                    Foreground="{DynamicResource TextMutedBrush}"
                                     Text="{Binding SelectedSidebarDateText}" />
 
                                 <!--  TODAY INDICATOR  -->
@@ -631,7 +631,7 @@
                                     Margin="0,6,0,0"
                                     Padding="6,2"
                                     HorizontalAlignment="Left"
-                                    Background="#DBEAFE"
+                                    Background="{DynamicResource InfoSoftBrush}"
                                     CornerRadius="6">
 
                                     <Border.Style>
@@ -650,7 +650,7 @@
                                         FontSize="11"
                                         FontWeight="SemiBold"
                                         x:Name="TodayIndicatorText"
-                                        Foreground="#1D4ED8"
+                                        Foreground="{DynamicResource InfoBrush}"
                                         Text="Today" />
                                 </Border>
                             </StackPanel>
@@ -658,8 +658,8 @@
                             <Border
                                 Margin="0,0,0,14"
                                 Padding="12"
-                                Background="White"
-                                BorderBrush="#D9E2F0"
+                                Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="12">
 
@@ -668,7 +668,7 @@
                                         Margin="0,0,0,8"
                                         FontSize="13"
                                         FontWeight="SemiBold"
-                                        Foreground="#4A5670"
+                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                         x:Name="EventsOnSelectedLabel" Text="Events on selected date" />
 
                                     <ItemsControl ItemsSource="{Binding SelectedDateEventCards}">
@@ -677,8 +677,8 @@
                                                 <Border
                                                     Margin="0,0,0,8"
                                                     Padding="10"
-                                                    Background="#F8F7FF"
-                                                    BorderBrush="#DCD6FF"
+                                                    Background="{DynamicResource CardMutedBrush}"
+                                                    BorderBrush="{DynamicResource AccentSoftBorderBrush}"
                                                     BorderThickness="1"
                                                     CornerRadius="10">
 
@@ -686,13 +686,13 @@
                                                         <TextBlock
                                                             FontSize="13"
                                                             FontWeight="SemiBold"
-                                                            Foreground="#0B1B45"
+                                                            Foreground="{DynamicResource TextPrimaryBrush}"
                                                             Text="{Binding Title}" />
 
                                                         <TextBlock
                                                             Margin="0,3,0,0"
                                                             FontSize="12"
-                                                            Foreground="#5B6680"
+                                                            Foreground="{DynamicResource TextMutedBrush}"
                                                             Text="{Binding TertiaryText}" />
                                                     </StackPanel>
                                                 </Border>
@@ -703,7 +703,7 @@
                                     <TextBlock
                                         Margin="0,0,0,8"
                                         FontSize="12"
-                                        Foreground="#94A3B8"
+                                        Foreground="{DynamicResource TextDisabledBrush}"
                                         x:Name="NoEventsText" Text="No events for this date.">
 
                                         <TextBlock.Style>
@@ -723,7 +723,7 @@
                                         Margin="0,8,0,8"
                                         FontSize="13"
                                         FontWeight="SemiBold"
-                                        Foreground="#4A5670"
+                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                         x:Name="HolidaysOnSelectedLabel" Text="Holidays on selected date" />
 
                                     <ItemsControl ItemsSource="{Binding SelectedDateHolidayCards}">
@@ -732,8 +732,8 @@
                                                 <Border
                                                     Margin="0,0,0,8"
                                                     Padding="10"
-                                                    Background="#F6FFF9"
-                                                    BorderBrush="#BFE8CE"
+                                                    Background="{DynamicResource SuccessSoftBrush}"
+                                                    BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
                                                     BorderThickness="1"
                                                     CornerRadius="10">
 
@@ -741,13 +741,13 @@
                                                         <TextBlock
                                                             FontSize="13"
                                                             FontWeight="SemiBold"
-                                                            Foreground="#0B1B45"
+                                                            Foreground="{DynamicResource TextPrimaryBrush}"
                                                             Text="{Binding Title}" />
 
                                                         <TextBlock
                                                             Margin="0,3,0,0"
                                                             FontSize="12"
-                                                            Foreground="#5B6680"
+                                                            Foreground="{DynamicResource TextMutedBrush}"
                                                             Text="{Binding Subtitle}" />
                                                     </StackPanel>
                                                 </Border>
@@ -758,7 +758,7 @@
                                     <TextBlock
                                         Margin="0,0,0,8"
                                         FontSize="12"
-                                        Foreground="#94A3B8"
+                                        Foreground="{DynamicResource TextDisabledBrush}"
                                         x:Name="NoHolidaysText" Text="No holidays for this date.">
 
                                         <TextBlock.Style>
@@ -787,20 +787,20 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         FontWeight="Bold"
-                                        Foreground="#0B1B45"
+                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                         x:Name="UpcomingEventsHeader" Text="Upcoming Events" />
 
                                     <Border
                                         Margin="8,0,0,0"
                                         Padding="6,2"
                                         VerticalAlignment="Center"
-                                        Background="#EAF3FF"
+                                        Background="{DynamicResource InfoSoftBrush}"
                                         CornerRadius="6">
 
                                         <TextBlock
                                             FontSize="12"
                                             FontWeight="SemiBold"
-                                            Foreground="#1E40AF"
+                                            Foreground="{DynamicResource InfoBrush}"
                                             Text="{Binding UpcomingEventsCountText}" />
                                     </Border>
                                 </StackPanel>
@@ -821,8 +821,8 @@
                                         <Border
                                             Margin="0,0,0,10"
                                             Padding="12"
-                                            Background="White"
-                                            BorderBrush="#D9E2F0"
+                                            Background="{DynamicResource CardBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
                                             BorderThickness="1"
                                             CornerRadius="12">
 
@@ -838,26 +838,26 @@
                                                     Height="9"
                                                     Margin="0,5,10,0"
                                                     VerticalAlignment="Top"
-                                                    Fill="#7C5CFA" />
+                                                    Fill="{DynamicResource EventDotBrush}" />
 
                                                 <StackPanel Grid.Column="1">
                                                     <TextBlock
                                                         FontSize="14"
                                                         FontWeight="SemiBold"
-                                                        Foreground="#0B1B45"
+                                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                                         Text="{Binding Title}" />
 
                                                     <TextBlock
                                                         Margin="0,3,0,0"
                                                         FontSize="12"
-                                                        Foreground="#5B6680"
+                                                        Foreground="{DynamicResource TextMutedBrush}"
                                                         Text="{Binding TertiaryText}" />
                                                 </StackPanel>
 
                                                 <TextBlock
                                                     Grid.Column="2"
                                                     FontSize="12"
-                                                    Foreground="#5B6680"
+                                                    Foreground="{DynamicResource TextMutedBrush}"
                                                     Text="{Binding SecondaryText}" />
                                             </Grid>
                                         </Border>
@@ -876,20 +876,20 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         FontWeight="Bold"
-                                        Foreground="#0B1B45"
+                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                         x:Name="HolidaysHeader" Text="Holidays" />
 
                                     <Border
                                         Margin="8,0,0,0"
                                         Padding="6,2"
                                         VerticalAlignment="Center"
-                                        Background="#DCFCE7"
+                                        Background="{DynamicResource SuccessSoftBrush}"
                                         CornerRadius="6">
 
                                         <TextBlock
                                             FontSize="12"
                                             FontWeight="SemiBold"
-                                            Foreground="#166534"
+                                            Foreground="{DynamicResource SuccessBrush}"
                                             Text="{Binding HolidayCountText}" />
                                     </Border>
                                 </StackPanel>
@@ -910,8 +910,8 @@
                                         <Border
                                             Margin="0,0,0,10"
                                             Padding="12"
-                                            Background="#F6FFF9"
-                                            BorderBrush="#BFE8CE"
+                                            Background="{DynamicResource SuccessSoftBrush}"
+                                            BorderBrush="{DynamicResource SuccessSoftBorderBrush}"
                                             BorderThickness="1"
                                             CornerRadius="12">
 
@@ -927,31 +927,31 @@
                                                     Height="9"
                                                     Margin="0,5,10,0"
                                                     VerticalAlignment="Top"
-                                                    Fill="#22C55E" />
+                                                    Fill="{DynamicResource SuccessDotBrush}" />
 
                                                 <StackPanel Grid.Column="1">
                                                     <TextBlock
                                                         FontSize="14"
                                                         FontWeight="SemiBold"
-                                                        Foreground="#0B1B45"
+                                                        Foreground="{DynamicResource TextPrimaryBrush}"
                                                         Text="{Binding Title}" />
 
                                                     <TextBlock
                                                         Margin="0,3,0,0"
                                                         FontSize="12"
-                                                        Foreground="#5B6680"
+                                                        Foreground="{DynamicResource TextMutedBrush}"
                                                         Text="{Binding Subtitle}" />
 
                                                     <Border
                                                         Margin="0,7,0,0"
                                                         Padding="7,3"
                                                         HorizontalAlignment="Left"
-                                                        Background="#DCFCE7"
+                                                        Background="{DynamicResource SuccessSoftBrush}"
                                                         CornerRadius="6">
 
                                                         <TextBlock
                                                             FontSize="11"
-                                                            Foreground="#15803D"
+                                                            Foreground="{DynamicResource SuccessBrush}"
                                                             Text="{Binding BadgeText}" />
                                                     </Border>
                                                 </StackPanel>
@@ -959,14 +959,14 @@
                                                 <StackPanel Grid.Column="2">
                                                     <TextBlock
                                                         FontSize="12"
-                                                        Foreground="#5B6680"
+                                                        Foreground="{DynamicResource TextMutedBrush}"
                                                         Text="{Binding SecondaryText}" />
 
                                                     <TextBlock
                                                         Margin="0,4,0,0"
                                                         HorizontalAlignment="Right"
                                                         FontSize="12"
-                                                        Foreground="#5B6680"
+                                                        Foreground="{DynamicResource TextMutedBrush}"
                                                         Text="{Binding TertiaryText}" />
                                                 </StackPanel>
                                             </Grid>
@@ -980,7 +980,7 @@
                                 Margin="0,18,0,12"
                                 FontSize="20"
                                 FontWeight="Bold"
-                                Foreground="#0B1B45"
+                                Foreground="{DynamicResource TextPrimaryBrush}"
                                 x:Name="QuickActionsHeader" Text="Quick Actions" />
 
                             <ItemsControl ItemsSource="{Binding QuickActions}">
@@ -1002,8 +1002,8 @@
 
                                             <Button.Style>
                                                 <Style TargetType="Button">
-                                                    <Setter Property="Background" Value="White" />
-                                                    <Setter Property="BorderBrush" Value="#D9E2F0" />
+                                                    <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                                                     <Setter Property="BorderThickness" Value="1" />
                                                     <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
 
@@ -1017,13 +1017,13 @@
 
                                                         <!--  HOVER  -->
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#F8F7FF" />
-                                                            <Setter Property="BorderBrush" Value="#7C5CFA" />
+                                                            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource EventDotBrush}" />
                                                         </Trigger>
 
                                                         <!--  PRESSED  -->
                                                         <Trigger Property="IsPressed" Value="True">
-                                                            <Setter Property="Background" Value="#EDE9FE" />
+                                                            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
                                                             <Setter Property="RenderTransform">
                                                                 <Setter.Value>
                                                                     <ScaleTransform ScaleX="0.97" ScaleY="0.97" />
@@ -1049,13 +1049,13 @@
                                                     Margin="0,0,8,0"
                                                     FontSize="18"
                                                     FontWeight="SemiBold"
-                                                    Foreground="#6D4AFF"
+                                                    Foreground="{DynamicResource AccentTextBrush}"
                                                     Text="{Binding IconGlyph}" />
 
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     FontSize="13"
-                                                    Foreground="#0B1B45"
+                                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                                     Text="{Binding Title}" />
                                             </StackPanel>
                                         </Button>
@@ -1073,8 +1073,8 @@
                 Grid.Row="2"
                 Margin="0,14,0,0"
                 Padding="12,7"
-                Background="#FAFBFD"
-                BorderBrush="#D9E2F0"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="10">
 
@@ -1083,14 +1083,14 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="#4A5670"
+                        Foreground="{DynamicResource TextSecondaryBrush}"
                         Text="NepaliCalendar.App" />
 
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="#5B6680"
+                        Foreground="{DynamicResource TextMutedBrush}"
                         Text="{Binding FooterStatusText}" />
 
                     <StackPanel
@@ -1101,14 +1101,14 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="12"
-                            Foreground="#4A5670"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
                             Text="{Binding FooterSelectedDateText}" />
 
                         <TextBlock
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             FontSize="12"
-                            Foreground="#4A5670"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
                             Text="{Binding FooterLanguageText}" />
                     </StackPanel>
                 </Grid>

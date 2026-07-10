@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Settings"
     Width="440"
-    Background="#F6F9FF"
+    Background="{DynamicResource WindowBrush}"
     FontFamily="Segoe UI"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
@@ -16,7 +16,7 @@
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
             <Setter Property="Margin" Value="0,0,0,5" />
         </Style>
 
@@ -30,8 +30,8 @@
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Height" Value="38" />
             <Setter Property="MinWidth" Value="120" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#6D4AFF" />
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -47,10 +47,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#5B3EE6" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentHoverBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#4E34C9" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentPressedBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -61,8 +61,8 @@
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Height" Value="38" />
             <Setter Property="MinWidth" Value="100" />
-            <Setter Property="Foreground" Value="#4A5670" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -73,14 +73,14 @@
                             x:Name="Bg"
                             Padding="16,0"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#D9E2F0"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="9">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverSubtleBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -97,18 +97,22 @@
                 Margin="0,0,0,4"
                 FontSize="22"
                 FontWeight="Bold"
-                Foreground="#0B1B45"
+                Foreground="{DynamicResource TextPrimaryBrush}"
                 Text="Settings" />
 
             <TextBlock
                 Margin="0,0,0,20"
                 FontSize="13"
-                Foreground="#5B6680"
+                Foreground="{DynamicResource TextMutedBrush}"
                 Text="Personalize how the calendar looks and behaves." />
 
             <!--  LANGUAGE  -->
             <TextBlock Style="{StaticResource FieldLabel}" Text="Language" />
             <ComboBox x:Name="LanguageComboBox" />
+
+            <!--  THEME  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Theme" />
+            <ComboBox x:Name="ThemeComboBox" />
 
             <!--  DEFAULT WIDGET SIZE  -->
             <TextBlock Style="{StaticResource FieldLabel}" Text="Default widget size (used on next launch)" />
@@ -118,20 +122,20 @@
             <Border
                 Margin="0,4,0,4"
                 Padding="14,12"
-                Background="White"
-                BorderBrush="#D9E2F0"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="10">
                 <CheckBox
                     x:Name="RunAtStartupCheckBox"
                     FontSize="13"
-                    Foreground="#0B1B45">
+                    Foreground="{DynamicResource TextPrimaryBrush}">
                     <StackPanel>
                         <TextBlock FontWeight="SemiBold" Text="Start with Windows" />
                         <TextBlock
                             Margin="0,2,0,0"
                             FontSize="11"
-                            Foreground="#7A8FC0"
+                            Foreground="{DynamicResource TextFaintBrush}"
                             Text="Launch the calendar automatically when you sign in." />
                     </StackPanel>
                 </CheckBox>

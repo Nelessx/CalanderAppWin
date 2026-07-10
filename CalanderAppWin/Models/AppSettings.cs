@@ -3,6 +3,7 @@
     public class AppSettings
     {
         public AppLanguage Language { get; set; } = AppLanguage.English;
+        public AppTheme Theme { get; set; } = AppTheme.Light;
         public WidgetSize SelectedWidgetSize { get; set; } = WidgetSize.Large;
 
         public double SmallWidgetLeft { get; set; }

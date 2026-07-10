@@ -11,6 +11,7 @@ namespace NepaliCalendar.App
     public partial class App : Application
     {
         private static readonly SettingsService _settingsService = new();
+        private static readonly ThemeService _themeService = new();
         private static TrayIconService? _trayIcon;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -32,6 +33,7 @@ namespace NepaliCalendar.App
             try
             {
                 var settings = _settingsService.Load();
+                _themeService.Apply(settings.Theme);
                 OpenStartupWidget(settings);
             }
             catch (Exception ex)
@@ -361,6 +363,8 @@ namespace NepaliCalendar.App
 
             OpenStartupWidget(_settingsService.Load());
         }
+
+        public static void ApplyTheme(AppTheme theme) => _themeService.Apply(theme);
 
         public static void QuitApplication()
         {

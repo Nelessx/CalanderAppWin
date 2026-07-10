@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Date Converter"
     Width="480"
-    Background="#F6F9FF"
+    Background="{DynamicResource WindowBrush}"
     FontFamily="Segoe UI"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
@@ -16,14 +16,14 @@
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#4A5670" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
             <Setter Property="Margin" Value="0,0,0,5" />
         </Style>
 
         <Style x:Key="SectionTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="#0B1B45" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="Margin" Value="0,0,0,12" />
         </Style>
 
@@ -40,8 +40,8 @@
         </Style>
 
         <Style x:Key="SectionCard" TargetType="Border">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#D9E2F0" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Padding" Value="16" />
@@ -49,8 +49,8 @@
         </Style>
 
         <Style x:Key="ResultCard" TargetType="Border">
-            <Setter Property="Background" Value="#F4F1FF" />
-            <Setter Property="BorderBrush" Value="#DCD6FF" />
+            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentSoftBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="14" />
@@ -60,8 +60,8 @@
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Height" Value="38" />
             <Setter Property="MinWidth" Value="100" />
-            <Setter Property="Foreground" Value="#4A5670" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -72,14 +72,14 @@
                             x:Name="Bg"
                             Padding="16,0"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#D9E2F0"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="9">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverSubtleBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -96,13 +96,13 @@
                 Margin="0,0,0,4"
                 FontSize="22"
                 FontWeight="Bold"
-                Foreground="#0B1B45"
+                Foreground="{DynamicResource TextPrimaryBrush}"
                 Text="Date Converter" />
 
             <TextBlock
                 Margin="0,0,0,20"
                 FontSize="13"
-                Foreground="#5B6680"
+                Foreground="{DynamicResource TextMutedBrush}"
                 Text="Convert between Bikram Sambat and Gregorian (AD) dates." />
 
             <!--  BS -> AD  -->
@@ -140,20 +140,20 @@
                         <StackPanel>
                             <TextBlock
                                 FontSize="12"
-                                Foreground="#5B6680"
+                                Foreground="{DynamicResource TextMutedBrush}"
                                 Text="Gregorian date" />
                             <TextBlock
                                 x:Name="BsToAdResultText"
                                 Margin="0,3,0,0"
                                 FontSize="20"
                                 FontWeight="SemiBold"
-                                Foreground="#6D4AFF"
+                                Foreground="{DynamicResource AccentTextBrush}"
                                 Text="—" />
                             <TextBlock
                                 x:Name="BsToAdDayText"
                                 Margin="0,2,0,0"
                                 FontSize="13"
-                                Foreground="#4A5670" />
+                                Foreground="{DynamicResource TextSecondaryBrush}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -173,20 +173,20 @@
                         <StackPanel>
                             <TextBlock
                                 FontSize="12"
-                                Foreground="#5B6680"
+                                Foreground="{DynamicResource TextMutedBrush}"
                                 Text="Bikram Sambat date" />
                             <TextBlock
                                 x:Name="AdToBsResultText"
                                 Margin="0,3,0,0"
                                 FontSize="20"
                                 FontWeight="SemiBold"
-                                Foreground="#6D4AFF"
+                                Foreground="{DynamicResource AccentTextBrush}"
                                 Text="—" />
                             <TextBlock
                                 x:Name="AdToBsDayText"
                                 Margin="0,2,0,0"
                                 FontSize="13"
-                                Foreground="#4A5670" />
+                                Foreground="{DynamicResource TextSecondaryBrush}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
