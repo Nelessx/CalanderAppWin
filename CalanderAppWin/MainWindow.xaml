@@ -8,6 +8,7 @@
     Title="Nepali Calendar"
     MinWidth="900"
     MinHeight="600"
+    Background="{DynamicResource WindowBrush}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
