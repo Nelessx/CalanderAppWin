@@ -21,7 +21,7 @@
             <Setter Property="Margin" Value="0,0,0,5" />
         </Style>
 
-        <Style TargetType="TextBox">
+        <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
             <Setter Property="Height" Value="36" />
             <Setter Property="Padding" Value="8,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -32,7 +32,7 @@
             <Setter Property="Margin" Value="0,0,0,14" />
         </Style>
 
-        <Style TargetType="ComboBox">
+        <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
             <Setter Property="Height" Value="36" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="VerticalContentAlignment" Value="Center" />

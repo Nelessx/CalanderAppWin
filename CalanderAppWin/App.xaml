@@ -7,6 +7,7 @@
       <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="Themes/LightTheme.xaml" />
+            <ResourceDictionary Source="Themes/Controls.xaml" />
         </ResourceDictionary.MergedDictionaries>
 
         <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#F6F9FF" />
