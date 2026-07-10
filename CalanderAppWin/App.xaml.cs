@@ -11,12 +11,23 @@ namespace NepaliCalendar.App
     public partial class App : Application
     {
         private static readonly SettingsService _settingsService = new();
+        private static TrayIconService? _trayIcon;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
             RegisterGlobalExceptionHandlers();
+
+            try
+            {
+                _trayIcon = new TrayIconService();
+                _trayIcon.Initialize();
+            }
+            catch
+            {
+                _trayIcon = null;
+            }
 
             try
             {
@@ -320,12 +331,42 @@ namespace NepaliCalendar.App
 
         public static void CheckForShutdown()
         {
+            // With a tray icon the app intentionally stays alive when all windows
+            // close; the user quits explicitly via the tray menu.
+            if (_trayIcon != null)
+                return;
+
             bool hasOpenWindows = Current.Windows.Cast<Window>().Any(w => w.IsVisible);
 
             if (!hasOpenWindows)
             {
                 Current.Shutdown();
             }
+        }
+
+        /// <summary>Re-opens (or brings forward) a widget from the tray menu.</summary>
+        public static void ShowWidgetFromTray()
+        {
+            foreach (Window window in Current.Windows)
+            {
+                if (window is WidgetBaseWindow existing)
+                {
+                    if (!existing.IsVisible)
+                        existing.Show();
+
+                    existing.Activate();
+                    return;
+                }
+            }
+
+            OpenStartupWidget(_settingsService.Load());
+        }
+
+        public static void QuitApplication()
+        {
+            _trayIcon?.Dispose();
+            _trayIcon = null;
+            Current.Shutdown();
         }
     }
 }

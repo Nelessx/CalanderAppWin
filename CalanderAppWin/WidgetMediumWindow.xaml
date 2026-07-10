@@ -20,7 +20,9 @@
         BorderBrush="#E3EBF7"
         BorderThickness="1"
         CornerRadius="12"
-        MouseLeftButtonDown="RootBorder_MouseLeftButtonDown">
+        MouseLeftButtonDown="RootBorder_MouseLeftButtonDown"
+        MouseLeftButtonUp="RootBorder_MouseLeftButtonUp"
+        MouseMove="RootBorder_MouseMove">
 
         <Border.ContextMenu>
             <ContextMenu>

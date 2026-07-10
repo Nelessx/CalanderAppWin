@@ -11,6 +11,7 @@ namespace NepaliCalendar.App
         protected readonly LocalizationService LocalizationService = new();
         protected readonly NepaliNumberService NepaliNumberService = new();
         protected readonly SettingsService SettingsService = new();
+        protected readonly EventStore EventStore = new();
 
         protected void LoadLanguageFromSettings()
         {

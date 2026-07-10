@@ -84,6 +84,15 @@ namespace NepaliCalendar.App
             WeekHeaderItemsControl.ItemsSource = LocalizationService.GetWeekdayHeaders();
 
             var grid = Converter.GetMonthGrid(_displayYear, _displayMonth, useNepaliNumbers);
+
+            var events = EventStore.GetAll();
+            foreach (var cell in grid)
+            {
+                cell.HasEvent = cell.IsCurrentMonth
+                    && cell.Day > 0
+                    && events.Exists(ev => ev.BsYear == cell.Year && ev.BsMonth == cell.Month && ev.BsDay == cell.Day);
+            }
+
             WidgetCalendarGrid.ItemsSource = grid;
         }
 
