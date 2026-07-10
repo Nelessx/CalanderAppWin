@@ -146,7 +146,7 @@ namespace NepaliCalendar.App
 
         public static void OpenMainAppWindow()
         {
-            MainWindow mainWindow = null;
+            MainWindow? mainWindow = null;
 
             foreach (Window window in Current.Windows)
             {

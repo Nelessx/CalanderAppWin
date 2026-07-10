@@ -119,7 +119,7 @@ namespace NepaliCalendar.App
             Close();
         }
 
-        private void WidgetSmallWindow_Closed(object sender, EventArgs e)
+        private void WidgetSmallWindow_Closed(object? sender, EventArgs e)
         {
             _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);

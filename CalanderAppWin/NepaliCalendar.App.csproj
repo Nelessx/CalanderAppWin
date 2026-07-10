@@ -7,6 +7,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <AssemblyName>NepaliCalendar.App</AssemblyName>
+    <Product>Nepali Calendar</Product>
+    <Company>Nepali Calendar</Company>
+    <Authors>Nelessx</Authors>
+    <Description>A Nepali (Bikram Sambat) calendar for Windows with desktop widgets, events, and date conversion.</Description>
+    <Copyright>Copyright © 2025 Nepali Calendar</Copyright>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <!-- WinForms is used only for the tray icon (TrayIconService). Drop its implicit
