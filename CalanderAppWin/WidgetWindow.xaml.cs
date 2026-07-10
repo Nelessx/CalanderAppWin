@@ -19,9 +19,18 @@ namespace NepaliCalendar.App
         {
             InitializeComponent();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
-            _displayYear = todayBs.Year;
-            _displayMonth = todayBs.Month;
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                _displayYear = todayBs.Year;
+                _displayMonth = todayBs.Month;
+            }
+            else
+            {
+                var years = Converter.GetAvailableYears();
+                _displayYear = years.Count > 0 ? years[^1] : 2081;
+                _displayMonth = 1;
+            }
 
             LoadWidgetData();
             UpdateWidgetSizeMenuState();
@@ -36,17 +45,26 @@ namespace NepaliCalendar.App
         {
             LoadLanguageFromSettings();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
      ? GetNepaliDayName(todayAd.DayOfWeek)
      : todayAd.DayOfWeek.ToString();
 
-            LargeBsMonthYearText.Text = FormatBsMonthYear(todayBs.Month, todayBs.Year);
-            LargeDayText.Text = FormatBsNumber(todayBs.Day);
             LargeWeekdayText.Text = weekdayText;
             LargeAdDateText.Text = FormatAdDate(todayAd);
+
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                LargeBsMonthYearText.Text = FormatBsMonthYear(todayBs.Month, todayBs.Year);
+                LargeDayText.Text = FormatBsNumber(todayBs.Day);
+            }
+            else
+            {
+                LargeBsMonthYearText.Text = FormatBsMonthYear(_displayMonth, _displayYear);
+                LargeDayText.Text = "—";
+            }
 
             LoadCalendarGrid();
         }
@@ -66,15 +84,26 @@ namespace NepaliCalendar.App
             WeekHeaderItemsControl.ItemsSource = LocalizationService.GetWeekdayHeaders();
 
             var grid = Converter.GetMonthGrid(_displayYear, _displayMonth, useNepaliNumbers);
+
+            var events = EventStore.GetAll();
+            foreach (var cell in grid)
+            {
+                cell.HasEvent = cell.IsCurrentMonth
+                    && cell.Day > 0
+                    && events.Exists(ev => ev.BsYear == cell.Year && ev.BsMonth == cell.Month && ev.BsDay == cell.Day);
+            }
+
             WidgetCalendarGrid.ItemsSource = grid;
         }
 
         private void RefreshAtMidnight()
         {
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
-
-            _displayYear = todayBs.Year;
-            _displayMonth = todayBs.Month;
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                _displayYear = todayBs.Year;
+                _displayMonth = todayBs.Month;
+            }
 
             LoadWidgetData();
         }
@@ -171,7 +200,7 @@ namespace NepaliCalendar.App
             Close();
         }
 
-        private void WidgetWindow_Closed(object sender, EventArgs e)
+        private void WidgetWindow_Closed(object? sender, EventArgs e)
         {
             _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);

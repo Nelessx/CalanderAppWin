@@ -7,7 +7,7 @@
     Height="640"
     MinWidth="480"
     MinHeight="420"
-    Background="#F6F9FF"
+    Background="{DynamicResource WindowBrush}"
     FontFamily="Segoe UI"
     WindowStartupLocation="CenterOwner">
 
@@ -18,8 +18,8 @@
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Height" Value="36" />
             <Setter Property="MinWidth" Value="120" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#6D4AFF" />
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -35,10 +35,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#5B3EE6" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentHoverBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#4E34C9" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentPressedBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -49,8 +49,8 @@
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Height" Value="36" />
             <Setter Property="MinWidth" Value="100" />
-            <Setter Property="Foreground" Value="#4A5670" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -61,14 +61,14 @@
                             x:Name="Bg"
                             Padding="16,0"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#D9E2F0"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="9">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverSubtleBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -81,8 +81,8 @@
             <Setter Property="MinWidth" Value="62" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#4A5670" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -91,14 +91,14 @@
                             x:Name="Bg"
                             Padding="12,0"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#D9E2F0"
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="1"
                             CornerRadius="7">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#F1F5FD" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverSubtleBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -111,8 +111,8 @@
             <Setter Property="MinWidth" Value="62" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#DC2626" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -121,14 +121,14 @@
                             x:Name="Bg"
                             Padding="12,0"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#F3C6C6"
+                            BorderBrush="{DynamicResource DangerBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="7">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bg" Property="Background" Value="#FDECEC" />
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource DangerSoftBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -151,20 +151,20 @@
                 <TextBlock
                     FontSize="22"
                     FontWeight="Bold"
-                    Foreground="#0B1B45"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
                     Text="Events" />
 
                 <Border
                     Margin="10,0,0,0"
                     Padding="8,2"
                     VerticalAlignment="Center"
-                    Background="#EAF3FF"
+                    Background="{DynamicResource InfoSoftBrush}"
                     CornerRadius="8">
                     <TextBlock
                         x:Name="EventCountText"
                         FontSize="12"
                         FontWeight="SemiBold"
-                        Foreground="#1E40AF"
+                        Foreground="{DynamicResource InfoBrush}"
                         Text="0" />
                 </Border>
             </StackPanel>
@@ -180,8 +180,8 @@
         <Border
             Grid.Row="1"
             Padding="6"
-            Background="White"
-            BorderBrush="#D9E2F0"
+            Background="{DynamicResource CardBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
             CornerRadius="14">
 
@@ -193,8 +193,8 @@
                                 <Border
                                     Margin="6"
                                     Padding="12"
-                                    Background="#FBFCFE"
-                                    BorderBrush="#E1E7F0"
+                                    Background="{DynamicResource CardMutedBrush}"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
                                     BorderThickness="1"
                                     CornerRadius="10">
 
@@ -210,38 +210,38 @@
                                             Height="9"
                                             Margin="0,6,10,0"
                                             VerticalAlignment="Top"
-                                            Fill="#7C5CFA" />
+                                            Fill="{DynamicResource EventDotBrush}" />
 
                                         <StackPanel Grid.Column="1">
                                             <TextBlock
                                                 FontSize="14"
                                                 FontWeight="SemiBold"
-                                                Foreground="#0B1B45"
+                                                Foreground="{DynamicResource TextPrimaryBrush}"
                                                 Text="{Binding Title}"
                                                 TextWrapping="Wrap" />
 
                                             <TextBlock
                                                 Margin="0,3,0,0"
                                                 FontSize="12"
-                                                Foreground="#5B6680"
+                                                Foreground="{DynamicResource TextMutedBrush}"
                                                 Text="{Binding DateText}" />
 
                                             <TextBlock
                                                 Margin="0,2,0,0"
                                                 FontSize="12"
-                                                Foreground="#5B6680"
+                                                Foreground="{DynamicResource TextMutedBrush}"
                                                 Text="{Binding TimeText}" />
 
                                             <Border
                                                 Margin="0,6,0,0"
                                                 Padding="7,3"
                                                 HorizontalAlignment="Left"
-                                                Background="#EEF0FF"
+                                                Background="{DynamicResource AccentSoftBrush}"
                                                 CornerRadius="6"
                                                 Visibility="{Binding ShowBadge, Converter={StaticResource BoolToVis}}">
                                                 <TextBlock
                                                     FontSize="11"
-                                                    Foreground="#4E34C9"
+                                                    Foreground="{DynamicResource AccentTextBrush}"
                                                     Text="{Binding BadgeText}" />
                                             </Border>
                                         </StackPanel>
@@ -272,7 +272,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="13"
-                    Foreground="#94A3B8"
+                    Foreground="{DynamicResource TextDisabledBrush}"
                     Text="No events yet. Click &quot;+ Add Event&quot; to create one."
                     Visibility="Collapsed" />
             </Grid>

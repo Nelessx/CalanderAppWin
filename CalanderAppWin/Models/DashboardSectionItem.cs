@@ -2,6 +2,8 @@
 {
     public class DashboardSectionItem
     {
+        public System.Guid? EventId { get; set; }
+
         public string Title { get; set; } = string.Empty;
         public string? Subtitle { get; set; }
         public string? SecondaryText { get; set; }

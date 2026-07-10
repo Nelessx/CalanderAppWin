@@ -17,8 +17,8 @@
     <Border
         x:Name="RootBorder"
         Padding="10"
-        Background="#F6F9FF"
-        BorderBrush="#E3EBF7"
+        Background="{DynamicResource WindowBrush}"
+        BorderBrush="{DynamicResource BorderSubtleBrush}"
         BorderThickness="1"
         CornerRadius="22"
         MouseLeftButtonDown="RootBorder_MouseLeftButtonDown"
@@ -76,8 +76,8 @@
                     Height="36"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Background="#EAF3FF"
-                    BorderBrush="#CFE0FF"
+                    Background="{DynamicResource InfoSoftBrush}"
+                    BorderBrush="{DynamicResource BorderSubtleBrush}"
                     BorderThickness="1"
                     CornerRadius="11">
                     <TextBlock
@@ -85,7 +85,7 @@
                         VerticalAlignment="Center"
                         FontSize="15"
                         FontWeight="SemiBold"
-                        Foreground="#1E6BFF"
+                        Foreground="{DynamicResource InfoBrush}"
                         Text="BS" />
                 </Border>
 
@@ -95,7 +95,7 @@
                     VerticalAlignment="Center"
                     FontSize="16"
                     FontWeight="SemiBold"
-                    Foreground="#172033"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
                     Text="Nepali Calendar"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis" />
@@ -122,7 +122,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     FontWeight="SemiBold"
-                    Foreground="#2B6FEA"
+                    Foreground="{DynamicResource AccentTextBrush}"
                     TextAlignment="Center" />
 
                 <TextBlock
@@ -131,7 +131,7 @@
                     HorizontalAlignment="Center"
                     FontSize="58"
                     FontWeight="Bold"
-                    Foreground="#0B1B45"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
                     TextAlignment="Center" />
 
                 <TextBlock
@@ -140,7 +140,7 @@
                     HorizontalAlignment="Center"
                     FontSize="15"
                     FontWeight="SemiBold"
-                    Foreground="#0B1B45"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
                     TextAlignment="Center" />
 
                 <TextBlock
@@ -148,7 +148,7 @@
                     HorizontalAlignment="Center"
                     FontSize="13"
                     FontWeight="Medium"
-                    Foreground="#7A8FC0"
+                    Foreground="{DynamicResource TextFaintBrush}"
                     TextAlignment="Center" />
             </StackPanel>
 
@@ -157,7 +157,7 @@
                 Grid.Row="2"
                 Height="1"
                 Margin="0,0,0,6"
-                Background="#E7EEF8" />
+                Background="{DynamicResource DividerBrush}" />
 
             <!--  Month nav  -->
             <Grid Grid.Row="3" Margin="0,0,0,4">
@@ -179,7 +179,7 @@
                     Content="‹"
                     FontSize="20"
                     FontWeight="SemiBold"
-                    Foreground="#0B1B45" />
+                    Foreground="{DynamicResource TextPrimaryBrush}" />
 
                 <TextBlock
                     x:Name="CalendarMonthYearText"
@@ -188,7 +188,7 @@
                     VerticalAlignment="Center"
                     FontSize="16"
                     FontWeight="SemiBold"
-                    Foreground="#0B1B45"
+                    Foreground="{DynamicResource TextPrimaryBrush}"
                     TextAlignment="Center" />
 
                 <Button
@@ -203,7 +203,7 @@
                     Content="›"
                     FontSize="20"
                     FontWeight="SemiBold"
-                    Foreground="#0B1B45" />
+                    Foreground="{DynamicResource TextPrimaryBrush}" />
             </Grid>
 
             <!--  Calendar  -->
@@ -230,16 +230,16 @@
                                 HorizontalAlignment="Center"
                                 FontSize="12"
                                 FontWeight="SemiBold"
-                                Foreground="#7A8AA6"
+                                Foreground="{DynamicResource TextMutedBrush}"
                                 Text="{Binding}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding}" Value="Sat">
-                                                <Setter Property="Foreground" Value="#D92D20" />
+                                                <Setter Property="Foreground" Value="{DynamicResource SaturdayBrush}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding}" Value="शनि">
-                                                <Setter Property="Foreground" Value="#D92D20" />
+                                                <Setter Property="Foreground" Value="{DynamicResource SaturdayBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -269,19 +269,19 @@
                                     CornerRadius="14">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="Background" Value="#F7F7F5" />
+                                            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
                                             <Setter Property="BorderBrush" Value="Transparent" />
                                             <Setter Property="BorderThickness" Value="0" />
 
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsToday}" Value="True">
-                                                    <Setter Property="Background" Value="#BFDDF8" />
-                                                    <Setter Property="BorderBrush" Value="#5FA8F5" />
+                                                    <Setter Property="Background" Value="{DynamicResource TodaySoftBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource TodayBrush}" />
                                                     <Setter Property="BorderThickness" Value="1.5" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-                                                    <Setter Property="Background" Value="#F7F7F5" />
+                                                    <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -297,11 +297,11 @@
 
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="#0B1B45" />
+                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
 
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-                                                    <Setter Property="Foreground" Value="#C2CAD8" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextDisabledBrush}" />
                                                 </DataTrigger>
 
                                                 <MultiDataTrigger>
@@ -310,17 +310,37 @@
                                                         <Condition Binding="{Binding DayOfWeekIndex}" Value="6" />
                                                         <Condition Binding="{Binding IsToday}" Value="False" />
                                                     </MultiDataTrigger.Conditions>
-                                                    <Setter Property="Foreground" Value="#D92D20" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource SaturdayBrush}" />
                                                 </MultiDataTrigger>
 
                                                 <DataTrigger Binding="{Binding IsToday}" Value="True">
-                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
+
+                                <!--  Event indicator dot  -->
+                                <Ellipse
+                                    Width="5"
+                                    Height="5"
+                                    Margin="0,0,0,2"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    Fill="{DynamicResource EventDotBrush}">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasEvent}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

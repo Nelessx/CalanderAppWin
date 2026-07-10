@@ -28,15 +28,23 @@ namespace NepaliCalendar.App
         {
             LoadLanguageFromSettings();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
             SmallWeekdayText.Text = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
     ? GetNepaliDayNameShort(todayAd.DayOfWeek)
     : todayAd.DayOfWeek.ToString()[..3].ToUpper();
 
-            SmallDayText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Day);
-            SmallMonthText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Month);
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
+            {
+                SmallDayText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Day);
+                SmallMonthText.Text = FormatBsNumberTwoDigitsEnglishOnly(todayBs.Month);
+            }
+            else
+            {
+                SmallDayText.Text = "—";
+                SmallMonthText.Text = "—";
+            }
         }
 
         public void RefreshWidget()
@@ -111,7 +119,7 @@ namespace NepaliCalendar.App
             Close();
         }
 
-        private void WidgetSmallWindow_Closed(object sender, EventArgs e)
+        private void WidgetSmallWindow_Closed(object? sender, EventArgs e)
         {
             _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);

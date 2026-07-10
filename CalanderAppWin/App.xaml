@@ -4,6 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
+      <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Themes/LightTheme.xaml" />
+            <ResourceDictionary Source="Themes/Controls.xaml" />
+        </ResourceDictionary.MergedDictionaries>
 
         <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#F6F9FF" />
         <SolidColorBrush x:Key="MenuBorderBrush" Color="#DCE7F8" />
@@ -171,5 +176,6 @@
         <Style BasedOn="{StaticResource ModernMenuItemStyle}" TargetType="MenuItem" />
         <Style BasedOn="{StaticResource ModernSeparatorStyle}" TargetType="Separator" />
 
+      </ResourceDictionary>
     </Application.Resources>
 </Application>

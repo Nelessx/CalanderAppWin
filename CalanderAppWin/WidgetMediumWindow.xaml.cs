@@ -11,6 +11,9 @@ namespace NepaliCalendar.App
     {
         private readonly DispatcherTimer _midnightRefreshTimer;
 
+        private Point _mouseDownPoint;
+        private bool _isDragging;
+
         public WidgetMediumWindow()
         {
             InitializeComponent();
@@ -27,29 +30,30 @@ namespace NepaliCalendar.App
         {
             LoadLanguageFromSettings();
 
-            var todayBs = Converter.ConvertFromAd(DateTime.Today);
             var todayAd = DateTime.Today;
 
             string weekdayText = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
     ? GetNepaliDayName(todayAd.DayOfWeek)
     : todayAd.DayOfWeek.ToString();
 
-            string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
-            string bsYearText = FormatBsNumber(todayBs.Year);
-            string bsDayText = FormatBsNumber(todayBs.Day);
-
             MediumWeekdayText.Text = weekdayText;
+            MediumAdDateText.Text = FormatAdDateMonthFirst(todayAd);
 
-            if (LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali)
+            var todayBs = TryGetTodayBs();
+            if (todayBs != null)
             {
-                MediumBsDateText.Text = $"{bsYearText} {bsMonthName} {bsDayText}";
+                string bsMonthName = LocalizationService.GetMonthName(todayBs.Month);
+                string bsYearText = FormatBsNumber(todayBs.Year);
+                string bsDayText = FormatBsNumber(todayBs.Day);
+
+                MediumBsDateText.Text = LocalizationService.CurrentLanguage == Models.AppLanguage.Nepali
+                    ? $"{bsYearText} {bsMonthName} {bsDayText}"
+                    : $"{bsMonthName} {bsDayText}, {bsYearText}";
             }
             else
             {
-                MediumBsDateText.Text = $"{bsMonthName} {bsDayText}, {bsYearText}";
+                MediumBsDateText.Text = "—";
             }
-
-            MediumAdDateText.Text = FormatAdDateMonthFirst(todayAd);
         }
 
         public void RefreshWidget()
@@ -72,14 +76,34 @@ namespace NepaliCalendar.App
 
         private void RootBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (HasParent<Button>(e.OriginalSource))
+            if (HasParent<Button>(e.OriginalSource) || e.LeftButton != MouseButtonState.Pressed)
                 return;
 
-            if (e.LeftButton == MouseButtonState.Pressed)
+            _mouseDownPoint = e.GetPosition(this);
+            _isDragging = false;
+        }
+
+        private void RootBorder_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var currentPoint = e.GetPosition(this);
+
+            if (!_isDragging &&
+                (Math.Abs(currentPoint.X - _mouseDownPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                 Math.Abs(currentPoint.Y - _mouseDownPoint.Y) > SystemParameters.MinimumVerticalDragDistance))
             {
+                _isDragging = true;
                 DragMove();
                 App.SaveWidgetPosition(this);
             }
+        }
+
+        private void RootBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_isDragging)
+                _isDragging = false;
         }
 
         private static bool HasParent<T>(object source) where T : DependencyObject
@@ -118,7 +142,7 @@ namespace NepaliCalendar.App
             Close();
         }
 
-        private void WidgetMediumWindow_Closed(object sender, EventArgs e)
+        private void WidgetMediumWindow_Closed(object? sender, EventArgs e)
         {
             _midnightRefreshTimer.Stop();
             App.SaveWidgetPosition(this);

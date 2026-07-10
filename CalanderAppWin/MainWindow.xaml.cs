@@ -19,6 +19,8 @@ namespace NepaliCalendar.App
         private readonly SettingsService _settingsService = new();
         private readonly DashboardMockDataService _dashboardMockDataService = new();
         private readonly EventStore _eventStore = new();
+        private readonly HolidayService _holidayService = new();
+        private readonly CalendarExportService _exportService = new();
 
         private const int UpcomingEventsLimit = 5;
 
@@ -46,6 +48,8 @@ namespace NepaliCalendar.App
 
         public int UpcomingEventsCount => UpcomingEventCards.Count;
         public int HolidayCount => HolidayCards.Count;
+        public string UpcomingEventsCountText => FormatCount(UpcomingEventCards.Count);
+        public string HolidayCountText => FormatCount(HolidayCards.Count);
         public int SelectedDateEventsCount => SelectedDateEventCards.Count;
         public int SelectedDateHolidaysCount => SelectedDateHolidayCards.Count;
 
@@ -56,7 +60,8 @@ namespace NepaliCalendar.App
                 if (!_hasSelectedDate)
                     return false;
 
-                var todayBs = _converter.ConvertFromAd(DateTime.Today);
+                if (!_converter.TryConvertFromAd(DateTime.Today, out var todayBs) || todayBs is null)
+                    return false;
 
                 return _selectedYear == todayBs.Year
                     && _selectedMonth == todayBs.Month
@@ -69,7 +74,7 @@ namespace NepaliCalendar.App
             get
             {
                 if (!_hasSelectedDate)
-                    return "No date selected";
+                    return _localizationService.GetNoSelectedDateText();
 
                 bool useNepaliNumbers = _localizationService.CurrentLanguage == AppLanguage.Nepali;
 
@@ -91,21 +96,18 @@ namespace NepaliCalendar.App
             get
             {
                 if (!_hasSelectedDate)
-                    return "No selected date";
+                    return _localizationService.GetNoSelectedDateText();
 
                 return SelectedSidebarDateText;
             }
         }
 
-        public string FooterLanguageText =>
-            _localizationService.CurrentLanguage == AppLanguage.Nepali
-                ? "Language: नेपाली"
-                : "Language: English";
+        public string FooterLanguageText => _localizationService.GetFooterLanguageText();
 
         public string FooterStatusText =>
             IsSelectedDateToday
-                ? "Selected date is today"
-                : "Dashboard ready";
+                ? _localizationService.GetSelectedIsTodayText()
+                : _localizationService.GetDashboardReadyText();
 
         public MainWindow()
         {
@@ -173,7 +175,30 @@ namespace NepaliCalendar.App
             ThuHeader.Text = headers[4];
             FriHeader.Text = headers[5];
             SatHeader.Text = headers[6];
+
+            SelectedDateBsLabel.Text = _localizationService.GetSelectedDateBsLabel();
+            CorrespondingAdLabel.Text = _localizationService.GetCorrespondingAdLabel();
+            TotalDaysLabel.Text = _localizationService.GetTotalDaysText();
+            SelectedDateHeader.Text = _localizationService.GetSelectedDateHeader();
+            TodayIndicatorText.Text = _localizationService.GetTodayBadgeText();
+            EventsOnSelectedLabel.Text = _localizationService.GetEventsOnSelectedDateLabel();
+            HolidaysOnSelectedLabel.Text = _localizationService.GetHolidaysOnSelectedDateLabel();
+            NoEventsText.Text = _localizationService.GetNoEventsText();
+            NoHolidaysText.Text = _localizationService.GetNoHolidaysText();
+            UpcomingEventsHeader.Text = _localizationService.GetUpcomingEventsHeader();
+            HolidaysHeader.Text = _localizationService.GetHolidaysHeader();
+            QuickActionsHeader.Text = _localizationService.GetQuickActionsHeader();
+            ViewAllEventsButton.Content = _localizationService.GetViewAllText();
+            ViewAllHolidaysButton.Content = _localizationService.GetViewAllText();
+            LegendTodayText.Text = _localizationService.GetLegendTodayText();
+            LegendEventText.Text = _localizationService.GetLegendEventText();
+            LegendHolidayText.Text = _localizationService.GetLegendHolidayText();
         }
+
+        private string FormatCount(int value) =>
+            _localizationService.CurrentLanguage == AppLanguage.Nepali
+                ? _nepaliNumberService.ToNepaliNumber(value)
+                : value.ToString();
 
         private void LoadDashboardData()
         {
@@ -181,8 +206,16 @@ namespace NepaliCalendar.App
                 .GetUpcoming(DateTime.Today, UpcomingEventsLimit)
                 .ConvertAll(MapEventToCard);
 
-            HolidayCards = _dashboardMockDataService.GetHolidayCards();
+            int todayBsYear = _converter.TryConvertFromAd(DateTime.Today, out var todayBs) && todayBs != null
+                ? todayBs.Year
+                : _currentYear;
+            HolidayCards = _holidayService
+                .GetUpcoming(todayBsYear, DateTime.Today, UpcomingEventsLimit)
+                .ConvertAll(MapHolidayToCard);
+
             QuickActions = _dashboardMockDataService.GetQuickActions();
+            foreach (var action in QuickActions)
+                action.Title = _localizationService.GetQuickActionTitle(action.ActionKey);
 
             LoadSelectedDateDashboardData();
             RefreshDashboardBindings();
@@ -192,6 +225,7 @@ namespace NepaliCalendar.App
         {
             return new DashboardSectionItem
             {
+                EventId = calendarEvent.Id,
                 Title = calendarEvent.Title,
                 Subtitle = calendarEvent.BadgeText,
                 SecondaryText = calendarEvent.AdDate.ToString("MMMM d, yyyy"),
@@ -200,6 +234,21 @@ namespace NepaliCalendar.App
                 ShowBadge = !string.IsNullOrWhiteSpace(calendarEvent.BadgeText),
                 IsEvent = true,
                 IsHoliday = false
+            };
+        }
+
+        private static DashboardSectionItem MapHolidayToCard(CalendarEvent holiday)
+        {
+            return new DashboardSectionItem
+            {
+                Title = holiday.Title,
+                Subtitle = holiday.NepaliTitle,
+                SecondaryText = holiday.AdDate.ToString("MMMM d, yyyy"),
+                TertiaryText = holiday.DayText,
+                BadgeText = holiday.BadgeText,
+                ShowBadge = !string.IsNullOrWhiteSpace(holiday.BadgeText),
+                IsEvent = false,
+                IsHoliday = true
             };
         }
 
@@ -213,27 +262,10 @@ namespace NepaliCalendar.App
             }
 
             var selectedEvents = _eventStore.GetForBsDate(_selectedYear, _selectedMonth, _selectedDay);
-
-            var selectedHolidays = _dashboardMockDataService.GetHolidays()
-                .FindAll(h =>
-                    h.BsYear == _selectedYear &&
-                    h.BsMonth == _selectedMonth &&
-                    h.BsDay == _selectedDay);
+            var selectedHolidays = _holidayService.GetForBsDate(_selectedYear, _selectedMonth, _selectedDay);
 
             SelectedDateEventCards = selectedEvents.ConvertAll(MapEventToCard);
-
-            SelectedDateHolidayCards = selectedHolidays
-                .ConvertAll(h => new DashboardSectionItem
-                {
-                    Title = h.Title,
-                    Subtitle = h.NepaliTitle,
-                    SecondaryText = h.AdDate.ToString("MMMM d, yyyy"),
-                    TertiaryText = h.DayText,
-                    BadgeText = h.BadgeText,
-                    ShowBadge = !string.IsNullOrWhiteSpace(h.BadgeText),
-                    IsEvent = false,
-                    IsHoliday = true
-                });
+            SelectedDateHolidayCards = selectedHolidays.ConvertAll(MapHolidayToCard);
         }
 
         private void RefreshDashboardBindings()
@@ -252,6 +284,8 @@ namespace NepaliCalendar.App
 
             OnPropertyChanged(nameof(UpcomingEventsCount));
             OnPropertyChanged(nameof(HolidayCount));
+            OnPropertyChanged(nameof(UpcomingEventsCountText));
+            OnPropertyChanged(nameof(HolidayCountText));
             OnPropertyChanged(nameof(SelectedDateEventsCount));
             OnPropertyChanged(nameof(SelectedDateHolidaysCount));
 
@@ -265,7 +299,7 @@ namespace NepaliCalendar.App
         private void ApplyCalendarIndicators(List<CalendarCell> grid)
         {
             var events = _eventStore.GetAll();
-            var holidays = _dashboardMockDataService.GetHolidays();
+            var holidays = _holidayService.GetHolidaysForBsYear(_currentYear);
 
             foreach (var cell in grid)
             {
@@ -563,6 +597,59 @@ namespace NepaliCalendar.App
             OpenAddEvent();
         }
 
+        private DashboardSectionItem? ResolveCardItem(object sender)
+        {
+            if (sender is not MenuItem menuItem)
+                return null;
+
+            return menuItem.DataContext as DashboardSectionItem
+                ?? ((menuItem.Parent as ContextMenu)?.PlacementTarget as FrameworkElement)?.DataContext as DashboardSectionItem;
+        }
+
+        private void EditEventCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResolveCardItem(sender) is not { EventId: Guid id })
+                return;
+
+            var calendarEvent = _eventStore.GetAll().Find(x => x.Id == id);
+            if (calendarEvent is null)
+                return;
+
+            try
+            {
+                var dialog = new AddEventWindow(calendarEvent) { Owner = this };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    LoadDashboardData();
+                    LoadCalendar();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Edit Event", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteEventCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResolveCardItem(sender) is not { EventId: Guid id } item)
+                return;
+
+            var result = MessageBox.Show(
+                $"Delete \"{item.Title}\"? This cannot be undone.",
+                "Delete event",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            _eventStore.Delete(id);
+            LoadDashboardData();
+            LoadCalendar();
+        }
+
         private void SelectDate(int year, int month, int day)
         {
             _selectedYear = year;
@@ -819,29 +906,109 @@ namespace NepaliCalendar.App
 
         private void OpenConverter()
         {
-            MessageBox.Show(
-                "Date converter placeholder.",
-                "Converter",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new ConverterWindow { Owner = this };
+                window.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Converter",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void ExportCalendar()
         {
-            MessageBox.Show(
-                "Export calendar placeholder.",
-                "Export Calendar",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var events = _eventStore.GetAll();
+
+                if (events.Count == 0)
+                {
+                    MessageBox.Show(
+                        "There are no events to export yet.",
+                        "Export",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                var dialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "Export events",
+                    FileName = "nepali-calendar-events",
+                    DefaultExt = ".ics",
+                    Filter = "iCalendar (*.ics)|*.ics|CSV spreadsheet (*.csv)|*.csv"
+                };
+
+                if (dialog.ShowDialog(this) != true)
+                    return;
+
+                bool isCsv = System.IO.Path.GetExtension(dialog.FileName)
+                    .Equals(".csv", StringComparison.OrdinalIgnoreCase);
+
+                string content = isCsv
+                    ? _exportService.ToCsv(events)
+                    : _exportService.ToICalendar(events);
+
+                System.IO.File.WriteAllText(dialog.FileName, content, System.Text.Encoding.UTF8);
+
+                MessageBox.Show(
+                    $"Exported {events.Count} event(s) to:\n{dialog.FileName}",
+                    "Export complete",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Export failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void OpenSettings()
         {
-            MessageBox.Show(
-                "Settings placeholder.",
-                "Settings",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                var window = new SettingsWindow { Owner = this };
+
+                if (window.ShowDialog() == true)
+                    ReloadLanguageFromSettings();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Settings",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void ReloadLanguageFromSettings()
+        {
+            var settings = _settingsService.Load();
+
+            if (_localizationService.CurrentLanguage == settings.Language)
+                return;
+
+            _localizationService.CurrentLanguage = settings.Language;
+
+            PopulateLanguageDropdown();
+            PopulateMonthDropdown();
+            PopulateYearDropdown();
+            ApplyLocalizedText();
+            LoadDashboardData();
+            LoadCalendar();
+
+            App.RefreshOpenWidgets();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)

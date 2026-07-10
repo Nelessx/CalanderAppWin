@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using NepaliCalendar.App.Models;
@@ -10,56 +11,120 @@ namespace NepaliCalendar.App
     public partial class App : Application
     {
         private static readonly SettingsService _settingsService = new();
+        private static readonly ThemeService _themeService = new();
+        private static TrayIconService? _trayIcon;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            var settings = _settingsService.Load();
+            RegisterGlobalExceptionHandlers();
 
+            // Match each window's native title bar to the current theme as it loads.
+            EventManager.RegisterClassHandler(
+                typeof(Window),
+                FrameworkElement.LoadedEvent,
+                new RoutedEventHandler((sender, _) =>
+                {
+                    if (sender is Window window)
+                        WindowChromeHelper.ApplyTitleBar(window, ThemeService.Current == Models.AppTheme.Dark);
+                }));
+
+            try
+            {
+                _trayIcon = new TrayIconService();
+                _trayIcon.Initialize();
+            }
+            catch
+            {
+                _trayIcon = null;
+            }
+
+            try
+            {
+                var settings = _settingsService.Load();
+                _themeService.Apply(settings.Theme);
+                OpenStartupWidget(settings);
+            }
+            catch (Exception ex)
+            {
+                ShowFriendlyError("The calendar could not open its widget. Opening the main window instead.", ex);
+
+                try
+                {
+                    OpenMainAppWindow();
+                }
+                catch (Exception innerEx)
+                {
+                    ShowFriendlyError("The calendar could not start.", innerEx);
+                    Shutdown();
+                }
+            }
+        }
+
+        private static void OpenStartupWidget(AppSettings settings)
+        {
             switch (settings.SelectedWidgetSize)
             {
                 case WidgetSize.Small:
                     if (settings.HasSavedSmallWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Small,
-                            settings.SmallWidgetLeft,
-                            settings.SmallWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Small, settings.SmallWidgetLeft, settings.SmallWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Small);
-                    }
                     break;
 
                 case WidgetSize.Medium:
                     if (settings.HasSavedMediumWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Medium,
-                            settings.MediumWidgetLeft,
-                            settings.MediumWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Medium, settings.MediumWidgetLeft, settings.MediumWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Medium);
-                    }
                     break;
 
                 default:
                     if (settings.HasSavedLargeWidgetPosition)
-                    {
-                        OpenWidget(
-                            WidgetSize.Large,
-                            settings.LargeWidgetLeft,
-                            settings.LargeWidgetTop);
-                    }
+                        OpenWidget(WidgetSize.Large, settings.LargeWidgetLeft, settings.LargeWidgetTop);
                     else
-                    {
                         OpenWidget(WidgetSize.Large);
-                    }
                     break;
+            }
+        }
+
+        private void RegisterGlobalExceptionHandlers()
+        {
+            // UI-thread exceptions: report and keep the app alive where possible.
+            DispatcherUnhandledException += (_, args) =>
+            {
+                ShowFriendlyError("An unexpected error occurred.", args.Exception);
+                args.Handled = true;
+                CheckForShutdown();
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            {
+                if (args.ExceptionObject is Exception ex)
+                    ShowFriendlyError("An unexpected error occurred.", ex);
+            };
+
+            TaskScheduler.UnobservedTaskException += (_, args) =>
+            {
+                args.SetObserved();
+                ShowFriendlyError("An unexpected background error occurred.", args.Exception);
+            };
+        }
+
+        private static void ShowFriendlyError(string message, Exception ex)
+        {
+            try
+            {
+                MessageBox.Show(
+                    message + "\n\n" + ex.Message,
+                    "Nepali Calendar",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            catch
+            {
+                // Never let error reporting itself bring down the app.
             }
         }
 
@@ -93,7 +158,7 @@ namespace NepaliCalendar.App
 
         public static void OpenMainAppWindow()
         {
-            MainWindow mainWindow = null;
+            MainWindow? mainWindow = null;
 
             foreach (Window window in Current.Windows)
             {
@@ -278,12 +343,44 @@ namespace NepaliCalendar.App
 
         public static void CheckForShutdown()
         {
+            // With a tray icon the app intentionally stays alive when all windows
+            // close; the user quits explicitly via the tray menu.
+            if (_trayIcon != null)
+                return;
+
             bool hasOpenWindows = Current.Windows.Cast<Window>().Any(w => w.IsVisible);
 
             if (!hasOpenWindows)
             {
                 Current.Shutdown();
             }
+        }
+
+        /// <summary>Re-opens (or brings forward) a widget from the tray menu.</summary>
+        public static void ShowWidgetFromTray()
+        {
+            foreach (Window window in Current.Windows)
+            {
+                if (window is WidgetBaseWindow existing)
+                {
+                    if (!existing.IsVisible)
+                        existing.Show();
+
+                    existing.Activate();
+                    return;
+                }
+            }
+
+            OpenStartupWidget(_settingsService.Load());
+        }
+
+        public static void ApplyTheme(AppTheme theme) => _themeService.Apply(theme);
+
+        public static void QuitApplication()
+        {
+            _trayIcon?.Dispose();
+            _trayIcon = null;
+            Current.Shutdown();
         }
     }
 }

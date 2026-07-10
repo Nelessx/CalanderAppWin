@@ -1,11 +1,10 @@
 <Window
-    x:Class="NepaliCalendar.App.Views.AddEventWindow"
+    x:Class="NepaliCalendar.App.Views.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Add Event"
-    Width="460"
+    Title="Settings"
+    Width="440"
     Background="{DynamicResource WindowBrush}"
-    FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
     FontFamily="Segoe UI"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
@@ -21,21 +20,11 @@
             <Setter Property="Margin" Value="0,0,0,5" />
         </Style>
 
-        <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-            <Setter Property="Height" Value="36" />
-            <Setter Property="Padding" Value="8,0" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Margin" Value="0,0,0,14" />
-        </Style>
-
         <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
             <Setter Property="Height" Value="36" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,16" />
         </Style>
 
         <Style x:Key="PrimaryButton" TargetType="Button">
@@ -105,76 +94,56 @@
         <StackPanel>
 
             <TextBlock
-                x:Name="HeaderText"
                 Margin="0,0,0,4"
                 FontSize="22"
                 FontWeight="Bold"
                 Foreground="{DynamicResource TextPrimaryBrush}"
-                Text="Add Event" />
+                Text="Settings" />
 
             <TextBlock
-                x:Name="SubHeaderText"
                 Margin="0,0,0,20"
                 FontSize="13"
                 Foreground="{DynamicResource TextMutedBrush}"
-                Text="Create a new event on your calendar." />
+                Text="Personalize how the calendar looks and behaves." />
 
-            <!--  TITLE  -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Title *" />
-            <TextBox x:Name="TitleTextBox" MaxLength="120" />
+            <!--  LANGUAGE  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Language" />
+            <ComboBox x:Name="LanguageComboBox" />
 
-            <!--  NEPALI TITLE  -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Nepali Title (optional)" />
-            <TextBox x:Name="NepaliTitleTextBox" MaxLength="120" />
+            <!--  THEME  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Theme" />
+            <ComboBox x:Name="ThemeComboBox" />
 
-            <!--  BS DATE  -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Date (BS)" />
-            <Grid Margin="0,0,0,14">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="8" />
-                    <ColumnDefinition Width="1.4*" />
-                    <ColumnDefinition Width="8" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <!--  DEFAULT WIDGET SIZE  -->
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Default widget size (used on next launch)" />
+            <ComboBox x:Name="WidgetSizeComboBox" />
 
-                <ComboBox
-                    x:Name="YearComboBox"
-                    Grid.Column="0"
-                    SelectionChanged="DateSelector_Changed" />
-
-                <ComboBox
-                    x:Name="MonthComboBox"
-                    Grid.Column="2"
-                    SelectionChanged="DateSelector_Changed" />
-
-                <ComboBox x:Name="DayComboBox" Grid.Column="4" />
-            </Grid>
-
-            <!--  ALL DAY + TIME  -->
-            <CheckBox
-                x:Name="AllDayCheckBox"
-                Margin="0,0,0,12"
-                Checked="AllDayCheckBox_Changed"
-                Content="All day"
-                FontSize="13"
-                Foreground="{DynamicResource TextSecondaryBrush}"
-                Unchecked="AllDayCheckBox_Changed" />
-
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Time (optional, e.g. 09:30 AM)" />
-            <TextBox x:Name="TimeTextBox" MaxLength="40" />
-
-            <!--  TYPE  -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Type (optional, e.g. Meeting)" />
-            <TextBox x:Name="TypeTextBox" MaxLength="60" />
-
-            <!--  BADGE  -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Badge (optional, e.g. Work)" />
-            <TextBox x:Name="BadgeTextBox" MaxLength="40" />
+            <!--  RUN AT STARTUP  -->
+            <Border
+                Margin="0,4,0,4"
+                Padding="14,12"
+                Background="{DynamicResource CardBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="10">
+                <CheckBox
+                    x:Name="RunAtStartupCheckBox"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextPrimaryBrush}">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Text="Start with Windows" />
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            FontSize="11"
+                            Foreground="{DynamicResource TextFaintBrush}"
+                            Text="Launch the calendar automatically when you sign in." />
+                    </StackPanel>
+                </CheckBox>
+            </Border>
 
             <!--  ACTIONS  -->
             <StackPanel
-                Margin="0,10,0,0"
+                Margin="0,18,0,0"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
 
@@ -186,9 +155,8 @@
                     Style="{StaticResource SecondaryButton}" />
 
                 <Button
-                    x:Name="SaveButton"
                     Click="Save_Click"
-                    Content="Save Event"
+                    Content="Save"
                     IsDefault="True"
                     Style="{StaticResource PrimaryButton}" />
             </StackPanel>

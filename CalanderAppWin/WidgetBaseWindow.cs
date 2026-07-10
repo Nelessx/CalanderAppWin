@@ -11,11 +11,18 @@ namespace NepaliCalendar.App
         protected readonly LocalizationService LocalizationService = new();
         protected readonly NepaliNumberService NepaliNumberService = new();
         protected readonly SettingsService SettingsService = new();
+        protected readonly EventStore EventStore = new();
 
         protected void LoadLanguageFromSettings()
         {
             var settings = SettingsService.Load();
             LocalizationService.CurrentLanguage = settings.Language;
+        }
+
+        /// <summary>Today's BS date, or null if today falls outside the loaded data range.</summary>
+        protected BsDate? TryGetTodayBs()
+        {
+            return Converter.TryConvertFromAd(DateTime.Today, out var bs) ? bs : null;
         }
 
         protected bool UseNepaliNumbers =>
