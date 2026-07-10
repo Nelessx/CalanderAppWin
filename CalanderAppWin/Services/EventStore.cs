@@ -29,19 +29,47 @@ namespace NepaliCalendar.App.Services
 
         public List<CalendarEvent> GetAll()
         {
+            // Try the live file first; if it is missing, unreadable, or corrupt, transparently
+            // fall back to the .bak copy left behind by the last atomic write.
+            if (TryLoadFrom(_storeFilePath, out var primary))
+                return primary;
+
+            if (TryLoadFrom(_storeFilePath + ".bak", out var backup))
+            {
+                Logger.Warn("events.json was unreadable; recovered from backup copy.");
+                return backup;
+            }
+
+            return new List<CalendarEvent>();
+        }
+
+        private static bool TryLoadFrom(string path, out List<CalendarEvent> events)
+        {
+            events = new List<CalendarEvent>();
+
             try
             {
-                if (!File.Exists(_storeFilePath))
-                    return new List<CalendarEvent>();
+                if (!File.Exists(path))
+                    return false;
 
-                string json = File.ReadAllText(_storeFilePath);
-                var events = JsonSerializer.Deserialize<List<CalendarEvent>>(json);
+                string json = File.ReadAllText(path);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    // An empty file is a legitimate "no events" state, not a corruption.
+                    return true;
+                }
 
-                return events ?? new List<CalendarEvent>();
+                var parsed = JsonSerializer.Deserialize<List<CalendarEvent>>(json);
+                if (parsed == null)
+                    return false;
+
+                events = parsed;
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return new List<CalendarEvent>();
+                Logger.Warn($"Could not read event store at {path}.", ex);
+                return false;
             }
         }
 
@@ -121,15 +149,13 @@ namespace NepaliCalendar.App.Services
 
         private void SaveAll(List<CalendarEvent> events)
         {
-            if (!Directory.Exists(_storeFolder))
-                Directory.CreateDirectory(_storeFolder);
-
             string json = JsonSerializer.Serialize(events, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
 
-            File.WriteAllText(_storeFilePath, json);
+            // Crash-safe: temp file + atomic swap, keeping the previous copy as events.json.bak.
+            AtomicFile.WriteAllText(_storeFilePath, json);
         }
     }
 }

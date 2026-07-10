@@ -124,12 +124,12 @@ namespace NepaliCalendar.App
                 var settings = _settingsService.Load();
                 _localizationService.CurrentLanguage = settings.Language;
 
-                var todayBs = _converter.ConvertFromAd(DateTime.Today);
-                _currentYear = todayBs.Year;
-                _currentMonth = todayBs.Month;
-                _selectedYear = todayBs.Year;
-                _selectedMonth = todayBs.Month;
-                _selectedDay = todayBs.Day;
+                var (year, month, day) = ResolveTodayOrNearestSupported();
+                _currentYear = year;
+                _currentMonth = month;
+                _selectedYear = year;
+                _selectedMonth = month;
+                _selectedDay = day;
                 _hasSelectedDate = true;
 
                 PopulateLanguageDropdown();
@@ -544,17 +544,40 @@ namespace NepaliCalendar.App
 
         private void SelectToday()
         {
-            var todayBs = _converter.ConvertFromAd(DateTime.Today);
+            var (year, month, day) = ResolveTodayOrNearestSupported();
 
-            _currentYear = todayBs.Year;
-            _currentMonth = todayBs.Month;
-            _selectedYear = todayBs.Year;
-            _selectedMonth = todayBs.Month;
-            _selectedDay = todayBs.Day;
+            _currentYear = year;
+            _currentMonth = month;
+            _selectedYear = year;
+            _selectedMonth = month;
+            _selectedDay = day;
             _hasSelectedDate = true;
 
             LoadDashboardData();
             LoadCalendar();
+        }
+
+        /// <summary>
+        /// Today's BS date, or — once the clock passes the loaded data range (~BS 2087 / Apr 2031)
+        /// — the nearest supported date instead. Keeps the constructor and the Today button from
+        /// throwing an unhandled exception when <see cref="DateTime.Today"/> is out of range.
+        /// </summary>
+        private (int year, int month, int day) ResolveTodayOrNearestSupported()
+        {
+            if (_converter.TryConvertFromAd(DateTime.Today, out var todayBs) && todayBs != null)
+                return (todayBs.Year, todayBs.Month, todayBs.Day);
+
+            var years = _converter.GetAvailableYears();
+            int firstYear = years[0];
+            int lastYear = years[^1];
+
+            // Before the range → clamp to its very first day; after → clamp to its very last day.
+            DateTime firstSupportedAd = _converter.ConvertToAd(firstYear, 1, 1);
+            if (DateTime.Today < firstSupportedAd)
+                return (firstYear, 1, 1);
+
+            int lastMonthDays = _converter.GetMonthDays(lastYear, 12).Count;
+            return (lastYear, 12, lastMonthDays);
         }
 
         private void CalendarDayBorder_Click(object sender, MouseButtonEventArgs e)

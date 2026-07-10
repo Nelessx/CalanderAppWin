@@ -13,10 +13,37 @@ namespace NepaliCalendar.App
         private static readonly SettingsService _settingsService = new();
         private static readonly ThemeService _themeService = new();
         private static TrayIconService? _trayIcon;
+        private static SingleInstanceService? _singleInstance;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Only one instance may run: autostart + a persistent tray icon means a second manual
+            // launch would duplicate everything and race on the shared JSON files. A later launch
+            // instead surfaces the already-running instance and exits.
+            _singleInstance = new SingleInstanceService();
+            if (!_singleInstance.TryAcquire())
+            {
+                SingleInstanceService.SignalExistingInstance();
+                _singleInstance.Dispose();
+                _singleInstance = null;
+                Shutdown();
+                return;
+            }
+
+            _singleInstance.ListenForActivation(() =>
+                Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        ShowWidgetFromTray();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Failed to surface app on second-instance activation.", ex);
+                    }
+                }));
 
             RegisterGlobalExceptionHandlers();
 
@@ -114,6 +141,8 @@ namespace NepaliCalendar.App
 
         private static void ShowFriendlyError(string message, Exception ex)
         {
+            Logger.Error(message, ex);
+
             try
             {
                 MessageBox.Show(
@@ -204,12 +233,15 @@ namespace NepaliCalendar.App
 
         private static void EnsureWidgetIsOnScreen(Window widget)
         {
-            double screenLeft = SystemParameters.WorkArea.Left;
-            double screenTop = SystemParameters.WorkArea.Top;
-            double screenRight = SystemParameters.WorkArea.Right;
-            double screenBottom = SystemParameters.WorkArea.Bottom;
-
             widget.UpdateLayout();
+
+            // Clamp against the monitor the widget is actually on, not just the primary — so a
+            // widget parked on a second screen isn't dragged back to the primary at launch.
+            Rect workArea = ScreenBoundsHelper.GetWorkingAreaForWindow(widget);
+            double screenLeft = workArea.Left;
+            double screenTop = workArea.Top;
+            double screenRight = workArea.Right;
+            double screenBottom = workArea.Bottom;
 
             double maxLeft = Math.Max(screenLeft, screenRight - widget.ActualWidth);
             double maxTop = Math.Max(screenTop, screenBottom - widget.ActualHeight);
@@ -380,6 +412,8 @@ namespace NepaliCalendar.App
         {
             _trayIcon?.Dispose();
             _trayIcon = null;
+            _singleInstance?.Dispose();
+            _singleInstance = null;
             Current.Shutdown();
         }
     }

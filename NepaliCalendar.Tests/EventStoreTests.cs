@@ -98,6 +98,21 @@ namespace NepaliCalendar.Tests
             Assert.Empty(NewStore().GetAll());
         }
 
+        [Fact]
+        public void CorruptPrimary_RecoversFromBackup()
+        {
+            var store = NewStore();
+            store.Add(Sample("Keeper", new DateTime(2026, 5, 10), 2083, 1, 27)); // writes events.json
+            store.Add(Sample("Second", new DateTime(2026, 5, 11), 2083, 1, 28)); // rolls prior copy into .bak
+
+            // Simulate a torn primary write; the .bak still holds the prior good copy.
+            File.WriteAllText(Path.Combine(_dir, "events.json"), "corrupted <<<");
+
+            var recovered = NewStore().GetAll();
+            Assert.Single(recovered);
+            Assert.Equal("Keeper", recovered[0].Title);
+        }
+
         public void Dispose()
         {
             try { if (Directory.Exists(_dir)) Directory.Delete(_dir, true); } catch { }

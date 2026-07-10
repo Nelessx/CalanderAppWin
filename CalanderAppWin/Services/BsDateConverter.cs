@@ -18,9 +18,33 @@ namespace NepaliCalendar.App.Services
 
         private readonly NepaliNumberService _nepaliNumberService = new();
         private readonly BsCalendarDataService _dataService = new();
+        private bool _referenceVerified;
+
+        /// <summary>
+        /// Guards against the reference anchor and the data file silently drifting apart. The
+        /// day-count walk starts from <see cref="_referenceBsDate"/>; if the data no longer starts
+        /// at that same year, every conversion would be wrong. Fails loudly instead.
+        /// </summary>
+        private void VerifyReferenceMatchesData()
+        {
+            if (_referenceVerified)
+                return;
+
+            int firstDataYear = _dataService.GetYears()[0].Year;
+            if (firstDataYear != _referenceBsDate.Year)
+            {
+                throw new InvalidOperationException(
+                    $"Calendar data starts at BS {firstDataYear} but the converter reference year is BS " +
+                    $"{_referenceBsDate.Year}. They must match or all conversions will be off.");
+            }
+
+            _referenceVerified = true;
+        }
 
         public BsDate ConvertFromAd(DateTime adDate)
         {
+            VerifyReferenceMatchesData();
+
             if (adDate < _referenceAdDate)
                 throw new NotSupportedException("Dates before the reference date are not supported yet.");
 
@@ -83,6 +107,8 @@ namespace NepaliCalendar.App.Services
 
         public DateTime ConvertToAd(int bsYear, int bsMonth, int bsDay)
         {
+            VerifyReferenceMatchesData();
+
             if (bsYear < _referenceBsDate.Year)
                 throw new NotSupportedException("BS years before the reference year are not supported yet.");
 
