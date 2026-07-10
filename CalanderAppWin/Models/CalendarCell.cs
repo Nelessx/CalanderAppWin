@@ -12,5 +12,8 @@
         public int Month { get; set; }
         public int Day { get; set; }
         public bool IsSelected { get; set; }
+
+        public bool HasEvent { get; set; }
+        public bool HasHoliday { get; set; }
     }
 }
